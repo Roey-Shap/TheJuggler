@@ -1,0 +1,3 @@
+function manager_misc(){
+
+}
