@@ -4,10 +4,10 @@
 #macro	HTML5_FULLSCREEN_CLICKABLE_IMAGE		0													// Image index of clickable sprite
 #macro	HTML5_FULLSCREEN_CLICKABLE_SCALE		1													// Scale of clickable sprite
 #macro	HTML5_FULLSCREEN_CLICKABLE_ALPHA		0.5													// Alpha of clickable sprite
-#macro	HTML5_FULLSCREEN_CLICKABLE_X			-sprite_get_width(spr_HTML5FullScreen)				// Relative to the X anchor point
-#macro	HTML5_FULLSCREEN_CLICKABLE_Y			-sprite_get_height(spr_HTML5FullScreen)				// Relative to the Y anchor point
-#macro	HTML5_FULLSCREEN_CLICKABLE_X_ANCHOR		HTML5_FULLSCREEN_ANCHOR.CANVAS_RIGHT_OR_BOTTOM		// X anchor point
-#macro	HTML5_FULLSCREEN_CLICKABLE_Y_ANCHOR		HTML5_FULLSCREEN_ANCHOR.CANVAS_RIGHT_OR_BOTTOM		// Y anchor point
+#macro	HTML5_FULLSCREEN_CLICKABLE_X			0 //-sprite_get_width(spr_HTML5FullScreen)				// Relative to the X anchor point
+#macro	HTML5_FULLSCREEN_CLICKABLE_Y			0 //-sprite_get_height(spr_HTML5FullScreen)				// Relative to the Y anchor point
+#macro	HTML5_FULLSCREEN_CLICKABLE_X_ANCHOR		HTML5_FULLSCREEN_ANCHOR.CANVAS_LEFT_OR_TOP			// X anchor point
+#macro	HTML5_FULLSCREEN_CLICKABLE_Y_ANCHOR		HTML5_FULLSCREEN_ANCHOR.CANVAS_LEFT_OR_TOP			// Y anchor point
 
 
 

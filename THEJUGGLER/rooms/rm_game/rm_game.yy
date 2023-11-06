@@ -22,6 +22,7 @@
     {"name":"inst_1B5E491F","path":"rooms/rm_game/rm_game.yy",},
     {"name":"inst_488DFA80","path":"rooms/rm_game/rm_game.yy",},
     {"name":"inst_301658CB","path":"rooms/rm_game/rm_game.yy",},
+    {"name":"inst_234F187E","path":"rooms/rm_game/rm_game.yy",},
   ],
   "isDnd": false,
   "layers": [
@@ -43,6 +44,7 @@
         {"resourceType":"GMRInstance","resourceVersion":"1.0","name":"inst_3EEF0D70","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":1,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"objectId":{"name":"o_button_parent","path":"objects/o_button_parent/o_button_parent.yy",},"properties":[],"rotation":0.0,"scaleX":0.8596055,"scaleY":0.85358256,"x":966.256,"y":828.37384,},
         {"resourceType":"GMRInstance","resourceVersion":"1.0","name":"inst_1B5E491F","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"objectId":{"name":"o_screen","path":"objects/o_screen/o_screen.yy",},"properties":[],"rotation":0.0,"scaleX":21.557297,"scaleY":5.985592,"x":966.0,"y":444.0,},
         {"resourceType":"GMRInstance","resourceVersion":"1.0","name":"inst_301658CB","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"objectId":{"name":"o_button_parent","path":"objects/o_button_parent/o_button_parent.yy",},"properties":[],"rotation":0.0,"scaleX":0.70225793,"scaleY":0.8535826,"x":1521.0,"y":828.0,},
+        {"resourceType":"GMRInstance","resourceVersion":"1.0","name":"inst_234F187E","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":10,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"objectId":{"name":"o_button_parent","path":"objects/o_button_parent/o_button_parent.yy",},"properties":[],"rotation":0.0,"scaleX":0.70225793,"scaleY":0.8535826,"x":1521.0,"y":720.0,},
       ],"layers":[],"properties":[],"userdefinedDepth":false,"visible":true,},
     {"resourceType":"GMRInstanceLayer","resourceVersion":"1.0","name":"WatchBase","depth":300,"effectEnabled":true,"effectType":null,"gridX":16,"gridY":16,"hierarchyFrozen":false,"inheritLayerDepth":false,"inheritLayerSettings":false,"inheritSubLayers":true,"inheritVisibility":true,"instances":[
         {"resourceType":"GMRInstance","resourceVersion":"1.0","name":"inst_62129AC1","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"objectId":{"name":"o_watch_base","path":"objects/o_watch_base/o_watch_base.yy",},"properties":[],"rotation":0.0,"scaleX":1.956498,"scaleY":1.8516519,"x":934.45056,"y":288.48288,},

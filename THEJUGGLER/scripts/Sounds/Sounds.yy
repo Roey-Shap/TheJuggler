@@ -1,7 +1,7 @@
 {
   "resourceType": "GMScript",
   "resourceVersion": "1.0",
-  "name": "manager_misc",
+  "name": "Sounds",
   "isCompatibility": false,
   "isDnD": false,
   "parent": {

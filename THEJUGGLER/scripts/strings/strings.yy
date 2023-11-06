@@ -5,7 +5,7 @@
   "isCompatibility": false,
   "isDnD": false,
   "parent": {
-    "name": "Gamemaker++",
-    "path": "folders/Scripts/Gamemaker++.yy",
+    "name": "Scripts",
+    "path": "folders/Scripts.yy",
   },
 }

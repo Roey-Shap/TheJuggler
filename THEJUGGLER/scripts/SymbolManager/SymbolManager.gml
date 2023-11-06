@@ -5,6 +5,12 @@ function SymbolManager() constructor {
 		return array_length(active_symbols);
 	}
 	
+	static generate_symbol_from_level_data = function(level_data) {
+		var chosen_symbol_value = array_pick_random(level_data.allowed_symbols);
+		var symbol = new Symbol(chosen_symbol_value);
+		return symbol;
+	}
+	
 	static add_symbol = function(symbol) {
 		array_push(active_symbols, symbol);
 	}
@@ -19,7 +25,7 @@ function SymbolManager() constructor {
 		var concat_symbols_string = "";
 		var num_symbs = get_num_symbols();
 		for (var i = 0; i < num_symbs; i++) {
-			concat_symbols_string += active_symbols[i].to_string();
+			concat_symbols_string += sfmt("[%]", active_symbols[i].to_string());
 		}
 		
 		return concat_symbols_string;
@@ -30,7 +36,7 @@ function SymbolManager() constructor {
 		var removed_symbol = -1;
 		var num_symbs = get_num_symbols();
 		for (var i = 0; i < num_symbs; i++) {
-			if active_symbols[i].value == value {
+			if active_symbols[i].literal_value == value {
 				value_index = i;
 				break;
 			}
@@ -41,5 +47,9 @@ function SymbolManager() constructor {
 		}
 		
 		return removed_symbol;
+	}
+		
+	static clear_symbols = function() {
+		active_symbols = [];
 	}
 }

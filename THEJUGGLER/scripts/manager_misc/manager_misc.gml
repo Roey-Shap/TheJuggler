@@ -1,3 +1,0 @@
-function manager_misc(){
-
-}
