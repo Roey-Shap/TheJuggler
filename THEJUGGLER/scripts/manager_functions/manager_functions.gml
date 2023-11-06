@@ -30,7 +30,7 @@ function level_data_init() {
 	var color_symbols = array_fill_range(symbol_type.white, symbol_type.brown);
 	
 	level_data = [
-		new LevelData(eLevels.numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, [symbol_type.triangle]),
+		new LevelData(eLevels.numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, concat_arrays(number_symbols, shape_symbols)),
 		new LevelData(eLevels.fast_numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_2, number_symbols),
 		new LevelData(eLevels.shapes, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_2, shape_symbols),
 	];

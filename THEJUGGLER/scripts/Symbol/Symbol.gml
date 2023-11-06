@@ -59,10 +59,11 @@ function Symbol(_symbol_value) constructor {
 	literal_value = value;
 	type = symbol_type.LAST;
 	sprite = get_symbol_sprite_from_value(value);
-	sprite_name = sprite_get_name(sprite);
+	sprite_name = sfmt("[%]", sprite_get_name(sprite));
 	if value >= symbol_type.zero and value <= symbol_type.nine {
 		type = symbol_type.number;
 		literal_value = value - symbol_type.zero;
+		sprite_name = seven_digit(literal_value);
 	} else if value >= symbol_type.square and value <= symbol_type.column {
 		type = symbol_type.shape;
 	} else if value >= symbol_type.white and value <= symbol_type.brown {

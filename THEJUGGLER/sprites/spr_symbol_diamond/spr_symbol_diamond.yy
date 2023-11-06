@@ -25,8 +25,8 @@
   "nineSlice": null,
   "origin": 4,
   "parent": {
-    "name": "NumberSymbols",
-    "path": "folders/Sprites/NumberSymbols.yy",
+    "name": "Shapes",
+    "path": "folders/Sprites/NumberSymbols/Shapes.yy",
   },
   "preMultiplyAlpha": false,
   "sequence": {

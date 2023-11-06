@@ -3,8 +3,8 @@
   "resourceVersion": "1.0",
   "name": "spr_symbol_column",
   "bbox_bottom": 92,
-  "bbox_left": 39,
-  "bbox_right": 58,
+  "bbox_left": 38,
+  "bbox_right": 57,
   "bbox_top": 2,
   "bboxMode": 0,
   "collisionKind": 1,
@@ -25,8 +25,8 @@
   "nineSlice": null,
   "origin": 4,
   "parent": {
-    "name": "NumberSymbols",
-    "path": "folders/Sprites/NumberSymbols.yy",
+    "name": "Shapes",
+    "path": "folders/Sprites/NumberSymbols/Shapes.yy",
   },
   "preMultiplyAlpha": false,
   "sequence": {

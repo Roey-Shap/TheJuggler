@@ -25,7 +25,7 @@ function SymbolManager() constructor {
 		var concat_symbols_string = "";
 		var num_symbs = get_num_symbols();
 		for (var i = 0; i < num_symbs; i++) {
-			concat_symbols_string += sfmt("[%]", active_symbols[i].to_string());
+			concat_symbols_string += active_symbols[i].to_string();
 		}
 		
 		return concat_symbols_string;

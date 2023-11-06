@@ -2,10 +2,10 @@
   "resourceType": "GMSprite",
   "resourceVersion": "1.0",
   "name": "spr_watch_hand",
-  "bbox_bottom": 113,
-  "bbox_left": 3,
-  "bbox_right": 127,
-  "bbox_top": 31,
+  "bbox_bottom": 703,
+  "bbox_left": 0,
+  "bbox_right": 1716,
+  "bbox_top": 0,
   "bboxMode": 0,
   "collisionKind": 1,
   "collisionTolerance": 0,
@@ -13,14 +13,14 @@
   "edgeFiltering": false,
   "For3D": false,
   "frames": [
-    {"resourceType":"GMSpriteFrame","resourceVersion":"1.1","name":"93d25265-a884-4259-bd47-d378b8a99ae3",},
+    {"resourceType":"GMSpriteFrame","resourceVersion":"1.1","name":"80d03f46-ef63-4967-8f21-d7cb29613aba",},
   ],
   "gridX": 0,
   "gridY": 0,
-  "height": 128,
+  "height": 704,
   "HTile": false,
   "layers": [
-    {"resourceType":"GMImageLayer","resourceVersion":"1.0","name":"b976f919-cdc6-4f00-a6a4-c37fd3ffd43f","blendMode":0,"displayName":"default","isLocked":false,"opacity":100.0,"visible":true,},
+    {"resourceType":"GMImageLayer","resourceVersion":"1.0","name":"f9b2816f-6999-4ec3-bb0b-54cb6daf3ed2","blendMode":0,"displayName":"default","isLocked":false,"opacity":100.0,"visible":true,},
   ],
   "nineSlice": null,
   "origin": 0,
@@ -54,7 +54,7 @@
     "timeUnits": 1,
     "tracks": [
       {"resourceType":"GMSpriteFramesTrack","resourceVersion":"1.0","name":"frames","builtinName":0,"events":[],"inheritsTrackColour":true,"interpolation":1,"isCreationTrack":false,"keyframes":{"resourceType":"KeyframeStore<SpriteFrameKeyframe>","resourceVersion":"1.0","Keyframes":[
-            {"resourceType":"Keyframe<SpriteFrameKeyframe>","resourceVersion":"1.0","Channels":{"0":{"resourceType":"SpriteFrameKeyframe","resourceVersion":"1.0","Id":{"name":"93d25265-a884-4259-bd47-d378b8a99ae3","path":"sprites/spr_watch_hand/spr_watch_hand.yy",},},},"Disabled":false,"id":"1367d912-e2a5-4dc2-ab38-2f50a0d1ef51","IsCreationKey":false,"Key":0.0,"Length":1.0,"Stretch":false,},
+            {"resourceType":"Keyframe<SpriteFrameKeyframe>","resourceVersion":"1.0","Channels":{"0":{"resourceType":"SpriteFrameKeyframe","resourceVersion":"1.0","Id":{"name":"80d03f46-ef63-4967-8f21-d7cb29613aba","path":"sprites/spr_watch_hand/spr_watch_hand.yy",},},},"Disabled":false,"id":"2539a058-1528-40f0-bf1c-a58cc78105e1","IsCreationKey":false,"Key":0.0,"Length":1.0,"Stretch":false,},
           ],},"modifiers":[],"spriteId":null,"trackColour":0,"tracks":[],"traits":0,},
     ],
     "visibleRange": null,
@@ -70,5 +70,5 @@
   },
   "type": 0,
   "VTile": false,
-  "width": 128,
+  "width": 1717,
 }
