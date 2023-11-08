@@ -41,7 +41,7 @@ function Vector2(_x, _y) constructor {
 	}
 
 	static get_mag = function() {
-		return point_distance(0, 0, x, y)
+		return point_distance(0, 0, x, y);
 	}
 	
 	static get_dir = function() {

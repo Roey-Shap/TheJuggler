@@ -72,6 +72,15 @@ function array_contains_ancestor_of(obj_ind, array) {
 	return false;
 }
 
+function with_each(objs, func) {
+	var num_objs = array_length(objs);
+	for (var i = 0; i < num_objs; i++) {
+		with (objs[i]) {
+			func();
+		}
+	}
+}
+
 //function array_intersection(arr1, arr2) {
 //	var len1 = array_length(arr1);
 //	var len2 = array_length(arr2);

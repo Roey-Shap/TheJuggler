@@ -24,7 +24,7 @@ current_wave = 0;				// each wave has a number N of enemies
 current_wave_size = -1;
 num_enemies_created_this_wave = 0;
 num_enemies_defeated_this_wave = 0;
-
+ 
 num_symbols = 0;
 symbol_penalty_threshold = 7;
 
@@ -33,6 +33,13 @@ between_symbols_timer.start();
 symbol_manager = new SymbolManager();
 
 current_fire_counter_value = 0;
+
+watch_platforming_growth_perform_transition = false;
+watch_growth_transition_timer = new Timer(get_frames(4));
+watch_growth_final_scale = 1.35;
+
+in_screen_draw_surface = -1;
+virtual_camera_corner = -1;
 
 // Firing and Symbol Tracking
 current_values_in_shape = [];
@@ -143,7 +150,7 @@ face_button_sounds = [snd_watch_beep_1, snd_watch_beep_2, snd_watch_beep_3];
 
 function create_symbol() {
 	num_enemies_created_this_wave += 1;
-	var symbol = symbol_manager.generate_symbol_from_level_data(level_data[current_level-1]);
+	var symbol = symbol_manager.generate_symbol_from_level_data(level_data[current_level]);
 	//var random_symbol_value = irandom_range(0, 9);
 	//var symbol = new Symbol(random_symbol_value, symbol_type.number);
 	symbol_manager.add_symbol(symbol);
@@ -157,6 +164,21 @@ function start_next_level() {
 	current_level += 1;
 	current_wave = 0;
 	current_number_of_waves = round(2 * current_level) + 4;
+	
+	//if get_level_data().is_scrolling_level() {
+	//	instance_activate_layer("SetCollision");
+	//} else {
+	//	instance_deactivate_layer("SetCollision");
+	//}
+	
+	if get_level_data().level_type == eLevelType.platforming and !watch_platforming_growth_perform_transition {
+		watch_platforming_growth_perform_transition = true;
+		watch_growth_transition_timer.start();
+		with (o_player) {
+			platforming_active = true;
+		}
+	}
+	
 	level_title_timer.start();
 	start_next_wave();
 }
@@ -193,6 +215,15 @@ function hit_player() {
 	}
 }
 
+///@returns {Struct.LevelData}
+function get_level_data() {
+	return level_data[current_level];
+}
+
+function playing_normal_platforming_level() {
+	return get_level_data().level_type == eLevelType.platforming;
+}
+
 function get_num_enemies_per_wave_curve(level_number) {
 	//var curves = [
 	//	cv_number_of_enemies_level_1,
@@ -200,7 +231,7 @@ function get_num_enemies_per_wave_curve(level_number) {
 	//];
 	
 	//return curves[wave_number-1];
-	return level_data[level_number-1].enemies_per_wave_curve;
+	return get_level_data().enemies_per_wave_curve;
 }
 
 function get_time_between_symbols_curve(level_number) {
@@ -210,7 +241,7 @@ function get_time_between_symbols_curve(level_number) {
 	//];
 	
 	//return curves[wave_number-1];
-	return level_data[level_number-1].time_between_enemies_curve;
+	return get_level_data().time_between_enemies_curve;
 }
 
 function handle_game_over() {
@@ -264,3 +295,4 @@ function receive_click_from_face_button(button) {
 }
 
 global.deltatime = 1;
+global.debug = DEVELOPER_MODE;

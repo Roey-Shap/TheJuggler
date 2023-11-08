@@ -2,7 +2,9 @@
   "resourceType": "GMObject",
   "resourceVersion": "1.0",
   "name": "o_screen",
-  "eventList": [],
+  "eventList": [
+    {"resourceType":"GMEvent","resourceVersion":"1.0","name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,},
+  ],
   "managed": true,
   "overriddenProperties": [],
   "parent": {
@@ -26,9 +28,9 @@
   "properties": [],
   "solid": false,
   "spriteId": {
-    "name": "spr_screen_nineslice",
-    "path": "sprites/spr_screen_nineslice/spr_screen_nineslice.yy",
+    "name": "spr_screen_placeholder",
+    "path": "sprites/spr_screen_placeholder/spr_screen_placeholder.yy",
   },
   "spriteMaskId": null,
-  "visible": true,
+  "visible": false,
 }

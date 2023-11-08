@@ -60,7 +60,7 @@ function Symbol(_symbol_value) constructor {
 	type = symbol_type.LAST;
 	sprite = get_symbol_sprite_from_value(value);
 	sprite_name = sfmt("[%]", sprite_get_name(sprite));
-	if value >= symbol_type.zero and value <= symbol_type.nine {
+	if symbol_value_is_number(value) {
 		type = symbol_type.number;
 		literal_value = value - symbol_type.zero;
 		sprite_name = seven_digit(literal_value);
@@ -73,6 +73,10 @@ function Symbol(_symbol_value) constructor {
 	static to_string = function() {
 		return sprite_name;
 	}
+}
+
+function symbol_value_is_number(value) {
+	return value >= symbol_type.zero and value <= symbol_type.nine;
 }
 
 function get_symbol_sprite_from_value(_sprite_value) {
