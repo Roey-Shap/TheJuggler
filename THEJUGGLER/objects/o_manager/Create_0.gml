@@ -215,6 +215,7 @@ function hit_player() {
 	}
 }
 
+
 ///@returns {Struct.LevelData}
 function get_level_data() {
 	return level_data[current_level];
@@ -260,6 +261,17 @@ function handle_fire() {
 		num_enemies_defeated_this_wave += 1;
 		//reset_buttons_for_shape();
 	}
+}
+
+function spawn_bullet_at_player_y_level(symbol_struct) {
+	var _x = o_screen.bbox_right;
+	var screen_height = o_screen.bbox_bottom - o_screen.bbox_top;
+	var _y = o_player.y + screen_height * random_range(-0.05, 0.05);
+	var bullet = instance_create_layer(_x, _y, LAYER_WATCH_DISPLAY, o_bullet_basic);
+	var spd = 5;
+	var dir = point_direction(bullet.x, bullet.y, o_player.x, o_player.y);
+	bullet.hspd = lengthdir_x(spd, dir);
+	bullet.vspd = lengthdir_y(spd, dir);
 }
 
 function reset_buttons_for_shape() {

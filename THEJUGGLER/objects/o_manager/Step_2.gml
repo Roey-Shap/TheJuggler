@@ -8,7 +8,7 @@ fx_perform_step();
 if instance_exists(o_player) {
 	if playing_normal_platforming_level() {
 		if instance_exists(o_screen) {
-			var screen = instance_nearest(0, 0, o_screen);
+			//var screen = instance_nearest(0, 0, o_screen);
 			virtual_camera_corner = new Vector2(0, 0);
 		}
 	} else {

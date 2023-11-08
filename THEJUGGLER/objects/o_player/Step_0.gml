@@ -33,6 +33,7 @@ if platforming_active {
 	}
 	
 	manage_collision();
+	manage_bullets();
 	grounded_check();
 	manage_checkpoint_collisions();
 	if vspd >= 0.1 {
@@ -50,6 +51,7 @@ if platforming_active {
 	y += vspd;
 	
 	grounded_last = grounded;
+	invulnerability_timer.tick();
 }
 
 

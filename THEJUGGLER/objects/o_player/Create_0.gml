@@ -19,6 +19,7 @@ fast_falling = false;
 fast_fall_speed = 10;
 fast_falling_hspd_factor = 0.4;
 
+invulnerability_timer = new Timer(get_frames(1.5));
 
 last_checkpoint_pos = get_pos(id);
 
@@ -32,7 +33,7 @@ function grounded_check() {
 	grounded = place_meeting(x, y+1, o_collision) or touching_screen_bottom;
 }
 
-function manage_collision() {
+manage_collision = function() {
 	
 	var obj = o_collision;
 	
@@ -65,22 +66,22 @@ function manage_collision() {
 	
 	if o_manager.playing_normal_platforming_level() {
 		var screen = instance_nearest(0, 0, o_screen);
-		if x > screen.bbox_right {
+		if x + hspd > screen.bbox_right {
 			x = screen.bbox_right;
 			hspd = 0;
 		}
 		
-		if x < screen.bbox_left {
+		if x + hspd < screen.bbox_left {
 			x = screen.bbox_left;
 			hspd = 0;
 		}
 		
-		if y < screen.bbox_top {
+		if y + vspd < screen.bbox_top {
 			y = screen.bbox_top;
 			vspd = 0;
 		}
 		
-		if y > screen.bbox_bottom {
+		if y + vspd > screen.bbox_bottom {
 			y = screen.bbox_bottom;
 			if fast_falling {
 				vspd = -jump_force_bounce_pad;
@@ -88,6 +89,15 @@ function manage_collision() {
 				vspd = 0;
 			}
 		}
+	}
+}
+
+function manage_bullets() {
+	var bullet = instance_place(x, y, o_bullet_parent);
+	if bullet != noone {
+		hp -= 1;
+		instance_destroy(bullet);
+		invulnerability_timer.start();
 	}
 }
 

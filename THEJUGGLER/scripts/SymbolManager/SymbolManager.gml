@@ -27,7 +27,7 @@ function SymbolManager() constructor {
 		var screen_dimensions = new Vector2(inst_screen.sprite_width, inst_screen.sprite_height);
 		var screen_down_right = screen_up_left.add(screen_dimensions);
 		symbol.x = screen_down_right.x - sw;
-		symbol.y = screen_down_right.y - sh * 1.5;
+		symbol.y = screen_down_right.y - sh;
 		
 		array_push(active_symbols, symbol);
 	}
@@ -67,18 +67,26 @@ function SymbolManager() constructor {
 		
 		if value_index != -1 {
 			removed_symbol = pop_symbol(value_index);
+			var symbol_struct = removed_symbol.symbol_struct;
 			var symbol_width = removed_symbol.sprite_width;
 			for (var i = value_index-1; i >= 0; i--) {
 				active_symbols[i].x += symbol_width;
 			}
 			
+			if o_manager.get_level_data().killed_symbols_become_bullets {
+				o_manager.spawn_bullet_at_player_y_level(symbol_struct);
+			}
+
+			
 			instance_destroy(removed_symbol);
+			return symbol_struct;
 		}
 		
-		return removed_symbol;
+		return noone;
 	}
 		
 	static clear_symbols = function() {
+		array_foreach(active_symbols, instance_destroy);
 		active_symbols = [];
 	}
 }
