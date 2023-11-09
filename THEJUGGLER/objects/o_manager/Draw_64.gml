@@ -1,3 +1,12 @@
+if surface_exists(in_screen_draw_surface) {
+	var screen = instance_nearest(0, 0, o_screen);
+	if screen != noone {
+		draw_surface(in_screen_draw_surface, screen.bbox_left, screen.bbox_top);
+	}
+	//draw_rectangle(screen.bbox_left, screen.bbox_top, screen.bbox_left + screen.sprite_width, screen.bbox_top + screen.sprite_height, false);
+}
+
+
 var inst_screen = instance_nearest(0, 0, o_screen);
 var screen_dimensions = new Vector2(inst_screen.sprite_width, inst_screen.sprite_height);
 var margin_size = round(screen_dimensions.x / 100);

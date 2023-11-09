@@ -1,4 +1,6 @@
 
+platforming_active = o_manager.get_level_data().level_type != eLevelType.normal;
+
 if platforming_active {
 	var hinput = keyboard_check(key_right) - keyboard_check(key_left);
 	var vinput = keyboard_check(key_down) - keyboard_check(key_up);

@@ -35,11 +35,19 @@ symbol_manager = new SymbolManager();
 current_fire_counter_value = 0;
 
 watch_platforming_growth_perform_transition = false;
-watch_growth_transition_timer = new Timer(get_frames(4));
+watch_growth_transition_timer = new Timer(get_frames(4), false, function() {
+	if get_level_data().level_type == eLevelType.platforming {
+		create_player_platform();
+		with (o_player) {
+			platforming_active = true;
+		}
+	}
+});
 watch_growth_final_scale = 1.35;
 
 in_screen_draw_surface = -1;
 virtual_camera_corner = -1;
+surface_bug_flag = false;
 
 // Firing and Symbol Tracking
 current_values_in_shape = [];
@@ -171,12 +179,9 @@ function start_next_level() {
 	//	instance_deactivate_layer("SetCollision");
 	//}
 	
-	if get_level_data().level_type == eLevelType.platforming and !watch_platforming_growth_perform_transition {
+	if isIn(get_level_data().level_type, [eLevelType.platforming, eLevelType.sidescrolling]) and !watch_platforming_growth_perform_transition {
 		watch_platforming_growth_perform_transition = true;
 		watch_growth_transition_timer.start();
-		with (o_player) {
-			platforming_active = true;
-		}
 	}
 	
 	level_title_timer.start();
@@ -215,6 +220,16 @@ function hit_player() {
 	}
 }
 
+function create_player_platform() {
+	var inst_screen = instance_nearest(0, 0, o_screen);
+	var screen_dimensions = new Vector2(inst_screen.sprite_width, inst_screen.sprite_height);
+	var screen_up_left = new Vector2(inst_screen.bbox_left, inst_screen.bbox_top);
+	var pos = screen_up_left.mult_add(screen_dimensions, 0.5);
+	pos.y += screen_dimensions.y * 0.1;
+	var col = instance_create_layer(pos.x, pos.y, LAYER_WATCH_DISPLAY, o_collision_thin);
+	var xscale = screen_dimensions.x / sprite_get_width(col.sprite_index);
+	col.image_xscale = xscale;
+}
 
 ///@returns {Struct.LevelData}
 function get_level_data() {

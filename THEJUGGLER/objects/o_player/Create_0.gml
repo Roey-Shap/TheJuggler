@@ -114,8 +114,8 @@ function manage_checkpoint_collisions() {
 	}
 }
 
-function draw_custom(offset_pos) {
-	if platforming_active {
+draw_custom = function(offset_pos) {
+	if o_manager.get_level_data().level_type != eLevelType.normal {
 		draw_sprite_ext(sprite_index, image_index, x + offset_pos.x, y + offset_pos.y, image_xscale, image_yscale, image_angle, image_blend, image_alpha);
 	}
 }

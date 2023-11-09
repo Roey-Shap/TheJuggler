@@ -56,6 +56,7 @@ function SpriteFX(_x, _y, _sprite_index, over_or_under) constructor {
 	loop = false;
 	end_of_loop = false;
 	hold_sprite_time = 0;
+	draw_on_surface = false;
 	
 	cutscene_effect = false;
 	
@@ -141,8 +142,14 @@ function SpriteFX(_x, _y, _sprite_index, over_or_under) constructor {
 		// it's still alive and going - no death
 		return 0;
 	}
-	static draw = function(offset=new Vector2(0, 0)) {
-		if draw_func != -1 draw_func(offset);
+	static draw = function(offset=new Vector2(0, 0), should_be_drawn_on_surface=false) {
+		if draw_on_surface and should_be_drawn_on_surface {
+			return;
+		}
+		
+		if draw_func != -1 {
+			draw_func(offset);
+		}
 	}
 }
 

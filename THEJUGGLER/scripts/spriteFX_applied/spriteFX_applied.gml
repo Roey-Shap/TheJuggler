@@ -1,9 +1,9 @@
 
-function draw_from_list(list){
+function draw_from_list(list, on_surface=false){
 	var len = ds_list_size(list);
 	for (var i = 0; i < len; i++) {
 		var cur = list[| i];
-		cur.draw(o_manager.virtual_camera_corner);
+		cur.draw(o_manager.virtual_camera_corner, on_surface);
 	}
 }
 

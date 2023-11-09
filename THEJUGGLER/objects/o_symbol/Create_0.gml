@@ -1,3 +1,4 @@
+event_inherited();
 
 symbol_struct = -1;
 image_speed = 0;

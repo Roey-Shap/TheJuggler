@@ -12,6 +12,10 @@ function Vector2(_x, _y) constructor {
 		return new Vector2(x - vec2.x, y - vec2.y)
 	}
 	
+	static mult_add = function(vec2, scalar) {
+		return add(vec2.multiply(scalar));
+	}
+	
 	static iadd = function(vec2) {
 		x += vec2.x
 		y += vec2.y
