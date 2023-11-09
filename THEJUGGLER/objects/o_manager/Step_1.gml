@@ -8,3 +8,6 @@ if DEVELOPER_MODE {
 		show_debug_overlay(DEBUG);
 	}
 }
+
+INPUT_ACC = mouse_check_button_pressed(key_accept);
+INPUT_BACK = mouse_check_button_pressed(key_back);

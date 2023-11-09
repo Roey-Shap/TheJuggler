@@ -7,7 +7,12 @@ function SymbolManager() constructor {
 	
 	static generate_symbol_from_level_data = function(level_data) {
 		var chosen_symbol_value = array_pick_random(level_data.allowed_symbols);
-		var symbol_struct = new Symbol(chosen_symbol_value);
+		var symbol = generate_symbol(chosen_symbol_value);
+		return symbol;
+	}
+	
+	static generate_symbol = function(value) {
+		var symbol_struct = new Symbol(value);
 		var symbol = instance_create_layer(0, 0, LAYER_WATCH_DISPLAY, o_symbol);
 		symbol.set_symbol(symbol_struct);
 		return symbol;
@@ -83,6 +88,17 @@ function SymbolManager() constructor {
 		}
 		
 		return noone;
+	}
+	
+	static kill_closest_symbol_of_value = function(value, list) {
+		var len = ds_list_size(list);
+		for (var i = 0; i < len; i++) {
+			var inst = list[| i];
+			if inst.symbol_struct.literal_value == value {
+				instance_destroy(inst);
+				break;
+			}
+		}
 	}
 		
 	static clear_symbols = function() {

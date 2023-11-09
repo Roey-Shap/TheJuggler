@@ -1,1 +1,1 @@
-set_text("Flat things bounce.");
+set_text("Flat things bounce things that move down fast.");

@@ -51,3 +51,9 @@ if !level_title_timer.is_done() {
 	var level_title_element = scribble(sfmt("[wave]LEVEL %", current_level));
 	level_title_element.align(fa_center, fa_top).starting_format(default_font_name, 1).draw(title_position.x, title_position.y);
 }
+
+with (obj_cutscene_textbox_scribble) {
+	draw();
+}
+
+draw_text(24, 24, instance_number(all))

@@ -13,6 +13,7 @@ enum st_game_state {
 state_game = st_game_state.main_menu;
 
 key_accept = mb_left;
+key_back = mb_right;
 key_fullscreen = ord("F");
 
 
@@ -36,11 +37,12 @@ current_fire_counter_value = 0;
 
 watch_platforming_growth_perform_transition = false;
 watch_growth_transition_timer = new Timer(get_frames(4), false, function() {
+	create_cutscene(cs_player_becomes_juggler);
 	if get_level_data().level_type == eLevelType.platforming {
 		create_player_platform();
-		with (o_player) {
-			platforming_active = true;
-		}
+		//with (o_player) {
+		//	platforming_active = true;
+		//}
 	}
 });
 watch_growth_final_scale = 1.35;
@@ -266,15 +268,29 @@ function handle_game_over() {
 
 function handle_fire() {
 	var current_fire_shape_value = get_current_shape_value();
+	if get_level_data().level_type == eLevelType.sidescrolling {
+		var visible_numbers = ds_list_create();
+		with (o_player) {
+			var topleft = o_manager.virtual_camera_corner.multiply(-1);
+			var screen = instance_nearest(x, y, o_screen);
+			var screen_dims = new Vector2(screen.sprite_width, screen.sprite_height);
+			var num_visible_numbers = collision_rectangle_list(topleft.x, topleft.y, topleft.x + screen_dims.x, topleft.y + screen_dims.y, 
+															   o_symbol, false, false, visible_numbers, true);
+		}
+		
+		symbol_manager.kill_closest_symbol_of_value(current_fire_counter_value, visible_numbers);
+		ds_list_destroy(visible_numbers);
+	} else {
 	var removed_number = symbol_manager.kill_first_symbol_of_value(current_fire_counter_value);
-	var removed_shape = symbol_manager.kill_first_symbol_of_value(current_fire_shape_value);
-	if removed_number != -1 {
-		num_enemies_defeated_this_wave += 1;
-	}
+		var removed_shape = symbol_manager.kill_first_symbol_of_value(current_fire_shape_value);
+		if removed_number != -1 {
+			num_enemies_defeated_this_wave += 1;
+		}
 	
-	if removed_shape != -1 {
-		num_enemies_defeated_this_wave += 1;
-		//reset_buttons_for_shape();
+		if removed_shape != -1 {
+			num_enemies_defeated_this_wave += 1;
+			//reset_buttons_for_shape();
+		}
 	}
 }
 

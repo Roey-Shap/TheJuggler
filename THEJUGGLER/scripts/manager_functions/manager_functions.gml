@@ -2,6 +2,7 @@ function game_initialize() {
 	scribble_init();
 	level_data_init();
 	FX_init();
+	cutscenes_init();
 	
 	//window_set_fullscreen(true);
 	html5_window_set_fullscreen(true);
@@ -10,10 +11,16 @@ function game_initialize() {
 	#macro DEVELOPER:DEVELOPER_MODE true
 	#macro DEBUG global.debug
 	#macro DELTATIME global.deltatime
+	
 	#macro CAM_W 1920
 	#macro CAM_H 1080
+	#macro LAYER_META "Meta"
 	#macro LAYER_WATCH_DISPLAY "WatchFaceDisplay"
+	
 	#macro SND_PRIORITY_FX 5
+
+	#macro INPUT_ACC global.mouse_click_left
+	#macro INPUT_BACK global.mouse_click_right
 	
 	room = rm_game;
 }

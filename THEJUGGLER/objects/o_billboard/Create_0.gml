@@ -5,6 +5,10 @@ function set_text(str) {
 	text = str;
 }
 
+function set_text_witch(str) {
+	set_text(sfmt("[c_lime][shake]", str));
+}
+
 function draw() {	
 	scribble_element.draw(x, y);
 }

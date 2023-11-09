@@ -2,7 +2,7 @@ hp = 3;
 
 platforming_active = false;
 
-movespd = 3.25;
+movespd = 3.65;
 hspd = 0;
 vspd = 0;
 fric = 0.3;

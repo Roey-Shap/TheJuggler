@@ -25,8 +25,8 @@ switch (state_game) {
 				}
 			}
 			
-			draw_from_list(global.sprite_FX_list_over, true);
-			draw_from_list(global.TextFX_list_over, true);
+			draw_from_list(global.sprite_FX_list_over);
+			draw_from_list(global.TextFX_list_over);
 
 			surface_reset_target();
 		}
@@ -39,5 +39,5 @@ switch (state_game) {
 	break;
 }
 
-draw_from_list(global.sprite_FX_list_over);
-draw_from_list(global.TextFX_list_over);
+draw_from_list(global.sprite_FX_list_over, true);
+draw_from_list(global.TextFX_list_over, true);
