@@ -35,9 +35,11 @@ if platforming_active {
 		}
 	}
 	
+	manage_cutscene_triggers();
 	manage_collision();
 	manage_bullets();
 	grounded_check();
+	manage_sprite();
 	manage_checkpoint_collisions();
 	if vspd >= 0.1 {
 		player_jump = false;

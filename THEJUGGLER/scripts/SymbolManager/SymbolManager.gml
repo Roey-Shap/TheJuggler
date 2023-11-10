@@ -55,7 +55,7 @@ function SymbolManager() constructor {
 	
 	static draw_symbols = function() {
 		array_foreach(active_symbols, function(inst) {
-			inst.draw();
+			inst.draw_custom();
 		});
 	}
 	

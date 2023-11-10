@@ -5,14 +5,17 @@ function Timer(_countdown_duration, _looping=false, _countdown_function=-1) cons
 	
 	looping = _looping;
 	countdown_function = _countdown_function;
+	done_countdown_function = false;
 	
 	function tick() {
 		current_count -= (current_count > 0) * DELTATIME;
 		
 		if is_done() {
-			if countdown_function != -1 {
+			if countdown_function != -1 and !done_countdown_function {
 				countdown_function();
+				done_countdown_function = true;
 			}
+			
 			if looping {
 				current_count = countdown_duration;
 			}
@@ -21,6 +24,7 @@ function Timer(_countdown_duration, _looping=false, _countdown_function=-1) cons
 	
 	function start() {
 		current_count = countdown_duration;
+		done_countdown_function = false;
 	}
 	
 	function is_done() {

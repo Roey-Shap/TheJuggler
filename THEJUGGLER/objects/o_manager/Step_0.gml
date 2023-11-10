@@ -13,7 +13,7 @@ if watch_platforming_growth_perform_transition {
 	if !watch_growth_transition_timer.is_done() {
 		var curve_amount = sample_curve(cv_watch_growth_rate, watch_growth_transition_timer.get_percent_done());
 		var final_scale = watch_growth_final_scale;
-		var objs = [o_screen, o_watch_base, o_watch_wriststrap, o_button_parent];
+		var objs = [o_screen, o_watch_screen_shade, o_watch_base, o_watch_wriststrap, o_button_parent];
 		var num_objs = array_length(objs);
 		for (var i = 0; i < num_objs; i++) {
 			with (objs[i]) {
@@ -36,6 +36,11 @@ switch (state_game) {
 	
 	case st_game_state.playing:
 		level_title_timer.tick();
+		
+		if level_title_timer.is_done() {
+			consecutive_hit_sound_factor -= 2 * (1 / 60) * DELTATIME;
+			consecutive_hit_sound_factor = max(consecutive_hit_sound_factor, 1);
+		}
 		
 		if get_level_data().level_type != eLevelType.sidescrolling {
 			if watch_growth_transition_timer.is_done() {

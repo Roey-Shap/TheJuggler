@@ -1,9 +1,15 @@
 fx_perform_step();
 
-if get_level_data().level_type == eLevelType.sidescrolling and watch_growth_transition_timer.is_done() {
-	if !surface_exists(in_screen_draw_surface) {
-		var screen = instance_nearest(0, 0, o_screen);
-		in_screen_draw_surface = surface_create(screen.sprite_width, screen.sprite_height);
+if get_level_data().level_type == eLevelType.sidescrolling {
+	if watch_growth_transition_timer.is_done() {
+		if !surface_exists(in_screen_draw_surface) {
+			var screen = instance_nearest(0, 0, o_screen);
+			in_screen_draw_surface = surface_create(screen.sprite_width, screen.sprite_height);
+		}
+	}
+} else {
+	if surface_exists(in_screen_draw_surface) {
+		surface_free(in_screen_draw_surface);
 	}
 }
 

@@ -23,4 +23,19 @@ function cutscenes_init(){
 			"[speed,0.8]YOU ARE      [delay,1000]THE JUGGLER",
 		]]
 	];
+	
+	cs_end_of_platforming_intro_level = [
+		[cs_text, [
+			"END OF LEVEL!!!",
+		]],
+		[cutscene_custom_action, function() {
+			o_manager.start_next_level();
+			if get_level_data().level_type == eLevelType.platforming {
+				var player = instance_nearest(x, y, o_player);
+				player.x = o_screen.bbox_left + (o_screen.sprite_width/2);
+				player.y = o_screen.bbox_top + (o_screen.sprite_height * 0.1);
+				create_player_platform();
+			}
+		}]
+	];
 }

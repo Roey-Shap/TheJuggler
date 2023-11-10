@@ -37,30 +37,30 @@ current_fire_counter_value = 0;
 
 watch_platforming_growth_perform_transition = false;
 watch_growth_transition_timer = new Timer(get_frames(4), false, function() {
-	create_cutscene(cs_player_becomes_juggler);
-	if get_level_data().level_type == eLevelType.platforming {
-		create_player_platform();
-		//with (o_player) {
-		//	platforming_active = true;
-		//}
-	}
+	//create_cutscene(o_manager.cs_player_becomes_juggler);
 });
+
 watch_growth_final_scale = 1.35;
 
 in_screen_draw_surface = -1;
 virtual_camera_corner = -1;
-surface_bug_flag = false;
+
+global.lcd_shade_offset = new Vector2(3, 3);
+global.lcd_alpha = 0.2;
 
 // Firing and Symbol Tracking
 current_values_in_shape = [];
+current_buttons_in_shape = [];
+correctly_ordered_buttons = [1, 2, 3, 6, 9, 8, 7, 5, 4];	// counter clockwise around and in
 enum shape_forming_status {
 	invalid,
 	partial,
 	full
 }
 
-function add_value_to_shape(value) {
-	array_push(current_values_in_shape, value);
+function add_value_to_shape(button) {
+	array_push(current_values_in_shape, button.button_value);
+	array_push(current_buttons_in_shape, button);
 }
 
 function get_current_shape_value() {
@@ -147,6 +147,7 @@ function shape_values_form_helper(_symbol_type) {
 			arrangements = [
 				[4, 6, 8],
 				[1, 5, 3],
+				[1, 8, 3]
 			];
 		break;
 	}
@@ -157,6 +158,11 @@ function shape_values_form_helper(_symbol_type) {
 level_title_timer = new Timer(get_frames(2));
 
 face_button_sounds = [snd_watch_beep_1, snd_watch_beep_2, snd_watch_beep_3];
+face_button_sounds_shot_success = [snd_watch_beep_special_1];
+face_button_sounds_shot_special = [snd_watch_beep_special_2];
+
+consecutive_hit_sound_factor = 1;
+consecutive_hit_timer = new Timer(0.4);
 
 function create_symbol() {
 	num_enemies_created_this_wave += 1;
@@ -173,13 +179,13 @@ function get_num_symbols() {
 function start_next_level() {
 	current_level += 1;
 	current_wave = 0;
-	current_number_of_waves = round(2 * current_level) + 4;
+	current_number_of_waves = round(1.7 * current_level) + 3;
 	
-	//if get_level_data().is_scrolling_level() {
-	//	instance_activate_layer("SetCollision");
-	//} else {
-	//	instance_deactivate_layer("SetCollision");
-	//}
+	if get_level_data().is_scrolling_level() {
+		instance_activate_layer("SetCollision");
+	} else {
+		instance_deactivate_layer("SetCollision");
+	}
 	
 	if isIn(get_level_data().level_type, [eLevelType.platforming, eLevelType.sidescrolling]) and !watch_platforming_growth_perform_transition {
 		watch_platforming_growth_perform_transition = true;
@@ -202,7 +208,7 @@ function start_next_wave() {
 		num_enemies_created_this_wave = 0;
 		num_enemies_defeated_this_wave = 0;
 		var num_enemies_curve_value = sample_curve(get_num_enemies_per_wave_curve(current_level), current_wave / current_number_of_waves);
-		var num_enemies_curve_scale = round(6 + (2.5 * current_level) * random_range(0.9, 1.1));
+		var num_enemies_curve_scale = round(5 + (2.5 * current_level) * random_range(0.9, 1.1));
 		current_wave_size = round(num_enemies_curve_value * num_enemies_curve_scale);
 		
 		var base_time_between_symbols_for_wave = sample_curve(get_time_between_symbols_curve(current_level), current_wave / current_number_of_waves);
@@ -268,6 +274,7 @@ function handle_game_over() {
 
 function handle_fire() {
 	var current_fire_shape_value = get_current_shape_value();
+	var num_enemies_defeated_with_this_fire = 0;
 	if get_level_data().level_type == eLevelType.sidescrolling {
 		var visible_numbers = ds_list_create();
 		with (o_player) {
@@ -281,15 +288,29 @@ function handle_fire() {
 		symbol_manager.kill_closest_symbol_of_value(current_fire_counter_value, visible_numbers);
 		ds_list_destroy(visible_numbers);
 	} else {
-	var removed_number = symbol_manager.kill_first_symbol_of_value(current_fire_counter_value);
+		var removed_number = symbol_manager.kill_first_symbol_of_value(current_fire_counter_value);
 		var removed_shape = symbol_manager.kill_first_symbol_of_value(current_fire_shape_value);
-		if removed_number != -1 {
+		if removed_number != noone {
 			num_enemies_defeated_this_wave += 1;
+			num_enemies_defeated_with_this_fire += 1;
 		}
 	
-		if removed_shape != -1 {
+		if removed_shape != noone {
 			num_enemies_defeated_this_wave += 1;
+			num_enemies_defeated_with_this_fire += 1;
 			//reset_buttons_for_shape();
+		}
+		
+		if num_enemies_defeated_with_this_fire > 0 {
+			consecutive_hit_sound_factor = min(consecutive_hit_sound_factor + 1, 10);
+		}
+		
+		if num_enemies_defeated_with_this_fire == 0 {
+			play_random_sound(face_button_sounds, 0.7 * consecutive_hit_sound_factor, 0.9 * consecutive_hit_sound_factor);
+		} else if num_enemies_defeated_with_this_fire == 1 {
+			play_random_sound(face_button_sounds_shot_success, 0.95 * consecutive_hit_sound_factor, 1.05 * consecutive_hit_sound_factor);
+		} else if num_enemies_defeated_with_this_fire == 2 {
+			play_random_sound(face_button_sounds_shot_special, 0.95 * consecutive_hit_sound_factor, 1.05 * consecutive_hit_sound_factor);
 		}
 	}
 }
@@ -310,24 +331,40 @@ function reset_buttons_for_shape() {
 		image_blend = c_white;
 	}
 	
+	reset_current_values_in_shape();
+	
+}
+
+function reset_current_values_in_shape() {
 	current_values_in_shape = [];
+	current_buttons_in_shape = [];
+}
+
+function remove_value_from_shape(button) {
+	var value = button.button_value;
+	var index = array_find(current_values_in_shape, value);
+	if index != -1 {
+		array_delete(current_values_in_shape, index, 1);
+		array_delete(current_buttons_in_shape, index, 1);
+	}
 }
 
 function receive_click_from_face_button(button) {
 	var value = button.button_value;
-	play_random_sound(face_button_sounds, 0.85, 1.1);
 	
 	if value == 0 {
 		handle_fire();
 	} else if value == 10 {
 		reset_buttons_for_shape();
+		play_random_sound(face_button_sounds, 0.85, 1.1);
 	} else {
+		play_random_sound(face_button_sounds, 0.85, 1.1);
 		if isIn(value, current_values_in_shape) {
 			button.image_blend = c_white;
-			array_remove(current_values_in_shape, value);
+			remove_value_from_shape(button);
 		} else {
 			button.image_blend = c_lime;
-			add_value_to_shape(value);
+			add_value_to_shape(button);
 		}		
 		
 		current_fire_counter_value = (current_fire_counter_value + 1) % 10;

@@ -23,6 +23,9 @@ function game_initialize() {
 	#macro INPUT_BACK global.mouse_click_right
 	
 	room = rm_game;
+	
+	#macro LCD_SHADE_OFFSET global.lcd_shade_offset
+	global.c_lcd_shade = scribble_rgb_to_bgr($464C35);
 }
 
 
@@ -42,6 +45,7 @@ function level_data_init() {
 	
 	enum eLevelType {
 		normal,
+		single_shape,
 		sidescrolling,
 		platforming,
 	}
@@ -58,13 +62,15 @@ function level_data_init() {
 	
 	level_data = [
 		new LevelData(eLevels.NULL, -1, -1, -1, eLevelType.normal),
-		(new LevelData(eLevels.numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, number_symbols, eLevelType.sidescrolling))
-			.set_killed_symbols_become_bullets(),
-		(new LevelData(eLevels.numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, numbers_and_shapes_symbols, eLevelType.platforming))
-			.set_killed_symbols_become_bullets(),
+		(new LevelData(eLevels.numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, number_symbols, eLevelType.normal)),
+			//.set_killed_symbols_become_bullets(),
+		(new LevelData(eLevels.fast_numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_2, number_symbols, eLevelType.normal)),
+			//.set_killed_symbols_become_bullets(),		
+		new LevelData(eLevels.shapes, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, shape_symbols, eLevelType.normal),
+		new LevelData(eLevels.fast_numbers_and_shapes, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_3, numbers_and_shapes_symbols, eLevelType.normal),
+		new LevelData(eLevels.platforming_intro, -1, -1, -1, eLevelType.sidescrolling),
+		new LevelData(eLevels.platforming_intro, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, numbers_and_shapes_symbols, eLevelType.platforming),
 		
-		new LevelData(eLevels.numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, number_symbols, eLevelType.normal),
-		new LevelData(eLevels.fast_numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_2, number_symbols, eLevelType.normal),
 		new LevelData(eLevels.shapes, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_2, shape_symbols, eLevelType.normal),
 		new LevelData(eLevels.fast_numbers_and_shapes, cv_number_of_enemies_level_1,cv_base_time_between_symbol_per_wave_level_2, numbers_and_shapes_symbols, eLevelType.normal),
 		new LevelData(eLevels.platforming_intro, -1, -1, -1, eLevelType.sidescrolling),

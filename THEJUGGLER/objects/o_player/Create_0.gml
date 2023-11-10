@@ -29,7 +29,7 @@ key_up = ord("W");
 key_down = ord("S");
 
 function grounded_check() {
-	var touching_screen_bottom = instance_exists(o_screen) and y >= o_screen.bbox_bottom;
+	var touching_screen_bottom = instance_exists(o_screen) and y >= o_screen.bbox_bottom and o_manager.get_level_data().level_type == eLevelType.platforming;
 	grounded = place_meeting(x, y+1, o_collision) or touching_screen_bottom;
 }
 
@@ -44,6 +44,7 @@ manage_collision = function() {
 		}
 		
 		hspd = 0;
+		debug_spark(x, y);
 	}
 	
 	var vcol = instance_place(x, y + vspd, obj)
@@ -60,7 +61,7 @@ manage_collision = function() {
 		} else {		
 			vspd = 0;
 		}
-		
+		debug_spark(x, y, c_red);
 		player_jump = false;
 	}
 	
@@ -111,6 +112,26 @@ function manage_checkpoint_collisions() {
 	var cp = instance_place(x, y, o_checkpoint);
 	if cp != noone {
 		last_checkpoint_pos = bbox_center(cp);
+	}
+}
+
+function manage_cutscene_triggers() {
+	var trigger = instance_place(x, y, o_cutscene_trigger);
+	if trigger != noone {
+		create_cutscene(trigger.scene);
+		instance_destroy(trigger);
+	}
+}
+
+function manage_sprite() {
+	if grounded {
+		set_sprite(spr_player_idle);
+	} else {
+		if vspd < 0 {
+			set_sprite(spr_player_rise);
+		} else {
+			set_sprite(spr_player_fall);
+		}
 	}
 }
 
