@@ -1,5 +1,5 @@
 function cutscenes_init(){
-	cs_player_becomes_juggler = [
+	cs_player_becomes_juggler = new CutsceneData([
 		[cs_text, [
 			"Aahhhh, yes.",
 			"You’ve been here a while, haven’t you?",
@@ -22,9 +22,9 @@ function cutscenes_init(){
 			"[speed,0.8]YES. YOU KNEW IT ALL ALONG.",
 			"[speed,0.8]YOU ARE      [delay,1000]THE JUGGLER",
 		]]
-	];
+	], true);
 	
-	cs_end_of_platforming_intro_level = [
+	cs_end_of_platforming_intro_level = new CutsceneData([
 		[cs_text, [
 			"END OF LEVEL!!!",
 		]],
@@ -37,5 +37,18 @@ function cutscenes_init(){
 				create_player_platform();
 			}
 		}]
-	];
+	], false);
+}
+
+function CutsceneData(_scene, _freeze_game) constructor {
+	scene = _scene;
+	freeze_game = _freeze_game;
+	
+	static play = function(parent=noone) {
+		if scene == -1 {
+			return;
+		}
+		
+		create_cutscene(scene, parent, freeze_game);
+	}
 }

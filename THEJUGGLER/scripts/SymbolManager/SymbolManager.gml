@@ -55,7 +55,11 @@ function SymbolManager() constructor {
 	
 	static draw_symbols = function() {
 		array_foreach(active_symbols, function(inst) {
-			inst.draw_custom();
+			inst.draw_custom(new Vector2(0, 0), true);
+		});
+		
+		array_foreach(active_symbols, function(inst) {
+			inst.draw_custom(new Vector2(0, 0), false);
 		});
 	}
 	

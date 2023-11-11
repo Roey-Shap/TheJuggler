@@ -9,10 +9,10 @@
     {"name":"Gamemaker++","order":15,"path":"folders/Scripts/Gamemaker++.yy",},
     {"name":"Sound","order":14,"path":"folders/Scripts/Sound.yy",},
     {"name":"Sprites and Visuals","order":21,"path":"folders/Scripts/Sprites and Visuals.yy",},
+    {"name":"Effects","order":18,"path":"folders/Sprites/Effects.yy",},
     {"name":"NumberSymbols","order":8,"path":"folders/Sprites/NumberSymbols.yy",},
     {"name":"Shapes","order":15,"path":"folders/Sprites/NumberSymbols/Shapes.yy",},
     {"name":"Player","order":17,"path":"folders/Sprites/Player.yy",},
-    {"name":"Effects","order":18,"path":"folders/Sprites/Effects.yy",},
   ],
   "ResourceOrderSettings": [
     {"name":"scribble_super_create","order":1,"path":"scripts/scribble_super_create/scribble_super_create.yy",},

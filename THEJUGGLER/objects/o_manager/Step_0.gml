@@ -38,7 +38,8 @@ switch (state_game) {
 		level_title_timer.tick();
 		
 		if level_title_timer.is_done() {
-			consecutive_hit_sound_factor -= 2 * (1 / 60) * DELTATIME;
+			//consecutive_hit_timer.tick();
+			consecutive_hit_sound_factor -= 0.65 * (1 / 60) * DELTATIME;
 			consecutive_hit_sound_factor = max(consecutive_hit_sound_factor, 1);
 		}
 		

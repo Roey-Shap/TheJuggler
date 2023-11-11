@@ -27,14 +27,15 @@ symbol_manager.draw_symbols();
 //var symbols_element = scribble(all_symbols);
 //symbols_element.align(fa_right, fa_bottom).draw(screen_down_right.x, screen_down_right.y);
 
-var fire_number_element = scribble(seven_digit(current_fire_counter_value));
+var fire_num_str = sfmt("%\n%", seven_digit(current_fire_counter_value), seven_digit(current_score));
+var fire_number_element = scribble(fire_num_str);
 var offset_up_left = screen_up_left.add(margin_vec);
 fire_number_element.align(fa_left, fa_top);
 draw_set_halign(fa_left);
 draw_set_valign(fa_top);
 draw_set_color(global.c_lcd_shade);
 draw_set_alpha(global.lcd_alpha);
-draw_text_scribble(offset_up_left.x + LCD_SHADE_OFFSET.x, offset_up_left.y + LCD_SHADE_OFFSET.y, seven_digit(current_fire_counter_value));
+draw_text_scribble(offset_up_left.x + LCD_SHADE_OFFSET.x, offset_up_left.y + LCD_SHADE_OFFSET.y, fire_num_str);
 draw_set_color(c_white);
 draw_set_alpha(1);
 fire_number_element.draw(offset_up_left.x, offset_up_left.y);
@@ -72,4 +73,4 @@ with (obj_cutscene_textbox_scribble) {
 	draw();
 }
 
-//draw_text(24, 24, instance_number(all))
+draw_text(24, 24, string(consecutive_hit_sound_factor));

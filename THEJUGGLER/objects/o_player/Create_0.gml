@@ -100,6 +100,10 @@ manage_collision = function() {
 }
 
 function manage_bullets() {
+	if o_manager.game_is_frozen() {
+		return;
+	}
+	
 	var bullet = instance_place(x, y, o_bullet_parent);
 	if bullet != noone {
 		hp -= 1;
