@@ -6,6 +6,6 @@ function scribble_init(){
 	})
 }
 
-function seven_digit(digit, scale=0.1) {
+function seven_digit(digit, scale=0.075) {
 	return sfmt("[scale,%][num,%][scale,1]", scale, digit);
 }

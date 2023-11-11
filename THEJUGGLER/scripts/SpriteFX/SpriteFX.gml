@@ -27,7 +27,7 @@ function SpriteFX(_x, _y, _sprite_index, over_or_under) constructor {
 	
 	sprite_index = _sprite_index;
 	image_index = 0;
-	max_index = sprite_get_number(sprite_index) - 0.01;
+	max_index = sprite_get_number(sprite_index) - 0.5;
 	
 	image_speed = 1;
 	width = 1;		// get actual width and height below in switch statement !!!!!
@@ -74,20 +74,29 @@ function SpriteFX(_x, _y, _sprite_index, over_or_under) constructor {
 			width = sprite_get_width(sprite_index);
 			height = sprite_get_height(sprite_index);		// for actual dimensions multiply by x/yscale
 			
-			draw_func = function(offset=new Vector2(0, 0)) {
-				if fog_col != -1 {
-					gpu_set_fog(true, fog_col, -1, 1);
-					draw_set_alpha(image_alpha);
+			draw_func = function(offset=new Vector2(0, 0), draw_shadow=false) {
+				//if fog_col != -1 {
+				//	gpu_set_fog(true, fog_col, -1, 1);
+				//	draw_set_alpha(image_alpha);
+				//}
+				if !draw_on_surface {
+					offset = new Vector2(0, 0);
 				}
 				
-				//add_debug_text(image_index);
-				draw_sprite_ext(sprite_index, image_index, x + offset.x, y + offset.y, image_xscale, image_yscale,
-								image_angle, image_blend, image_alpha);
-								
-				if fog_col != -1 {
-					draw_set_alpha(1);
-					gpu_set_fog(false, c_white, -1, 1);
+				if draw_shadow {
+					draw_sprite_ext(sprite_index, image_index, x + offset.x + LCD_SHADE_OFFSET.x, y + offset.y + LCD_SHADE_OFFSET.y, image_xscale, image_yscale,
+									image_angle, global.c_lcd_shade, global.lcd_alpha);
+				} else {
+				
+					//add_debug_text(image_index);
+					draw_sprite_ext(sprite_index, image_index, x + offset.x, y + offset.y, image_xscale, image_yscale,
+									image_angle, image_blend, image_alpha);
 				}
+				
+				//if fog_col != -1 {
+				//	draw_set_alpha(1);
+				//	gpu_set_fog(false, c_white, -1, 1);
+				//}
 			}			
 		break;
 	}
@@ -142,13 +151,13 @@ function SpriteFX(_x, _y, _sprite_index, over_or_under) constructor {
 		// it's still alive and going - no death
 		return 0;
 	}
-	static draw = function(offset=new Vector2(0, 0), should_be_drawn_on_surface=false) {
+	static draw = function(offset=new Vector2(0, 0), should_be_drawn_on_surface=false, draw_shadow=false) {
 		if draw_on_surface and should_be_drawn_on_surface {
 			return;
 		}
 		
 		if draw_func != -1 {
-			draw_func(offset);
+			draw_func(offset, draw_shadow);
 		}
 	}
 }

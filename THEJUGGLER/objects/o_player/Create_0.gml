@@ -5,9 +5,9 @@ platforming_active = false;
 movespd = 3.65;
 hspd = 0;
 vspd = 0;
-fric = 0.3;
-grav = 0.4;
-jump_force = 7;
+fric = 0.35;
+grav = 0.35;
+jump_force = 7.7;
 jump_force_bounce_pad = jump_force * 1.4;
 
 grounded = false;
@@ -27,6 +27,12 @@ key_left = ord("A");
 key_right = ord("D");
 key_up = ord("W");
 key_down = ord("S");
+
+draw_scale = new Vector2(1, 1);
+sprite_scale_normalize_lerp_factor = 0.2;
+
+coyote_time_timer = new Timer(8);
+buffer_jump_timer = new Timer(8);
 
 function grounded_check() {
 	var touching_screen_bottom = instance_exists(o_screen) and y >= o_screen.bbox_bottom and o_manager.get_level_data().level_type == eLevelType.platforming;
@@ -106,8 +112,34 @@ function perform_jump() {
 	vspd = -jump_force;
 	player_jump = true;
 	jumped_this_frame = true;
+	coyote_time_timer.current_count = 0;
+	buffer_jump_timer.current_count = 0;
+	draw_scale.x = sign(draw_scale.x) * 0.6;
+	draw_scale.y = 1.35;
 }
+
+function perform_landing() {
+	draw_scale.x = sign(draw_scale.x) * 1.4;
+	draw_scale.y = 0.5;
 	
+	var dust = new SpriteFX(x, y + 10, spr_fx_player_land_dust, 1);
+	fx_setup_screen_layer(dust);
+	if fast_falling {
+		repeat(irandom_range(4, 6)) {
+			var offset_x = choose(-1, 1) * irandom_range(8, 20);
+			var offset_y = irandom_range(-10, 2);
+			var spr = choose(spr_fx_dust_1, spr_fx_dust_2, spr_fx_dust_3);
+			var fx = new SpriteFX(x + offset_x, y + offset_y, spr, 1);
+			fx.image_angle = irandom(359);
+			fx.image_speed = random_range(0.8, 1);
+			fx_setup_screen_layer(fx);
+		}
+	} else {
+		dust.alpha = 0.75;
+		dust.image_yscale = 0.5;
+	}
+}
+
 function manage_checkpoint_collisions() {
 	var cp = instance_place(x, y, o_checkpoint);
 	if cp != noone {
@@ -125,7 +157,11 @@ function manage_cutscene_triggers() {
 
 function manage_sprite() {
 	if grounded {
-		set_sprite(spr_player_idle);
+		if abs(hspd) > 0.15 == 0 {
+			set_sprite(spr_player_idle);
+		} else {
+			set_sprite(spr_player_run);
+		}
 	} else {
 		if vspd < 0 {
 			set_sprite(spr_player_rise);
@@ -133,10 +169,19 @@ function manage_sprite() {
 			set_sprite(spr_player_fall);
 		}
 	}
+	
+	if hspd != 0 {
+		draw_scale.x = sign(hspd);
+	}
+	
+	draw_scale.x = lerp(draw_scale.x, sign(draw_scale.x), sprite_scale_normalize_lerp_factor);
+	draw_scale.y = lerp(draw_scale.y, 1, sprite_scale_normalize_lerp_factor);
 }
 
-draw_custom = function(offset_pos) {
-	if o_manager.get_level_data().level_type != eLevelType.normal {
-		draw_sprite_ext(sprite_index, image_index, x + offset_pos.x, y + offset_pos.y, image_xscale, image_yscale, image_angle, image_blend, image_alpha);
+draw_custom = function(offset_pos, draw_shadow=false) {
+	if draw_shadow {
+		draw_sprite_ext(sprite_index, image_index, x + offset_pos.x + LCD_SHADE_OFFSET.x, y + offset_pos.y + LCD_SHADE_OFFSET.y, image_xscale * draw_scale.x, image_yscale * draw_scale.y, image_angle, global.c_lcd_shade, global.lcd_alpha_large);
+	} else {
+		draw_sprite_ext(sprite_index, image_index, x + offset_pos.x, y + offset_pos.y, image_xscale * draw_scale.x, image_yscale * draw_scale.y, image_angle, image_blend, image_alpha);
 	}
 }

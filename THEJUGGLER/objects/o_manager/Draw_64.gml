@@ -32,17 +32,14 @@ var offset_up_left = screen_up_left.add(margin_vec);
 fire_number_element.align(fa_left, fa_top);
 draw_set_halign(fa_left);
 draw_set_valign(fa_top);
-fire_number_element.draw(offset_up_left.x, offset_up_left.y);
-
 draw_set_color(global.c_lcd_shade);
 draw_set_alpha(global.lcd_alpha);
 draw_text_scribble(offset_up_left.x + LCD_SHADE_OFFSET.x, offset_up_left.y + LCD_SHADE_OFFSET.y, seven_digit(current_fire_counter_value));
 draw_set_color(c_white);
 draw_set_alpha(1);
+fire_number_element.draw(offset_up_left.x, offset_up_left.y);
 
 with (o_player) {
-	var hp_element = scribble(seven_digit(hp));		//seven_digit(hp)
-	hp_element.align(fa_middle, fa_top).draw(title_position.x, title_position.y);
 	draw_set_color(global.c_lcd_shade);
 	draw_set_alpha(global.lcd_alpha);
 	draw_set_halign(fa_middle);
@@ -50,6 +47,11 @@ with (o_player) {
 	draw_text_scribble(title_position.x + LCD_SHADE_OFFSET.x, title_position.y + LCD_SHADE_OFFSET.y, seven_digit(hp));
 	draw_set_color(c_white);
 	draw_set_alpha(1);
+	var hp_element = scribble(seven_digit(hp));		//seven_digit(hp)
+	hp_element.align(fa_middle, fa_top).draw(title_position.x, title_position.y);
+	//draw_set_halign(fa_left);
+	//draw_set_valign(fa_top);
+	//draw_text(24, 24, sfmt("buffer: %, coyote time: %", buffer_jump_timer.current_count, coyote_time_timer.current_count));
 }
 
 with (o_watch_screen_shade) {

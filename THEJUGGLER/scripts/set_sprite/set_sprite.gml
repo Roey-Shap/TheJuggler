@@ -7,10 +7,6 @@ function set_sprite(sprite){
 	}
 	
 	sprite_index = sprite;
-	
-	if !o_manager.in_battle() {
-		set_draw_anchor_value();
-	}
 }
 
 function hold_sprite(sprite){

@@ -285,7 +285,7 @@
     {"resourceType":"GMRInstanceLayer","resourceVersion":"1.0","name":"WatchHand","depth":700,"effectEnabled":true,"effectType":null,"gridX":16,"gridY":16,"hierarchyFrozen":false,"inheritLayerDepth":false,"inheritLayerSettings":false,"inheritSubLayers":true,"inheritVisibility":true,"instances":[
         {"resourceType":"GMRInstance","resourceVersion":"1.0","name":"inst_3117622E","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"objectId":{"name":"o_watch_hand","path":"objects/o_watch_hand/o_watch_hand.yy",},"properties":[],"rotation":0.0,"scaleX":1.232241,"scaleY":1.2322412,"x":-225.98615,"y":95.454956,},
       ],"layers":[],"properties":[],"userdefinedDepth":false,"visible":true,},
-    {"resourceType":"GMREffectLayer","resourceVersion":"1.0","name":"Effect_1","depth":800,"effectEnabled":true,"effectType":"_filter_distort","gridX":16,"gridY":16,"hierarchyFrozen":false,"inheritLayerDepth":false,"inheritLayerSettings":false,"inheritSubLayers":true,"inheritVisibility":true,"layers":[],"properties":[
+    {"resourceType":"GMREffectLayer","resourceVersion":"1.0","name":"DistortWave","depth":800,"effectEnabled":true,"effectType":"_filter_distort","gridX":16,"gridY":16,"hierarchyFrozen":false,"inheritLayerDepth":false,"inheritLayerSettings":false,"inheritSubLayers":true,"inheritVisibility":true,"layers":[],"properties":[
         {"name":"g_DistortScale","type":0,"value":"4",},
         {"name":"g_DistortAmount","type":0,"value":"97",},
         {"name":"g_DistortOffset","type":0,"value":"0",},

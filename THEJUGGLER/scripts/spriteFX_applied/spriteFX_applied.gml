@@ -1,9 +1,9 @@
 
-function draw_from_list(list, on_surface=false){
+function draw_from_list(list, on_surface=false, draw_shadow=false){
 	var len = ds_list_size(list);
 	for (var i = 0; i < len; i++) {
 		var cur = list[| i];
-		cur.draw(o_manager.virtual_camera_corner, on_surface);
+		cur.draw(o_manager.virtual_camera_corner, on_surface, draw_shadow);
 	}
 }
 
@@ -19,7 +19,7 @@ function fx_perform_step() {
 	if ds_exists(global.TextFX_list_all, ds_type_list) {
 		for (var i = 0; i < ds_list_size(global.TextFX_list_all); i++) {
 			var cur = global.TextFX_list_all[| i];
-			// if one died this frame then move i backwards one to account for that
+			// if one died this frame then move i backwards one to account for that			
 			i -= cur.step();
 		}
 	}
@@ -28,6 +28,9 @@ function fx_perform_step() {
 		for (var i = 0; i < ds_list_size(global.sprite_FX_list_all); i++) {
 			var cur = global.sprite_FX_list_all[| i];
 			// if one died this frame then move i backwards one to account for that
+			if is_instanceof(cur, FadeFX) {
+				cur.update_alpha();
+			}
 			i -= cur.step();
 		}
 	}
@@ -217,43 +220,9 @@ function make_general_text_fx(cam_pos, text, hspd, vspd, life) {
 }
 
 
-
-
-function BattlePropData(_enum_index, _sprites) constructor {
-	enum_index = _enum_index;
-	sprites = _sprites;
+function fx_setup_screen_layer(fx) {
+	fx.draw_on_surface = o_manager.get_level_data().level_type == eLevelType.sidescrolling;
 }
-
-function battle_prop_effects_init() {
-	enum battle_prop {
-		LH_rock,
-		LH_plant,
-		LH_spirit_geyser,
-		LH_firefly,
-		LH_mossy_patch,
-		
-		forest_tree,
-		
-		LAST
-	}
-	
-	global.battle_prop_data_objects = [
-		new BattlePropData(battle_prop.LH_rock, [spr_battle_prop_large_rock]),
-		new BattlePropData(battle_prop.LH_plant, [spr_battle_prop_small_LH_flower, spr_battle_prop_small_LH_flower_2]),
-		new BattlePropData(battle_prop.LH_spirit_geyser, [spr_battle_prop_spirit_geyser_1]),
-		new BattlePropData(battle_prop.LH_firefly, [spr_deco_LH_fireflies_1]),
-		new BattlePropData(battle_prop.LH_mossy_patch, [spr_deco_LH_mossy_patch_1]),
-		
-		new BattlePropData(battle_prop.forest_tree, [spr_deco_forest_tree_prop]),
-	];
-	
-	if battle_prop.LAST > array_length(global.battle_prop_data_objects) {
-		show_error("There weren't battle prop data objects for each battle prop enum type.", true);
-	}
-}
-
-
-
 
 
 

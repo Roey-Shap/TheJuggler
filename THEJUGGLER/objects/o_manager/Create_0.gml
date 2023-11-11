@@ -45,8 +45,12 @@ watch_growth_final_scale = 1.35;
 in_screen_draw_surface = -1;
 virtual_camera_corner = -1;
 
-global.lcd_shade_offset = new Vector2(3, 3);
+
+
+global.lcd_shade_offset = new Vector2(6, 6);
 global.lcd_alpha = 0.2;
+global.lcd_alpha_large = 0.4;
+symbol_draw_scale = 0.1;
 
 // Firing and Symbol Tracking
 current_values_in_shape = [];
@@ -162,7 +166,7 @@ face_button_sounds_shot_success = [snd_watch_beep_special_1];
 face_button_sounds_shot_special = [snd_watch_beep_special_2];
 
 consecutive_hit_sound_factor = 1;
-consecutive_hit_timer = new Timer(0.4);
+consecutive_hit_timer = new Timer(0.6);
 
 function create_symbol() {
 	num_enemies_created_this_wave += 1;
@@ -183,6 +187,8 @@ function start_next_level() {
 	
 	if get_level_data().is_scrolling_level() {
 		instance_activate_layer("SetCollision");
+		layer_set_visible("DistortWave", true);
+		layer_set_visible("Wave", true);
 	} else {
 		instance_deactivate_layer("SetCollision");
 	}
@@ -272,7 +278,7 @@ function handle_game_over() {
 	state_game = st_game_state.main_menu;
 }
 
-function handle_fire() {
+function handle_fire(button) {
 	var current_fire_shape_value = get_current_shape_value();
 	var num_enemies_defeated_with_this_fire = 0;
 	if get_level_data().level_type == eLevelType.sidescrolling {
@@ -285,7 +291,12 @@ function handle_fire() {
 															   o_symbol, false, false, visible_numbers, true);
 		}
 		
-		symbol_manager.kill_closest_symbol_of_value(current_fire_counter_value, visible_numbers);
+		var removed_number = symbol_manager.kill_closest_symbol_of_value(current_fire_counter_value, visible_numbers);
+		if removed_number != noone {
+			num_enemies_defeated_with_this_fire += 1;
+		}
+		
+		
 		ds_list_destroy(visible_numbers);
 	} else {
 		var removed_number = symbol_manager.kill_first_symbol_of_value(current_fire_counter_value);
@@ -300,18 +311,23 @@ function handle_fire() {
 			num_enemies_defeated_with_this_fire += 1;
 			//reset_buttons_for_shape();
 		}
-		
-		if num_enemies_defeated_with_this_fire > 0 {
-			consecutive_hit_sound_factor = min(consecutive_hit_sound_factor + 1, 10);
-		}
-		
-		if num_enemies_defeated_with_this_fire == 0 {
-			play_random_sound(face_button_sounds, 0.7 * consecutive_hit_sound_factor, 0.9 * consecutive_hit_sound_factor);
-		} else if num_enemies_defeated_with_this_fire == 1 {
-			play_random_sound(face_button_sounds_shot_success, 0.95 * consecutive_hit_sound_factor, 1.05 * consecutive_hit_sound_factor);
-		} else if num_enemies_defeated_with_this_fire == 2 {
-			play_random_sound(face_button_sounds_shot_special, 0.95 * consecutive_hit_sound_factor, 1.05 * consecutive_hit_sound_factor);
-		}
+	}
+	
+	if num_enemies_defeated_with_this_fire > 0 {
+		consecutive_hit_sound_factor = min(consecutive_hit_sound_factor + 1, 10);
+		var fx_button = new SpriteFX(button.x, button.y, spr_fx_impact_1, 1);
+		var fx_button_scale = 1.5;
+		fx_button.image_xscale = fx_button_scale;
+		fx_button.image_yscale = fx_button_scale;
+		fx_button.image_angle = irandom(359);
+	}
+	
+	if num_enemies_defeated_with_this_fire == 0 {
+		play_random_sound(face_button_sounds, 0.7 * consecutive_hit_sound_factor, 0.9 * consecutive_hit_sound_factor);
+	} else if num_enemies_defeated_with_this_fire == 1 {
+		play_random_sound(face_button_sounds_shot_success, 0.95 * consecutive_hit_sound_factor, 1.05 * consecutive_hit_sound_factor);
+	} else if num_enemies_defeated_with_this_fire == 2 {
+		play_random_sound(face_button_sounds_shot_special, 0.95 * consecutive_hit_sound_factor, 1.05 * consecutive_hit_sound_factor);
 	}
 }
 
@@ -353,7 +369,7 @@ function receive_click_from_face_button(button) {
 	var value = button.button_value;
 	
 	if value == 0 {
-		handle_fire();
+		handle_fire(button);
 	} else if value == 10 {
 		reset_buttons_for_shape();
 		play_random_sound(face_button_sounds, 0.85, 1.1);

@@ -62,6 +62,11 @@ function level_data_init() {
 	
 	level_data = [
 		new LevelData(eLevels.NULL, -1, -1, -1, eLevelType.normal),
+		
+		//
+		(new LevelData(eLevels.numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, number_symbols, eLevelType.sidescrolling)),
+		//
+		
 		(new LevelData(eLevels.numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, number_symbols, eLevelType.normal)),
 			//.set_killed_symbols_become_bullets(),
 		(new LevelData(eLevels.fast_numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_2, number_symbols, eLevelType.normal)),

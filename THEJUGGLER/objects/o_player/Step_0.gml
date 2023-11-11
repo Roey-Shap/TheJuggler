@@ -4,6 +4,7 @@ platforming_active = o_manager.get_level_data().level_type != eLevelType.normal;
 if platforming_active {
 	var hinput = keyboard_check(key_right) - keyboard_check(key_left);
 	var vinput = keyboard_check(key_down) - keyboard_check(key_up);
+	var jinput = keyboard_check_pressed(key_up);
 	jumped_this_frame = false;
 	
 	if hinput != 0 {
@@ -13,22 +14,29 @@ if platforming_active {
 		hspd = lerp(hspd, 0, fric);
 	}
 	
-	if grounded {
-		if keyboard_check_pressed(key_up) {
+	if jinput {
+		buffer_jump_timer.start();
+	}
+	
+	if !coyote_time_timer.is_done() {
+		if !buffer_jump_timer.is_done() {
 			perform_jump();
 		}
+	}
+	
+	if grounded {
+		
 	} else {
 		if keyboard_check_pressed(key_down) {
 			fast_falling = true;
+			vspd = max(vspd, fast_fall_speed);
 		}
 		
 		if fast_falling {
-			if round(current_time) % 1 == 0 {
+			if round(current_time) % 2 == 0 {
 				var fx = new FadeFX(x, y, sprite_index, 1, image_index, get_frames(0.25));
-				fx.draw_on_surface = o_manager.get_level_data().level_type == eLevelType.sidescrolling;
+				fx_setup_screen_layer(fx);
 			}
-			
-			vspd = fast_fall_speed;
 		} else {
 			var adjusted_gravity_factor = !player_jump or (player_jump and vinput < 0)? 1 : 1.7;
 			vspd += grav * adjusted_gravity_factor;
@@ -45,10 +53,16 @@ if platforming_active {
 		player_jump = false;
 	}
 	
+	coyote_time_timer.tick();
 	if grounded {
+		if !grounded_last {
+			perform_landing();
+		}
+		
 		fast_falling = false;
 		if !jumped_this_frame {
 			player_jump = false;
+			coyote_time_timer.start();
 		}
 	}
 	
@@ -57,6 +71,7 @@ if platforming_active {
 	
 	grounded_last = grounded;
 	invulnerability_timer.tick();
+	buffer_jump_timer.tick();
 }
 
 
