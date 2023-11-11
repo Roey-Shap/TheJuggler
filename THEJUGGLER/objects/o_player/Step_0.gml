@@ -28,8 +28,7 @@ if platforming_active {
 		
 	} else {
 		if keyboard_check_pressed(key_down) {
-			fast_falling = true;
-			vspd = max(vspd, fast_fall_speed);
+			initiate_fast_fall();
 		}
 		
 		if fast_falling {

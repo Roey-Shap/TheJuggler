@@ -140,6 +140,24 @@ function perform_landing() {
 	}
 }
 
+function initiate_fast_fall() {
+	fast_falling = true;
+	vspd = max(vspd, fast_fall_speed);
+	repeat(irandom_range(4, 6)) {
+		var side = choose(-1, 1);
+		var offset_x = side * irandom_range(15, 25);
+		var offset_y = irandom_range(-40, -30);
+		var spr = choose(spr_fx_dust_1, spr_fx_dust_2, spr_fx_dust_3, spr_fx_sparkle_1);
+		var fx = new SpriteFX(x + offset_x, y + offset_y, spr, 1);
+		fx.image_angle = irandom(359);
+		fx.image_speed = random_range(0.8, 1);
+		fx.hspd = side * random_range(0, 2);
+		fx.vspd = -random_range(0.1, 3);
+		fx.image_blend = merge_color(c_white, c_lime, random_range(0.1, 0.9));
+		fx_setup_screen_layer(fx);
+	}
+}
+
 function manage_checkpoint_collisions() {
 	var cp = instance_place(x, y, o_checkpoint);
 	if cp != noone {

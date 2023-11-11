@@ -56,7 +56,7 @@ switch (state_game) {
 		}
 		
 		with (o_button_parent) {
-			draw_self();
+			draw();
 		}
 		
 		with (o_player) {

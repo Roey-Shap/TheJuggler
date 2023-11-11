@@ -4,4 +4,6 @@ function store_init_watch_params() {
 	x_init = x;
 	y_init = y;
 	watch_center_original_delta = get_pos(id).sub(get_pos(o_watch_base));
+	
+	scale_factor = 1;
 }

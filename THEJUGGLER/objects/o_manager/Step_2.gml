@@ -20,7 +20,7 @@ if instance_exists(o_player) {
 		var screen = instance_nearest(0, 0, o_screen);
 		var w = screen.sprite_width;
 		var h = screen.sprite_height;
-		virtual_camera_corner = (get_pos(instance_nearest(x, y, o_player)).sub(new Vector2(w/2, h/2))).multiply(-1);
+		virtual_camera_corner = (get_pos(instance_nearest(x, y, o_player)).sub(new Vector2(w/2, h*0.65))).multiply(-1);
 	}
 } else {
 	virtual_camera_corner = new Vector2(0, 0);

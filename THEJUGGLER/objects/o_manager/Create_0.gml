@@ -46,7 +46,6 @@ in_screen_draw_surface = -1;
 virtual_camera_corner = -1;
 
 
-
 global.lcd_shade_offset = new Vector2(6, 6);
 global.lcd_alpha = 0.2;
 global.lcd_alpha_large = 0.4;
@@ -187,8 +186,8 @@ function start_next_level() {
 	
 	if get_level_data().is_scrolling_level() {
 		instance_activate_layer("SetCollision");
-		layer_set_visible("DistortWave", true);
-		layer_set_visible("Wave", true);
+		layer_set_visible(layer_distort_id, true);
+		layer_set_visible(layer_wave_id, true);
 	} else {
 		instance_deactivate_layer("SetCollision");
 	}
