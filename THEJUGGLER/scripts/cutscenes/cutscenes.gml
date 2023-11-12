@@ -1,8 +1,24 @@
 function cutscenes_init() {
+	speaker_data = [
+		new Speaker("Player", new Vector2(0.7, 0.8), fnt_player),
+		new Speaker("Other", new Vector2(0.7, 0.3), fnt_large_test),
+		new Speaker("None", new Vector2(0.5, 0.5), fnt_large_test),
+		(new Speaker("Witch", new Vector2(0.5, 0.2), fnt_witch))
+			.set_update_function(function() {
+				print("hi :)");
+			}),
+	];
+	
+	
 	cs_get_watch_from_seller = new CutsceneData([
+		[cs_set_speaker, "Player"],
 		[cs_text, [
-			"Test!",
+			"[wave]Player test!",
 			"Test 2 :3"
+		]],
+		[cs_set_speaker, "Witch"],
+		[cs_text, [
+			"Mwahaha!!! This is the dastardly witch!!",
 		]]
 	], true);
 	
@@ -49,12 +65,12 @@ function cutscenes_init() {
 		]],
 		[cutscene_custom_action, function() {
 			o_manager.start_next_level();
-			if get_level_data().level_type == eLevelType.platforming {
-				var player = instance_nearest(x, y, o_player);
-				player.x = o_screen.bbox_left + (o_screen.sprite_width/2);
-				player.y = o_screen.bbox_top + (o_screen.sprite_height * 0.1);
-				create_player_platform();
-			}
+			//if get_level_data().level_type == eLevelType.platforming {
+			//	o_manager.place_player_for_normal_gameplay();
+			//	//player.x = o_screen.bbox_left + (o_screen.sprite_width/2);
+			//	//player.y = o_screen.bbox_top + (o_screen.sprite_height * 0.1);
+			//	//create_player_platform();
+			//}
 		}]
 	], false);
 }
@@ -69,5 +85,23 @@ function CutsceneData(_scene, _freeze_game) constructor {
 		}
 		
 		create_cutscene(scene, parent, freeze_game);
+	}
+}
+
+function Speaker(_name, _textbox_position, _font) constructor {
+	name = _name;
+	textbox_position = _textbox_position;
+	font = font_get_name(_font);
+	update_function = -1;
+	
+	static set_update_function = function(f) {
+		update_function = f;
+		return self;
+	}
+	
+	static step = function() {
+		if update_function != -1 {
+			update_function();
+		}
 	}
 }

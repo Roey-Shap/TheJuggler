@@ -31,6 +31,10 @@ function SymbolManager() constructor {
 		var screen_up_left = new Vector2(inst_screen.bbox_left, inst_screen.bbox_top);
 		var screen_dimensions = new Vector2(inst_screen.sprite_width, inst_screen.sprite_height);
 		var screen_down_right = screen_up_left.add(screen_dimensions);
+		if o_player.platforming_active {
+			screen_down_right = get_pos(inst_anchor_screen_bottom_right);
+		}
+		
 		symbol.x = screen_down_right.x - sw;
 		symbol.y = screen_down_right.y - sh;
 		
@@ -83,7 +87,7 @@ function SymbolManager() constructor {
 			}
 			
 			if o_manager.get_level_data().killed_symbols_become_bullets {
-				o_manager.spawn_bullet_at_player_y_level(symbol_struct);
+				o_manager.spawn_bullet_towards_player(removed_symbol);
 			}
 
 			

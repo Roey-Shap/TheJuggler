@@ -18,8 +18,8 @@ mv_time = -1;
 
 made_textbox = false;
 
-speaker_object_map = {};
-current_speaker = noone;
+//speaker_object_map = {};
+speaker_current = -1;
 
 //array_push(o_manager.cutscene_objects_ordered, id);
 

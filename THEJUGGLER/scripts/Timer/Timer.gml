@@ -7,6 +7,8 @@ function Timer(_countdown_duration, _looping=false, _countdown_function=-1) cons
 	countdown_function = _countdown_function;
 	done_countdown_function = false;
 	
+	frames_per_second = game_get_speed(gamespeed_fps);
+	
 	function tick() {
 		current_count -= (current_count > 0) * DELTATIME;
 		
@@ -37,6 +39,10 @@ function Timer(_countdown_duration, _looping=false, _countdown_function=-1) cons
 	
 	function set_duration(duration) {
 		countdown_duration = duration;
+	}
+	
+	function get_count_seconds() {
+		return current_count * frames_per_second;
 	}
 }
 

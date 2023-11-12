@@ -28,6 +28,9 @@ sound_array = [snd_watch_beep_1];
 
 typist = scribble_typist();
 typist.in(textbox_skip? 9999 : typewriter_speed, typewriter_smoothness)
+
+text_dims_max = new Vector2(0.3 * CAM_W, 0.3 * CAM_H);
+textbox_margins = text_dims_max.multiply(0.1);
 //.sound_per_char(sound_array, 0.7, 1.3, " ", 1.5);
 
 //typist.character_delay_add(".", 70);
@@ -48,110 +51,124 @@ function perform_yes_no_func() {
 }
 
 draw = function() {
-	var guiW = display_get_gui_width();
-	var guiH = display_get_gui_height();
+	
+	var speaker = o_cutscene.speaker_current;
+	if speaker == -1 {
+		set_speaker("None");
+		speaker = o_cutscene.speaker_current;
+	}
 
-	var textbox_w = guiW * 8/16;
-	var textbox_h = guiH * 2/10;
-
-
-	var midX = guiW/2;
-	var midY = textbox_h * 5/8;
-
-
-	var margin = textbox_w/24;
-	var radius = 16;
-	var borderWidth = 4;
-
-	draw_set_color(c_white);
-	draw_set_alpha(1);
-	draw_roundrect_ext(midX - textbox_w/2, 
-					   midY - textbox_h/2, 
-					   midX + textbox_w/2, 
-					   midY + textbox_h/2, 
-					   radius, radius, false);
-
-	draw_set_color(c_black);
-	draw_roundrect_ext(midX - textbox_w/2 + borderWidth, 
-					   midY - textbox_h/2 + borderWidth, 
-					   midX + textbox_w/2 - borderWidth, 
-					   midY + textbox_h/2 - borderWidth, 
-					   radius, radius, false);
-
-
-	draw_set_halign(fa_center);
-	draw_set_valign(fa_center);
-
-	//Main text
-	var textSectionW = (textbox_w) * 11/16;
-	var textSectionH = (textbox_h);
-	if cur_portrait == -1 textSectionW = textbox_w;
-	//var maxTextWidth = textSectionW - 2*margin;
-	//var fontSep = string_height("AAA");
-	//var curTextHeight = string_height_ext(cur_text, fontSep, maxTextWidth);
-
-	var textX = midX + textbox_w/2 - textSectionW/2;
-	var textY = midY + ((textbox_title != undefined)? -textbox_h/6 : 0);
-
-	//Note that we're setting "textbox_element" here 
+	
 	textbox_element = scribble(textbox_conversation[textbox_conversation_index])
-	.wrap(textSectionW*0.65 - margin, textSectionH)
+	.starting_format(speaker.font, 1)
+	.wrap(text_dims_max.x - textbox_margins.x * 2, text_dims_max.y - textbox_margins.y * 2)
 	.align(fa_center, fa_middle)
+
+	var textbox_pos = o_cutscene.speaker_current.textbox_position.copy();
+	
+
 	//.starting_format("fnt_textbox", c_white)
 	//.typewriter_sound_per_char([noone, noone, noone, s_option_4], 10, 0.8, 1.2)
 
+	textbox_pos.x *= CAM_W;
+	textbox_pos.y *= CAM_H; 
+	
+	var textbox_bbox = textbox_element.get_bbox(textbox_pos.x, textbox_pos.y);
+		
+	draw_sprite_ext(spr_textbox_nineslice, 0, textbox_pos.x, textbox_pos.y, 3, 2, 0, c_white, 1);
 
+	textbox_element.draw(textbox_pos.x, textbox_pos.y, typist);
 
-
-	textbox_element.draw(textX, textY, typist);
-
-	//var main_text_bbox = textbox_element.get_bbox(textX, textY, 10, 10, 10, 10);
-	//var main_text_end_x = textbox_element.get_width();
-
-	//Draw a little icon once the text has finished displaying, or if text display is paused
 	if typist.get_state() >= 1 or typist.get_paused() {
-		var continue_sprite_name = sprite_get_name(spr_billboard);
+		var continue_sprite_name = sprite_get_name(spr_mouse_left_click_icon);
 		draw_sprite_fade(1, asset_get_index(continue_sprite_name), 0, 
-				midX + textbox_w/2 - margin/2, midY + textbox_h/2 - margin/2, 
+				textbox_bbox.right, textbox_bbox.bottom, 
 				1, 1, 
 				0, c_white, 0, 0.8);
 	}
- 
+	
+	//var guiW = display_get_gui_width();
+	//var guiH = display_get_gui_height();
+
+	//var textbox_w = guiW * 8/16;
+	//var textbox_h = guiH * 2/10;
+
+
+	//var midX = guiW/2;
+	//var midY = textbox_h * 5/8;
+
+
+	//var margin = textbox_w/24;
+	//var radius = 16;
+	//var borderWidth = 4;
+
+	//draw_set_color(c_white);
+	//draw_set_alpha(1);
+	//draw_roundrect_ext(midX - textbox_w/2, 
+	//				   midY - textbox_h/2, 
+	//				   midX + textbox_w/2, 
+	//				   midY + textbox_h/2, 
+	//				   radius, radius, false);
+
+	//draw_set_color(c_black);
+	//draw_roundrect_ext(midX - textbox_w/2 + borderWidth, 
+	//				   midY - textbox_h/2 + borderWidth, 
+	//				   midX + textbox_w/2 - borderWidth, 
+	//				   midY + textbox_h/2 - borderWidth, 
+	//				   radius, radius, false);
+
+
+	//draw_set_halign(fa_center);
+	//draw_set_valign(fa_center);
+
+	////Main text
+	//var textSectionW = (textbox_w) * 11/16;
+	//var textSectionH = (textbox_h);
+	//if cur_portrait == -1 textSectionW = textbox_w;
+	////var maxTextWidth = textSectionW - 2*margin;
+	////var fontSep = string_height("AAA");
+	////var curTextHeight = string_height_ext(cur_text, fontSep, maxTextWidth);
+
+	//var textX = midX + textbox_w/2 - textSectionW/2;
+	//var textY = midY + ((textbox_title != undefined)? -textbox_h/6 : 0);
+
+	//Note that we're setting "textbox_element" here 
+
 
 	//Title
 	//draw_set_font(fnt_title);
 	//draw_set_color(cur_title_col);
 	//draw_text_ext(textX, textY-textbox_h/2+margin, cur_title, string_height("AAA"), 500);
 
-	if (textbox_title != undefined) {
-		var titleY = midY - textbox_h/2 + (margin*0.75);
-	    var _element = scribble(textbox_title)
-		.align(fa_center, fa_middle)
-		.starting_format("fnt_regular", c_white)
-	    var _name_box = _element.get_bbox(textX, titleY, 10, 10, 10, 10);
+	//if (textbox_title != undefined) {
+	//	var titleY = midY - textbox_h/2 + (margin*0.75);
+	//    var _element = scribble(textbox_title)
+	//	.align(fa_center, fa_middle)
+	//	.starting_format("fnt_regular", c_white)
+	//    var _name_box = _element.get_bbox(textX, titleY, 10, 10, 10, 10);
     
-	//    draw_set_colour($936969);
-	  //  draw_rectangle(_name_box.left, _name_box.top, _name_box.right, _name_box.bottom, false);
-	   // draw_set_colour(c_white);
+	////    draw_set_colour($936969);
+	//  //  draw_rectangle(_name_box.left, _name_box.top, _name_box.right, _name_box.bottom, false);
+	//   // draw_set_colour(c_white);
     
-	    _element.draw(textX, titleY);
-	}
+	//    _element.draw(textX, titleY);
+	//}
 
-	//Portrait
-	var portraitSectionWidth = textbox_w * 5/16;
-	var portraitX = midX - textbox_w/2 + portraitSectionWidth/2;
-	var portraitY = midY;
+	////Portrait
+	//var portraitSectionWidth = textbox_w * 5/16;
+	//var portraitX = midX - textbox_w/2 + portraitSectionWidth/2;
+	//var portraitY = midY;
 
-	if (sprite_exists(cur_portrait)) {
-		var portraitW = sprite_get_width(cur_portrait);
-		var portraitH = sprite_get_height(cur_portrait);
+	//if (sprite_exists(cur_portrait)) {
+	//	var portraitW = sprite_get_width(cur_portrait);
+	//	var portraitH = sprite_get_height(cur_portrait);
 	
-		draw_set_color(merge_color(c_white, $936969, 0.6));
-		draw_roundrect_ext(portraitX - portraitW/2, portraitY - portraitH/2, portraitX + portraitW/2, portraitY + portraitH/2, radius, radius, false);
+	//	draw_set_color(merge_color(c_white, $936969, 0.6));
+	//	draw_roundrect_ext(portraitX - portraitW/2, portraitY - portraitH/2, portraitX + portraitW/2, portraitY + portraitH/2, radius, radius, false);
 	
-	//	shader_set() non-black outliner here?
-		draw_sprite_ext(cur_portrait, image_index, portraitX, portraitY, 1, 1, 0, c_white, 1);
-	}
+	////	shader_set() non-black outliner here?
+	//	draw_sprite_ext(cur_portrait, image_index, portraitX, portraitY, 1, 1, 0, c_white, 1);
+	//}
 
 
 	/*var vw = display_get_gui_width();

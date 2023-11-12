@@ -60,9 +60,10 @@ switch (state_game) {
 		}
 		
 		with (o_player) {
-			if o_manager.get_level_data().level_type == eLevelType.platforming {
-				draw_custom(new Vector2(0, 0), true);
-			}
+			//draw_custom(new Vector2(0, 0), true);
+			//if o_manager.get_level_data().level_type == eLevelType.platforming {
+				
+			//}
 		}
 		
 		//surface_reset_target();
@@ -71,7 +72,7 @@ switch (state_game) {
 			draw_from_list(global.sprite_FX_list_over, false, true);
 			//draw_from_list(global.TextFX_list_over, false, false);
 			draw_clear_alpha(c_black, 0);
-			var custom_draw_targets = [o_collision, o_player, o_billboard];
+			var custom_draw_targets = [o_collision, o_character, o_billboard, o_bullet_parent];
 			for (var i = 0; i < array_length(custom_draw_targets); i++) {
 				with (custom_draw_targets[i]) {
 					draw_custom(o_manager.virtual_camera_corner, true);
@@ -90,11 +91,11 @@ switch (state_game) {
 			surface_reset_target();
 		}
 		
-		with (o_player) {
-			if o_manager.get_level_data().level_type == eLevelType.platforming {
-				draw_custom(new Vector2(0, 0), false);
-			}
-		}
+		//with (o_player) {
+		//	if o_manager.get_level_data().level_type == eLevelType.platforming {
+		//		draw_custom(new Vector2(0, 0), false);
+		//	}
+		//}
 	break;
 }
 

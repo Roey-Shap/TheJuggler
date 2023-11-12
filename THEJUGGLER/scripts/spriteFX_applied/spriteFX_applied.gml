@@ -221,7 +221,7 @@ function make_general_text_fx(cam_pos, text, hspd, vspd, life) {
 
 
 function fx_setup_screen_layer(fx) {
-	fx.draw_on_surface = o_manager.get_level_data().level_type == eLevelType.sidescrolling;
+	fx.draw_on_surface = true; //o_manager.get_level_data().level_type == eLevelType.sidescrolling;
 }
 
 

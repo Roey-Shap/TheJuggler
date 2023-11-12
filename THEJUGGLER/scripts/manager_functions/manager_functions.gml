@@ -50,11 +50,6 @@ function level_data_init() {
 		platforming,
 	}
 		
-	enum eWitchMode {
-		none,
-		at_player,
-	}
-
 	var number_symbols = array_fill_range(symbol_type.zero, symbol_type.nine);
 	var shape_symbols = array_fill_range(symbol_type.square, symbol_type.column);
 	var color_symbols = array_fill_range(symbol_type.white, symbol_type.brown);
@@ -67,16 +62,24 @@ function level_data_init() {
 		//(new LevelData(eLevels.numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, number_symbols, eLevelType.sidescrolling)),
 		//
 		
-		(new LevelData(eLevels.numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, 4, number_symbols, eLevelType.normal))
-			.set_starting_cutscene(cs_get_watch_from_seller),
-		(new LevelData(eLevels.fast_numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_2, 4, number_symbols, eLevelType.normal))
-			.set_starting_cutscene(cs_numbers_fast_start)
-			.set_cutscenes([cs_numbers_getting_harder], [0.2]),		
-		new LevelData(eLevels.shapes, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, 3, shape_symbols, eLevelType.normal),
+		//(new LevelData(eLevels.numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, 4, number_symbols, eLevelType.normal))
+		//	.set_starting_cutscene(cs_get_watch_from_seller),
+		//(new LevelData(eLevels.fast_numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_2, 4, number_symbols, eLevelType.normal))
+		//	.set_starting_cutscene(cs_numbers_fast_start)
+		//	.set_cutscenes([cs_numbers_getting_harder], [0.2]),		
+		//new LevelData(eLevels.shapes, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, 3, shape_symbols, eLevelType.normal),
 		new LevelData(eLevels.fast_numbers_and_shapes, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_3, 4, numbers_and_shapes_symbols, eLevelType.normal),
+		
+		
 		new LevelData(eLevels.platforming_intro, -1, -1, 0, -1, eLevelType.sidescrolling),
-		new LevelData(eLevels.platforming_intro, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, 3, numbers_and_shapes_symbols, eLevelType.platforming)
-		.set_killed_symbols_become_bullets(),
+		
+		
+		//(new LevelData(eLevels.platforming_intro, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, 3, numbers_and_shapes_symbols, eLevelType.platforming))
+		//.set_killed_symbols_become_bullets(),
+		
+		(new LevelData(eLevels.platforming_intro, cv_number_of_enemies_platforming_with_numbers_1, cv_base_time_between_symbol_per_wave_platforming_with_numbers_1, 3, numbers_and_shapes_symbols, eLevelType.platforming))
+		.set_killed_symbols_become_bullets()
+		.set_witch_modes([e_witch_state.flying_across]),
 	];
 }
 
@@ -88,7 +91,7 @@ function LevelData(_enum_tag, _enemies_per_wave_curve, _time_between_enemies_cur
 	allowed_symbols = _symbol_types;
 	level_type = _level_type;
 	killed_symbols_become_bullets = false;
-	witch_mode = eWitchMode.none;
+	witch_modes = [];
 	
 	cutscene_level_start = new CutsceneData(-1, false);
 	cutscene_level_end = new CutsceneData(-1, false);
@@ -114,8 +117,9 @@ function LevelData(_enum_tag, _enemies_per_wave_curve, _time_between_enemies_cur
 		return killed_symbols_become_bullets;
 	}
 		
-	static set_witch_mode = function(mode) {
-		witch_mode = mode;
+	static set_witch_modes = function(modes) {
+		witch_modes = modes;
+		return self;
 	}
 
 	static play_starting_cutscene = function() {

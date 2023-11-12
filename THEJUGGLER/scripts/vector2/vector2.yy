@@ -5,7 +5,7 @@
   "isCompatibility": false,
   "isDnD": false,
   "parent": {
-    "name": "THEJUGGLER",
-    "path": "THEJUGGLER.yyp",
+    "name": "Sprites",
+    "path": "folders/Sprites.yy",
   },
 }

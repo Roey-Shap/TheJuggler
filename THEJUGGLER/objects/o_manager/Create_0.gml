@@ -184,6 +184,19 @@ function get_num_symbols() {
 	return symbol_manager.get_num_symbols();
 }
 
+function place_player_at_anchor(anchor, treat_anchor_as_bottom_right) {
+	var player = instance_nearest(x, y, o_player);
+	var screen = instance_nearest(x, y, o_screen);
+	if treat_anchor_as_bottom_right {
+		var top_left = get_pos(anchor).sub(new Vector2(screen.sprite_width, screen.sprite_height));
+		player.x = top_left.x + (screen.sprite_width  * 0.5);
+		player.y = top_left.y + (screen.sprite_height * 0.1);
+	} else {
+		player.x = anchor.x;
+		player.y = anchor.y;
+	}
+}
+
 function start_next_level() {
 	get_level_data().play_ending_cutscene();
 	
@@ -193,13 +206,27 @@ function start_next_level() {
 	
 	get_level_data().play_starting_cutscene();
 	
-	if get_level_data().is_scrolling_level() {
-		instance_activate_layer("SetCollision");
-		layer_set_visible(layer_distort_id, true);
-		layer_set_visible(layer_wave_id, true);
-	} else {
-		instance_deactivate_layer("SetCollision");
+	switch (get_level_data().level_type) {
+		case eLevelType.sidescrolling:
+			instance_activate_layer("SetCollision");
+			var anchor = DEVELOPER_MODE and keyboard_check(ord("C"))? inst_anchor_platforming_debug : inst_anchor_platforming_level_start;
+			place_player_at_anchor(anchor, false);
+			layer_set_visible(layer_distort_id, true);
+			layer_set_visible(layer_wave_id, true);
+		break;
+		
+		case eLevelType.platforming:
+			instance_deactivate_layer("SetCollision");
+			place_player_at_anchor(inst_anchor_screen_bottom_right, true);
+			instance_activate_object(inst_thin_plat);
+		break;
+		
+		case eLevelType.normal:
+			instance_deactivate_layer("SetCollision");
+			place_player_at_anchor(inst_anchor_screen_bottom_right, true);
+		break;
 	}
+
 	
 	if isIn(get_level_data().level_type, [eLevelType.platforming, eLevelType.sidescrolling]) {
 		if !watch_platforming_growth_perform_transition {
@@ -355,15 +382,12 @@ function handle_fire(button) {
 	}
 }
 
-function spawn_bullet_at_player_y_level(symbol_struct) {
-	var _x = o_screen.bbox_right;
-	var screen_height = o_screen.bbox_bottom - o_screen.bbox_top;
-	var _y = o_player.y + screen_height * random_range(-0.05, 0.05);
-	var bullet = instance_create_layer(_x, _y, LAYER_WATCH_DISPLAY, o_bullet_basic);
+
+function spawn_bullet_towards_player(symbol_object) {
+	var symbol_center = bbox_center(symbol_object);
 	var spd = 5;
-	var dir = point_direction(bullet.x, bullet.y, o_player.x, o_player.y);
-	bullet.hspd = lengthdir_x(spd, dir);
-	bullet.vspd = lengthdir_y(spd, dir);
+	var dir = point_direction(symbol_center.x, symbol_center.y, o_player.x, o_player.y);
+	var bullet = fire_bullet(symbol_center, spd, dir);
 }
 
 function reset_buttons_for_shape() {

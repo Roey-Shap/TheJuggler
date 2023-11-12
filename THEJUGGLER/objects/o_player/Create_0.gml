@@ -1,3 +1,5 @@
+event_inherited();
+
 hp = 3;
 
 platforming_active = false;
@@ -35,7 +37,7 @@ coyote_time_timer = new Timer(8);
 buffer_jump_timer = new Timer(8);
 
 function grounded_check() {
-	var touching_screen_bottom = instance_exists(o_screen) and y >= o_screen.bbox_bottom and o_manager.get_level_data().level_type == eLevelType.platforming;
+	var touching_screen_bottom = false; //instance_exists(o_screen) and y >= o_screen.bbox_bottom and o_manager.get_level_data().level_type == eLevelType.platforming;
 	grounded = place_meeting(x, y+1, o_collision) or touching_screen_bottom;
 }
 
@@ -50,7 +52,7 @@ manage_collision = function() {
 		}
 		
 		hspd = 0;
-		debug_spark(x, y);
+		//debug_spark(x, y);
 	}
 	
 	var vcol = instance_place(x, y + vspd, obj)
@@ -67,36 +69,36 @@ manage_collision = function() {
 		} else {		
 			vspd = 0;
 		}
-		debug_spark(x, y, c_red);
+		//debug_spark(x, y, c_red);
 		player_jump = false;
 	}
 	
-	if o_manager.playing_normal_platforming_level() {
-		var screen = instance_nearest(0, 0, o_screen);
-		if x + hspd > screen.bbox_right {
-			x = screen.bbox_right;
-			hspd = 0;
-		}
+	//if o_manager.playing_normal_platforming_level() {
+	//	var screen = instance_nearest(0, 0, o_screen);
+	//	if x + hspd > screen.bbox_right {
+	//		x = screen.bbox_right;
+	//		hspd = 0;
+	//	}
 		
-		if x + hspd < screen.bbox_left {
-			x = screen.bbox_left;
-			hspd = 0;
-		}
+	//	if x + hspd < screen.bbox_left {
+	//		x = screen.bbox_left;
+	//		hspd = 0;
+	//	}
 		
-		if y + vspd < screen.bbox_top {
-			y = screen.bbox_top;
-			vspd = 0;
-		}
+	//	if y + vspd < screen.bbox_top {
+	//		y = screen.bbox_top;
+	//		vspd = 0;
+	//	}
 		
-		if y + vspd > screen.bbox_bottom {
-			y = screen.bbox_bottom;
-			if fast_falling {
-				vspd = -jump_force_bounce_pad;
-			} else {
-				vspd = 0;
-			}
-		}
-	}
+	//	if y + vspd > screen.bbox_bottom {
+	//		y = screen.bbox_bottom;
+	//		if fast_falling {
+	//			vspd = -jump_force_bounce_pad;
+	//		} else {
+	//			vspd = 0;
+	//		}
+	//	}
+	//}
 }
 
 function manage_bullets() {
@@ -198,12 +200,4 @@ function manage_sprite() {
 	
 	draw_scale.x = lerp(draw_scale.x, sign(draw_scale.x), sprite_scale_normalize_lerp_factor);
 	draw_scale.y = lerp(draw_scale.y, 1, sprite_scale_normalize_lerp_factor);
-}
-
-draw_custom = function(offset_pos, draw_shadow=false) {
-	if draw_shadow {
-		draw_sprite_ext(sprite_index, image_index, x + offset_pos.x + LCD_SHADE_OFFSET.x, y + offset_pos.y + LCD_SHADE_OFFSET.y, image_xscale * draw_scale.x, image_yscale * draw_scale.y, image_angle, global.c_lcd_shade, global.lcd_alpha_large);
-	} else {
-		draw_sprite_ext(sprite_index, image_index, x + offset_pos.x, y + offset_pos.y, image_xscale * draw_scale.x, image_yscale * draw_scale.y, image_angle, image_blend, image_alpha);
-	}
 }
