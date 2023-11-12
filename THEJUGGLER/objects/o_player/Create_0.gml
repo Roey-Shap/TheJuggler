@@ -172,7 +172,7 @@ function manage_checkpoint_collisions() {
 function manage_cutscene_triggers() {
 	var trigger = instance_place(x, y, o_cutscene_trigger);
 	if trigger != noone {
-		create_cutscene(trigger.scene);
+		trigger.scene.play();
 		instance_destroy(trigger);
 	}
 }

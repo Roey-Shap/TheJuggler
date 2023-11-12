@@ -1,8 +1,8 @@
 function game_initialize() {
 	scribble_init();
+	cutscenes_init();
 	level_data_init();
 	FX_init();
-	cutscenes_init();
 	
 	//window_set_fullscreen(true);
 	html5_window_set_fullscreen(true);
@@ -61,28 +61,30 @@ function level_data_init() {
 	var numbers_and_shapes_symbols = concat_arrays(number_symbols, shape_symbols);
 	
 	level_data = [
-		new LevelData(eLevels.NULL, -1, -1, -1, eLevelType.normal),
+		new LevelData(eLevels.NULL, -1, -1, 0, -1, eLevelType.normal),
 		
 		//
 		//(new LevelData(eLevels.numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, number_symbols, eLevelType.sidescrolling)),
 		//
 		
-		(new LevelData(eLevels.numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, number_symbols, eLevelType.normal)),
-			//.set_killed_symbols_become_bullets(),
-		(new LevelData(eLevels.fast_numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_2, number_symbols, eLevelType.normal)),
-			//.set_killed_symbols_become_bullets(),		
-		new LevelData(eLevels.shapes, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, shape_symbols, eLevelType.normal),
-		new LevelData(eLevels.fast_numbers_and_shapes, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_3, numbers_and_shapes_symbols, eLevelType.normal),
-		new LevelData(eLevels.platforming_intro, -1, -1, -1, eLevelType.sidescrolling),
-		new LevelData(eLevels.platforming_intro, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, numbers_and_shapes_symbols, eLevelType.platforming)
+		(new LevelData(eLevels.numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, 4, number_symbols, eLevelType.normal))
+			.set_starting_cutscene(cs_get_watch_from_seller),
+		(new LevelData(eLevels.fast_numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_2, 4, number_symbols, eLevelType.normal))
+			.set_starting_cutscene(cs_numbers_fast_start)
+			.set_cutscenes([cs_numbers_getting_harder], [0.2]),		
+		new LevelData(eLevels.shapes, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, 3, shape_symbols, eLevelType.normal),
+		new LevelData(eLevels.fast_numbers_and_shapes, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_3, 4, numbers_and_shapes_symbols, eLevelType.normal),
+		new LevelData(eLevels.platforming_intro, -1, -1, 0, -1, eLevelType.sidescrolling),
+		new LevelData(eLevels.platforming_intro, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, 3, numbers_and_shapes_symbols, eLevelType.platforming)
 		.set_killed_symbols_become_bullets(),
 	];
 }
 
-function LevelData(_enum_tag, _enemies_per_wave_curve, _time_between_enemies_curve, _symbol_types, _level_type) constructor {
+function LevelData(_enum_tag, _enemies_per_wave_curve, _time_between_enemies_curve, _num_waves, _symbol_types, _level_type) constructor {
 	enum_tag = _enum_tag;
 	enemies_per_wave_curve = _enemies_per_wave_curve;
 	time_between_enemies_curve = _time_between_enemies_curve;
+	number_of_waves = _num_waves;
 	allowed_symbols = _symbol_types;
 	level_type = _level_type;
 	killed_symbols_become_bullets = false;
@@ -145,11 +147,19 @@ function LevelData(_enum_tag, _enemies_per_wave_curve, _time_between_enemies_cur
 	}
 	
 	static play_next_cutscene = function() {
+		if array_length(cutscenes_intermediate) == 0 {
+			return;
+		}
+		
 		create_cutscene(cutscenes_intermediate[cutscenes_intermediate_index]);
 		cutscenes_intermediate_index += 1;
 	}
 	
 	static pop_cutscene_timing = function() {
+		if array_length(cutscenes_intermediate_timings) == 0 {
+			return -1;
+		}
+		
 		return cutscenes_intermediate_timings[cutscenes_intermediate_index];
 	}
 }

@@ -6,10 +6,10 @@ if platforming_active {
 	var vinput = keyboard_check(key_down) - keyboard_check(key_up);
 	var jinput = keyboard_check_pressed(key_up);
 	
-	var game_is_frozen = !o_manager.game_is_frozen();
-	hinput *= !game_is_frozen;
-	vinput *= !game_is_frozen;
-	jinput *= !game_is_frozen;
+	var _game_is_frozen = o_manager.game_is_frozen();
+	hinput *= !_game_is_frozen;
+	vinput *= !_game_is_frozen;
+	jinput *= !_game_is_frozen;
 	
 	jumped_this_frame = false;
 	

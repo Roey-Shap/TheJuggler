@@ -189,7 +189,7 @@ function start_next_level() {
 	
 	current_level += 1;
 	current_wave = 0;
-	current_number_of_waves = round(1.4 * current_level) + 3;
+	current_number_of_waves = get_level_data().number_of_waves;
 	
 	get_level_data().play_starting_cutscene();
 	

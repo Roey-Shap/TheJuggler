@@ -106,7 +106,11 @@ function SymbolManager() constructor {
 	}
 		
 	static clear_symbols = function() {
-		array_foreach(active_symbols, instance_destroy);
+		array_foreach(active_symbols, function(inst) {
+			inst.death_col_1 = merge_color(c_white, c_red, 0.2);
+			inst.death_col_2 = merge_color(c_white, c_red, 0.7);
+			instance_destroy(inst);
+		});
 		active_symbols = [];
 	}
 }

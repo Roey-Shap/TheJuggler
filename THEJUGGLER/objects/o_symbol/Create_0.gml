@@ -3,6 +3,10 @@ event_inherited();
 symbol_struct = -1;
 image_speed = 0;
 scale = 1;
+
+death_col_1 = c_lime;
+death_col_2 = global.c_lcd_shade;
+
 function set_symbol(symbol) {
 	symbol_struct = symbol;
 	sprite_index = symbol.sprite;

@@ -1,1 +1,1 @@
-scene = [];
+scene = -1;

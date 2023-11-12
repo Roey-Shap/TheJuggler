@@ -1,4 +1,23 @@
-function cutscenes_init(){
+function cutscenes_init() {
+	cs_get_watch_from_seller = new CutsceneData([
+		[cs_text, [
+			"Test!",
+			"Test 2 :3"
+		]]
+	], true);
+	
+	cs_numbers_fast_start = new CutsceneData([
+		[cs_text, [
+			"Alright, not too bad...",
+		]]
+	], true);
+	
+	cs_numbers_getting_harder = new CutsceneData([
+		[cs_text, [
+			"Getting a little harder...",
+		]]
+	], false);
+	
 	cs_player_becomes_juggler = new CutsceneData([
 		[cs_text, [
 			"Aahhhh, yes.",

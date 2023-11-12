@@ -35,6 +35,10 @@ switch (state_game) {
 	break;
 	
 	case st_game_state.playing:
+		if game_is_frozen() {
+			break;
+		}
+		
 		level_title_timer.tick();
 		
 		if level_title_timer.is_done() {
@@ -61,7 +65,7 @@ switch (state_game) {
 				}
 			}
 		
-			if num_enemies_defeated_this_wave >= current_wave_size {
+			if num_enemies_defeated_this_wave >= current_wave_size or keyboard_check_pressed(ord("V")){
 				start_next_wave();
 			}
 		}
