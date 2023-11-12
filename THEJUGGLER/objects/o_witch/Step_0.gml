@@ -15,11 +15,12 @@ if platforming_active {
 		case e_witch_state.flying_to_side:
 			percent_done = action_timer.get_percent_done();
 			x = sample_curve(cv_witch_flying_away_pos, percent_done, stored_position.x, target_position.x);
-			y = sample_curve(cv_witch_flying_away_pos, percent_done, stored_position.y, target_position.y);
+			y = target_position.y + sample_curve(cv_witch_flying_away_pos, percent_done) * 100;
 			if action_timer.is_done() {
 				store_position();
 				
 				state_current = e_witch_state.flying_back_across;
+				action_timer.set_and_start(get_frames(2.25));
 				if target_side_for_flyby == 1 {
 					target_position = flyby_position_left;
 				} else {
@@ -69,8 +70,17 @@ if platforming_active {
 			}
 			
 			if action_timer.is_done() {
-				state_current = e_witch_state.return_to_neutral;
-				action_timer.set_duration(get_frames(2));
+				begin_return_to_neutral();
+			}
+		break;
+		
+		case e_witch_state.return_to_neutral:
+			percent_done = action_timer.get_percent_done();
+			x = lerp(stored_position.x, default_position.x, percent_done);
+			y = lerp(stored_position.y, default_position.y, percent_done);
+			
+			if action_timer.is_done() {
+				return_to_waiting();
 			}
 		break;
 	}

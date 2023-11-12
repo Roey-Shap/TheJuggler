@@ -37,12 +37,17 @@ function Timer(_countdown_duration, _looping=false, _countdown_function=-1) cons
 		return 1 - (current_count/countdown_duration);
 	}
 	
-	function set_duration(duration) {
-		countdown_duration = duration;
+	function set_duration(frames) {
+		countdown_duration = frames;
 	}
 	
 	function get_count_seconds() {
-		return current_count * frames_per_second;
+		return current_count / frames_per_second;
+	}
+	
+	function set_and_start(frames) {
+		set_duration(frames);
+		start();
 	}
 }
 

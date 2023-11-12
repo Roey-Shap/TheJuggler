@@ -228,7 +228,7 @@ function start_next_level() {
 	}
 
 	
-	if isIn(get_level_data().level_type, [eLevelType.platforming, eLevelType.sidescrolling]) {
+	if isIn(get_level_data().level_type, [eLevelType.sidescrolling]) {
 		if !watch_platforming_growth_perform_transition {
 			watch_platforming_growth_perform_transition = true;
 			watch_growth_transition_timer.start();

@@ -22,21 +22,33 @@ enum e_witch_flying_across_type {
 }
 
 state_current = e_witch_state.none;
-action_timer = new Timer(get_frames(0.5));
+action_timer = new Timer(get_frames(4));
+action_timer.start();
 
 target_side_for_flyby = 1;
 flyby_type_current = e_witch_flying_across_type.LAST;
 
 default_position = get_pos(id);
-flyby_position_right = new Vector2(default_position.x + CAM_W, default_position.y);
-flyby_position_left = new Vector2(default_position.x - CAM_W, default_position.y);
+var off = CAM_W * 0.3;
+flyby_position_right = new Vector2(default_position.x + off, default_position.y);
+flyby_position_left = new Vector2(default_position.x - off, default_position.y);
+
+//print(flyby_position_left);
+//print(flyby_position_right);
 
 target_position = get_pos(id);
 stored_position = get_pos(id);
 
+
+function begin_return_to_neutral(seconds=2) {
+	state_current = e_witch_state.return_to_neutral;
+	action_timer.set_and_start(get_frames(seconds));
+	store_position();
+}
+
 function return_to_waiting() {
 	state_current = e_witch_state.none;
-	action_timer.set_duration(get_frames(random_range(3, 6)));
+	action_timer.set_and_start(get_frames(random_range(3, 6)));
 }
 
 function store_position() {
@@ -58,7 +70,7 @@ function begin_random_action() {
 			}
 			
 			state_current = e_witch_state.flying_to_side;
-			action_timer.set_duration(get_frames(2));
+			action_timer.set_and_start(get_frames(3));
 			draw_scale.x = abs(draw_scale.x) * target_side_for_flyby;
 			
 			flyby_type_current = choose(e_witch_flying_across_type.at_player, e_witch_flying_across_type.radial, e_witch_flying_across_type.at_player_difficult);
