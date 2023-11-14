@@ -1,6 +1,11 @@
 function scribble_init(){
 	default_font_name = "fnt_large_test";
 	scribble_font_set_default(default_font_name);
+	
+	scribble_typists_add_event("speaker", function(element, param_array, character_index) {
+		set_speaker(param_array[0]);
+	});
+	
 	scribble_add_macro("num", function(value) {
 		var value_string = string(value);
 		var final_string = "";
@@ -10,7 +15,11 @@ function scribble_init(){
 		}
 		
 		return final_string;
-	})
+	});
+	
+	scribble_add_macro("tm", function() {
+		return "[spr_tm]";
+	});
 }
 
 function seven_digit(digit, scale=0.075) {

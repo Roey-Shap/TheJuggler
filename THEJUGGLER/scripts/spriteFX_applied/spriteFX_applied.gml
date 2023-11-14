@@ -31,6 +31,7 @@ function fx_perform_step() {
 			if is_instanceof(cur, FadeFX) {
 				cur.update_alpha();
 			}
+			
 			i -= cur.step();
 		}
 	}

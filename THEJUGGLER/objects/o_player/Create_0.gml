@@ -21,7 +21,11 @@ fast_falling = false;
 fast_fall_speed = 10;
 fast_falling_hspd_factor = 0.4;
 
-invulnerability_timer = new Timer(get_frames(1.5));
+invulnerability_timer = new Timer(get_frames(1.5), false, function() {
+	with (o_player) {
+		image_alpha = 1;
+	}
+});
 
 last_checkpoint_pos = get_pos(id);
 
@@ -101,16 +105,27 @@ manage_collision = function() {
 	//}
 }
 
+function take_hit() {
+	if !invulnerability_timer.is_done() {
+		return;
+	}
+	
+	hp -= 1;
+	invulnerability_timer.start();
+	if hp <= 0 {
+		o_manager.handle_game_over();
+	}
+}
+
 function manage_bullets() {
-	if o_manager.game_is_frozen() {
+	if o_manager.game_is_frozen() or !invulnerability_timer.is_done() {
 		return;
 	}
 	
 	var bullet = instance_place(x, y, o_bullet_parent);
 	if bullet != noone {
-		hp -= 1;
+		take_hit();
 		instance_destroy(bullet);
-		invulnerability_timer.start();
 	}
 }
 

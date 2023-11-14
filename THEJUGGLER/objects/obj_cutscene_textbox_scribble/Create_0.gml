@@ -64,8 +64,7 @@ draw = function() {
 	.wrap(text_dims_max.x - textbox_margins.x * 2, text_dims_max.y - textbox_margins.y * 2)
 	.align(fa_center, fa_middle)
 
-	var textbox_pos = o_cutscene.speaker_current.textbox_position.copy();
-	
+	var textbox_pos = speaker.textbox_position.copy();
 
 	//.starting_format("fnt_textbox", c_white)
 	//.typewriter_sound_per_char([noone, noone, noone, s_option_4], 10, 0.8, 1.2)
@@ -75,16 +74,26 @@ draw = function() {
 	
 	var textbox_bbox = textbox_element.get_bbox(textbox_pos.x, textbox_pos.y);
 		
-	draw_sprite_ext(spr_textbox_nineslice, 0, textbox_pos.x, textbox_pos.y, 3, 2, 0, c_white, 1);
+	var xscale = 3 * speaker.textbox_direction.x;
+	var yscale = 2 * speaker.textbox_direction.y;
+	var spr = speaker.textbox_sprite;
+	
+	var sprite_w = (sprite_get_bbox_right(spr) - sprite_get_bbox_left(spr)) * xscale;
+	var sprite_h = (sprite_get_bbox_bottom(spr) - sprite_get_bbox_top(spr)) * yscale;
+	
+	draw_sprite_ext(speaker.textbox_sprite, 0, 
+					textbox_pos.x, textbox_pos.y, 
+					xscale, yscale, 
+					speaker.textbox_angle, c_white, 1);
 
 	textbox_element.draw(textbox_pos.x, textbox_pos.y, typist);
 
 	if typist.get_state() >= 1 or typist.get_paused() {
 		var continue_sprite_name = sprite_get_name(spr_mouse_left_click_icon);
 		draw_sprite_fade(1, asset_get_index(continue_sprite_name), 0, 
-				textbox_bbox.right, textbox_bbox.bottom, 
+				textbox_pos.x + abs(sprite_w/2), textbox_pos.y + abs(sprite_h/2), 
 				1, 1, 
-				0, c_white, 0, 0.8);
+				0, c_white, 0, 1);
 	}
 	
 	//var guiW = display_get_gui_width();

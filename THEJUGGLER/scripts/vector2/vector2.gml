@@ -17,18 +17,21 @@ function Vector2(_x, _y) constructor {
 	}
 	
 	static iadd = function(vec2) {
-		x += vec2.x
-		y += vec2.y
+		x += vec2.x;
+		y += vec2.y;
+		return self;
 	}
 	
 	static isub = function(vec2) {
-		x -= vec2.x
-		y -= vec2.y
+		x -= vec2.x;
+		y -= vec2.y;
+		return self;
 	}
 	
 	static ifloor = function() {
 		x = floor(x);
 		y = floor(y);
+		return self;
 	}
 	
 	static lerp_to = function(vec, t) {

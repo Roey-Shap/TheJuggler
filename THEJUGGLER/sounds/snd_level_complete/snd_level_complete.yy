@@ -12,8 +12,8 @@
   "conversionMode": 0,
   "duration": 1.593469,
   "parent": {
-    "name": "Sounds",
-    "path": "folders/Sounds.yy",
+    "name": "Watch",
+    "path": "folders/Sounds/Watch.yy",
   },
   "preload": false,
   "sampleRate": 44100,

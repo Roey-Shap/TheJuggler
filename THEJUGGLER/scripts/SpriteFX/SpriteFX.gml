@@ -42,6 +42,9 @@ function SpriteFX(_x, _y, _sprite_index, over_or_under) constructor {
 	image_blend = c_white;
 	image_alpha = 1;
 	
+	growth_scale = new Vector2(1, 1);
+	growth_limit = new Vector2(0, 0);
+	epsilon = 0.01;
 	
 	hspd = 0;
 	vspd = 0;
@@ -142,6 +145,13 @@ function SpriteFX(_x, _y, _sprite_index, over_or_under) constructor {
 			}
 		}
 		
+		image_xscale *= growth_scale.x;
+		image_yscale *= growth_scale.y;
+		
+		if abs(image_xscale - growth_limit.x) <= epsilon or abs(image_yscale - growth_limit.y) <= epsilon {
+			end_of_loop = true;
+		}
+		
 		hspd *= fric;
 		vspd += grav;
 		
@@ -167,20 +177,13 @@ function FadeFX(_x, _y, _sprite_index, _over_or_under, _image_index, _time) : Sp
 	total_life_time = max(1, _time);
 	alpha_factor = 1;
 	image_index = _image_index;
-	max_index = _image_index;
+	//max_index = _image_index;
 	
 	static update_alpha = function() {
 		image_alpha = clamp(alpha_factor * (hold_sprite_time / total_life_time), 0, 1);
 	}
 }
 
-function BattleProp(_x, _y, _sprite_index, _target_pos, _over_or_under=-1) : SpriteFX(_x, _y, _sprite_index, _over_or_under) constructor {
-	loop = true;
-	target_pos = _target_pos;
-	target_pos_lerp_factor = 0.1;
+function CurveFollower(_x, _y, _sprites, _over_or_under, curve) constructor {
 	
-	static update_position = function() {
-		x = lerp(x, target_pos.x, target_pos_lerp_factor);
-		y = lerp(y, target_pos.y, target_pos_lerp_factor);
-	}
 }

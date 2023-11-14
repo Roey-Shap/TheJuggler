@@ -79,4 +79,11 @@ if platforming_active {
 	buffer_jump_timer.tick();
 }
 
-
+var invuln_flash_frequency = round_to((map(0, invulnerability_timer.countdown_duration, invulnerability_timer.current_count, 3, 20)), 4);
+if !invulnerability_timer.is_done() {
+	if round(invulnerability_timer.current_count) % invuln_flash_frequency == 0 {
+		image_alpha = 0.2;
+	} else {
+		image_alpha = 1;
+	}
+}

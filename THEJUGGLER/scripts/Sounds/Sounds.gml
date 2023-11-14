@@ -1,3 +1,7 @@
+function play_sound(sound) {
+	play_pitch_range(sound, 1, 1);
+}
+
 function play_pitch_range(sound, min_pitch, max_pitch) {
 	var snd = audio_play_sound(sound, SND_PRIORITY_FX, false);
 	var ran_pitch = random_range(min_pitch, max_pitch);

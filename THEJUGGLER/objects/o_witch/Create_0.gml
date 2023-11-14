@@ -10,6 +10,8 @@ enum e_witch_state {
 		flying_to_side,
 		flying_back_across,
 	flying_across_double,
+	dropping_bombs,
+		dropping_bombs_fly_up,
 	turn_to_stone,
 }
 
@@ -29,7 +31,7 @@ target_side_for_flyby = 1;
 flyby_type_current = e_witch_flying_across_type.LAST;
 
 default_position = get_pos(id);
-var off = CAM_W * 0.3;
+var off = CAM_W * 0.2;
 flyby_position_right = new Vector2(default_position.x + off, default_position.y);
 flyby_position_left = new Vector2(default_position.x - off, default_position.y);
 
@@ -39,10 +41,34 @@ flyby_position_left = new Vector2(default_position.x - off, default_position.y);
 target_position = get_pos(id);
 stored_position = get_pos(id);
 
+performed_shot = false;
+performed_shot_sound = false;
+shots_left = 1;
+shot_timer = new Timer(get_frames(1.4));
+sound_shot_charge = snd_witch_shot_1_charge;
+sound_shot_release = snd_witch_shot_1_release;
+
+shot_color = global.c_magic_1;
+
+drop_bombs = function() {
+	var num_times = irandom_range(2, 3);
+	var upper_left = o_manager.virtual_camera_corner.multiply(-1);
+	var screen_dims = new Vector2(o_screen.sprite_width, o_screen.sprite_height);
+	var lower_right = upper_left.add(screen_dims);
+	var thin_platform = instance_nearest(x, y, o_collision_thin);
+	var y_limit = thin_platform.y;
+	repeat(num_times) {
+		var ran_x = irandom_range(upper_left.x + screen_dims.x * 0.1, lower_right.x - screen_dims.x * 0.1);
+		var ran_y = upper_left.y - irandom_range(CAM_H * 0.65, screen_dims.y * 1.25);
+		var bomb = instance_create_layer(ran_x, ran_y, LAYER_WATCH_DISPLAY, o_witch_bomb);
+		bomb.y_limit = y_limit;
+	}
+}
 
 function begin_return_to_neutral(seconds=2) {
 	state_current = e_witch_state.return_to_neutral;
 	action_timer.set_and_start(get_frames(seconds));
+	turn_to(sign(default_position.x - x));
 	store_position();
 }
 
@@ -53,6 +79,10 @@ function return_to_waiting() {
 
 function store_position() {
 	stored_position = get_pos(id);
+}
+
+function turn_to(side) {
+	draw_scale.x = abs(draw_scale.x) * side;
 }
 
 function begin_random_action() {
@@ -70,11 +100,30 @@ function begin_random_action() {
 			}
 			
 			state_current = e_witch_state.flying_to_side;
-			action_timer.set_and_start(get_frames(3));
-			draw_scale.x = abs(draw_scale.x) * target_side_for_flyby;
+			action_timer.set_and_start(get_frames(4));
+			turn_to(target_side_for_flyby);
 			
-			flyby_type_current = choose(e_witch_flying_across_type.at_player, e_witch_flying_across_type.radial, e_witch_flying_across_type.at_player_difficult);
+			flyby_type_current = choose(e_witch_flying_across_type.at_player, e_witch_flying_across_type.radial);
+					//omitted:
+					//		e_witch_flying_across_type.at_player_difficult
+			
+			if flyby_type_current == e_witch_flying_across_type.radial {
+				shots_left = 1;
+				shot_timer.set_and_start(get_frames(1.7));
+			} else if flyby_type_current == e_witch_flying_across_type.at_player_difficult {
+				shots_left = 2;
+				shot_timer.set_and_start(get_frames(0.5));
+			} else if flyby_type_current == e_witch_flying_across_type.at_player {
+				shots_left = 2;
+				shot_timer.set_and_start(get_frames(0.1));
+			}
+			
 			store_position();
+		break;
+		
+		case e_witch_state.dropping_bombs:
+			state_current = e_witch_state.dropping_bombs_fly_up;
+			action_timer.set_and_start(get_frames(5));
 		break;
 	}
 }

@@ -8,7 +8,15 @@ enum st_game_state {
 	LAST
 }
 
+enum fade_type {
+	to_black,
+	from_black,
+	indefinite
+}
 
+fade = fade_type.from_black;
+fade_timer = new Timer(get_frames(0.65));
+fade_timer.start();
 
 state_game = st_game_state.main_menu;
 
@@ -51,7 +59,9 @@ virtual_camera_corner = -1;
 global.lcd_shade_offset = new Vector2(6, 6);
 global.lcd_alpha = 0.2;
 global.lcd_alpha_large = 0.4;
-symbol_draw_scale = 0.1;
+symbol_draw_scale_default = 0.1;
+symbol_draw_scale_platforming = 0.08;
+symbol_draw_scale = symbol_draw_scale_default;
 
 // Firing and Symbol Tracking
 current_values_in_shape = [];
@@ -270,10 +280,7 @@ function start_next_wave() {
 function hit_player() {
 	var player = instance_nearest(0, 0, o_player);
 	if player != noone {
-		player.hp -= 1;
-		if player.hp <= 0 {
-			handle_game_over();
-		}
+		player.take_hit();
 	}
 }
 
@@ -382,12 +389,29 @@ function handle_fire(button) {
 	}
 }
 
+function spawn_bullet_towards_player(spawn_pos) {
+	var spd = 6;
+	var dir = point_direction(spawn_pos.x, spawn_pos.y, o_player.x, o_player.y);
+	var bullet = fire_bullet(spawn_pos, spd, dir);
+	bullet.image_blend = merge_color(c_lime, global.c_lcd_shade, 0.2);
+}
 
-function spawn_bullet_towards_player(symbol_object) {
-	var symbol_center = bbox_center(symbol_object);
-	var spd = 5;
-	var dir = point_direction(symbol_center.x, symbol_center.y, o_player.x, o_player.y);
-	var bullet = fire_bullet(symbol_center, spd, dir);
+function drop_bombs(num_times) {
+	var bombs = array_create(num_times);
+	var upper_left = o_manager.virtual_camera_corner.multiply(-1);
+	var screen_dims = new Vector2(o_screen.sprite_width, o_screen.sprite_height);
+	var lower_right = upper_left.add(screen_dims);
+	var thin_platform = instance_nearest(x, y, o_collision_thin);
+	var y_limit = thin_platform.y;
+	for (var i = 0; i < num_times; i++) {
+		var ran_x = irandom_range(upper_left.x + screen_dims.x * 0.1, lower_right.x - screen_dims.x * 0.1);
+		var ran_y = upper_left.y - irandom_range(CAM_H * 0.65, screen_dims.y * 1.25);
+		var bomb = instance_create_layer(ran_x, ran_y, LAYER_WATCH_DISPLAY, o_witch_bomb);
+		bomb.y_limit = y_limit;
+		bombs[i] = bomb;
+	}
+	
+	return bombs;
 }
 
 function reset_buttons_for_shape() {
@@ -421,7 +445,7 @@ function receive_click_from_face_button(button) {
 	} else if value == 10 {
 		reset_buttons_for_shape();
 		play_random_sound(face_button_sounds, 0.85, 1.1);
-	} else {
+	} else if value <= 9 {
 		play_random_sound(face_button_sounds, 0.85, 1.1);
 		if isIn(value, current_values_in_shape) {
 			button.image_blend = c_white;
@@ -445,6 +469,22 @@ function game_is_frozen() {
 	}
 	
 	return false;
+}
+
+function manage_fade() {
+	if !fade_timer.is_done() or fade == fade_type.indefinite {
+		draw_set_color(c_black);
+		var a = fade_timer.get_percent_done();
+		if fade == fade_type.from_black {
+			a = 1 - a;
+		} else if fade == fade_type.indefinite {
+			//a = 1;
+		}
+		
+		draw_set_alpha(a);
+		draw_rectangle(0, 0, CAM_W, CAM_H, false);
+		draw_set_alpha(1);
+	}
 }
 
 global.deltatime = 1;

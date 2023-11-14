@@ -1,24 +1,67 @@
 function cutscenes_init() {
 	speaker_data = [
-		new Speaker("Player", new Vector2(0.7, 0.8), fnt_player),
-		new Speaker("Other", new Vector2(0.7, 0.3), fnt_large_test),
-		new Speaker("None", new Vector2(0.5, 0.5), fnt_large_test),
+		(new Speaker("Player", new Vector2(0.7, 0.8), fnt_player)),
+		(new Speaker("Other", new Vector2(0.7, 0.3), fnt_other))
+			.set_textbox_direction(new Vector2(1, -1)),
+		(new Speaker("None", new Vector2(0.5, 0.5), fnt_other))
+			.set_textbox_sprite(spr_textbox_neutral_nineslice),
 		(new Speaker("Witch", new Vector2(0.5, 0.2), fnt_witch))
+			.set_textbox_angle(-90)
 			.set_update_function(function() {
-				print("hi :)");
+				print("hi :)"); 
 			}),
 	];
 	
+	cs_game_start = new CutsceneData([
+		[cutscene_custom_action, function() {
+			with (o_manager) {
+				state_game = st_game_state.playing;
+				start_next_level();
+			}
+		}],
+	], false);
 	
 	cs_get_watch_from_seller = new CutsceneData([
-		[cs_set_speaker, "Player"],
+		[cs_fade, fade_type.indefinite, 1],
+		[cutscene_play_sound, snd_bell_ring, SND_PRIORITY_FX, false],
+		[cs_set_speaker, "Other"],
 		[cs_text, [
-			"[wave]Player test!",
-			"Test 2 :3"
+			"... oh, hello, yes! .... one second!",
 		]],
-		[cs_set_speaker, "Witch"],
+		[cs_wait, get_frames(0.5)],
 		[cs_text, [
-			"Mwahaha!!! This is the dastardly witch!!",
+			"[speaker,Other]Hello there! What can I do ya for?",
+			"[speaker,Player]I was actually thinking of getting a watch.",
+			"Not anything too modern, obviously. Wouldn't have come here if I were.",
+			"[speaker,Other]I see... A man of culture! Come in, come in! I've got just the thing!",
+		]],
+		[cs_text, [
+			"[speaker,None]Some time later...",
+		]],
+		[cs_fade, fade_type.from_black, get_frames(1)],
+		[cs_text, [
+			"[speaker,Other]Welcome to your new Tasionic! It has a variety of features!",
+			"Its face buttons allow you to calculate various things, and, of course, it lets you tell the time.",
+			"But I'll let you in on a little secret - it's got [c_emph]a game[/c] for those especially boring meetings.",
+			"I can see that sparkle in your eyes, don't try to hide it from me. I know there's still someone who wants to have fun under that businessman suit and tie.",
+			"Just press that side button there and you'll have a little something to keep your mind offa' spreadsheets.",
+			"... anyway. How you spend your meetings ain't none of my business.",
+			"Have a good day, sir.",
+		]],
+		[cs_fade, fade_type.indefinite, get_frames(1)],
+		[cs_wait, get_frames(1)],
+		[cs_text, [
+			"[speaker,None](Later, at the meeting.)"			
+		]],
+		[cs_fade, fade_type.from_black, get_frames(0.5)],
+		[cs_text, [
+			"[speaker,Player][slant](Don't look at the clock. Don't. [delay,200]Look. [delay,200]At. [delay,200]The- ugh god DAMN.)",
+			"([slant]Six minutes???)",
+			"([slant]Do they [/slant]want[slant] these meetings to go on forever?)",
+			"([slant]!!\n I have the watch! Genius!)",
+			"([slant][wave]Heh heh.[/wave] Well, Andrew, it pays to be prepared.)",
+			"([slant]I meant, how would anyone who hadn't taken those survivalist classes known what to do?",
+			"(Let's see. How does this thing work?)",
 		]]
 	], true);
 	
@@ -37,15 +80,15 @@ function cutscenes_init() {
 	cs_player_becomes_juggler = new CutsceneData([
 		[cs_text, [
 			"Aahhhh, yes.",
-			"You’ve been here a while, haven’t you?",
-			"At the start, it was measly fascination. But now…",
-			"Heh heh. Now, you’re MINE.",
-			"You thought you’d just get out of your meetings with no consequences? BAH!",
-			"Cool Watches™ aren’t something to be taken lightly, FOOL.",
-			"Everybody knows… the spiffier the watch, the more likely it is to be cursed!!",
-			"And this watch…",
+			"You've been here a while, haven't you?",
+			"At the start, it was measly fascination. But now...",
+			"Heh heh. Now, you're MINE.",
+			"You thought you'd just get out of your meetings with no consequences? BAH!",
+			"Cool Watches[tm] aren't something to be taken lightly, FOOL.",
+			"Everybody knows... the spiffier the watch, the more likely it is to be cursed!!",
+			"And this watch...",
 			"Ha.. ha.. This watch has some SERIOUS SPIFF.",
-			"THERE’S NO ESCAPE!! FWEEEE HEHEHEHEHE!",
+			"THERE'S NO ESCAPE!! FWEEEE HEHEHEHEHE!",
 		]],
 		[cs_wait, get_frames(1)],
 		[cs_text, [
@@ -73,6 +116,20 @@ function cutscenes_init() {
 			//}
 		}]
 	], false);
+	
+	cs_witch_explains_exploding_symbols = new CutsceneData([
+		[cs_set_speaker, "Witch"],
+		[cs_text, [
+			"Ho ho! You'll never break free, don't you see?",
+			"This curse was placed by me, and another spell shall be:",
+			"These symbols are enchanted, and... I ran out of rhymes.",
+			"Anyway!! [delay,100]Let's see how you deal with these symbols!",
+		]],
+		[cs_create_fx_scaling_with, o_witch, spr_fx_witch_explosion, 1, new Vector2(1.05, 1.05), new Vector2(10, 10)],
+		[cs_text, [
+			"Be careful when you clear them! They're quite... explosive!! [wave]Kekeke!!"
+		]]
+	], true);
 }
 
 function CutsceneData(_scene, _freeze_game) constructor {
@@ -92,10 +149,28 @@ function Speaker(_name, _textbox_position, _font) constructor {
 	name = _name;
 	textbox_position = _textbox_position;
 	font = font_get_name(_font);
+	textbox_sprite = spr_textbox_nineslice;
 	update_function = -1;
+	textbox_direction = new Vector2(1, 1);
+	textbox_angle = 0;
 	
 	static set_update_function = function(f) {
 		update_function = f;
+		return self;
+	}
+	
+	static set_textbox_direction = function(vec) {
+		textbox_direction = vec;
+		return self;
+	}
+	
+	static set_textbox_angle = function(angle) {
+		textbox_angle = angle;
+		return self;
+	}
+	
+	static set_textbox_sprite = function(spr) {
+		textbox_sprite = spr;
 		return self;
 	}
 	

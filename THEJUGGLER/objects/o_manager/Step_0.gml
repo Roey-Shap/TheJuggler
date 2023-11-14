@@ -1,12 +1,12 @@
 
 
 
-if DEVELOPER_MODE {
-	if keyboard_check_pressed(ord("0")) {
-		watch_platforming_growth_perform_transition = true;
-		watch_growth_transition_timer.start();
-	}
-}
+//if DEVELOPER_MODE {
+//	if keyboard_check_pressed(ord("0")) {
+//		watch_platforming_growth_perform_transition = true;
+//		watch_growth_transition_timer.start();
+//	}
+//}
 
 if watch_platforming_growth_perform_transition {
 	watch_growth_transition_timer.tick();
@@ -28,9 +28,12 @@ if watch_platforming_growth_perform_transition {
 
 switch (state_game) {
 	case st_game_state.main_menu:
-		if mouse_check_button_pressed(key_accept) {
-			state_game = st_game_state.playing;
-			start_next_level();
+		if room == rm_game {
+			cs_game_start.play();
+		} else if mouse_check_button_pressed(key_accept) {
+			if room == rm_main_menu {
+				room = rm_game;
+			}
 		}
 	break;
 	
@@ -60,8 +63,18 @@ switch (state_game) {
 				//}
 				create_symbol();
 				if get_num_symbols() >= symbol_penalty_threshold {
-					hit_player();
-					symbol_manager.pop_symbol(0);
+					var removed_symbol = symbol_manager.pop_symbol(0);
+					if get_level_data().killed_symbols_become_bullets {	// if your killed symbols become bullets, then neglected ones should just hit
+						var bombs = drop_bombs(irandom_range(3, 5));
+						//hit_player();
+					} else {
+						var spawn_pos = bbox_center(removed_symbol).iadd(new Vector2(0, removed_symbol.sprite_height/2));
+						var bombs = drop_bombs(2);
+						//spawn_bullet_towards_player(spawn_pos);
+					}
+					
+					removed_symbol.destroy_alt_anim_setup();
+					instance_destroy(removed_symbol);
 				}
 			}
 		

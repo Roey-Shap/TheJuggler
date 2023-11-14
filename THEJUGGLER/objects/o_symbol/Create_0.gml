@@ -3,9 +3,12 @@ event_inherited();
 symbol_struct = -1;
 image_speed = 0;
 scale = 1;
+symbol_manager_index = -1;
 
 death_col_1 = c_lime;
 death_col_2 = global.c_lcd_shade;
+
+
 
 function set_symbol(symbol) {
 	symbol_struct = symbol;
@@ -21,4 +24,9 @@ function set_symbol(symbol) {
 
 function draw() {
 	draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, image_angle, image_blend, image_alpha);
+}
+
+function destroy_alt_anim_setup() {
+	death_col_1 = merge_color(c_white, c_red, 0.2);
+	death_col_2 = merge_color(c_white, c_red, 0.7);
 }

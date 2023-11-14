@@ -12,23 +12,28 @@ fx_perform_step();
 //		surface_free(in_screen_draw_surface);
 //	}
 //}
+	if state_game == st_game_state.playing {
+	if !surface_exists(in_screen_draw_surface) and watch_growth_transition_timer.is_done() and watch_platforming_growth_perform_transition {
+		var screen = instance_nearest(0, 0, o_screen);
+		in_screen_draw_surface = surface_create(screen.sprite_width, screen.sprite_height);
+	}
 
-if !surface_exists(in_screen_draw_surface) and watch_growth_transition_timer.is_done() and watch_platforming_growth_perform_transition {
 	var screen = instance_nearest(0, 0, o_screen);
-	in_screen_draw_surface = surface_create(screen.sprite_width, screen.sprite_height);
-}
+	var w = screen.sprite_width;
+	var h = screen.sprite_height;
+	var playing_sidescrolling = o_manager.get_level_data().level_type == eLevelType.sidescrolling;
+	if playing_sidescrolling {
+		var offset_from_player = new Vector2(w/2, h*0.65); //?  : new Vector2(w/2, h/2);
+		virtual_camera_corner = (get_pos(instance_nearest(x, y, o_player)).sub(offset_from_player)).multiply(-1);
+	} else {
+		virtual_camera_corner = (get_pos(inst_anchor_screen_bottom_right).sub(new Vector2(w, h * 1))).multiply(-1);
+	}
 
-var screen = instance_nearest(0, 0, o_screen);
-var w = screen.sprite_width;
-var h = screen.sprite_height;
-var playing_sidescrolling = o_manager.get_level_data().level_type == eLevelType.sidescrolling;
-if playing_sidescrolling {
-	var offset_from_player = new Vector2(w/2, h*0.65); //?  : new Vector2(w/2, h/2);
-	virtual_camera_corner = (get_pos(instance_nearest(x, y, o_player)).sub(offset_from_player)).multiply(-1);
-} else {
-	virtual_camera_corner = (get_pos(inst_anchor_screen_bottom_right).sub(new Vector2(w, h * 1))).multiply(-1);
+	symbol_draw_scale = get_level_data().level_type == eLevelType.platforming? symbol_draw_scale_platforming : symbol_draw_scale_default;
 }
-
+	
+	
+fade_timer.tick();
 
 //if instance_exists(o_player) {
 //	if playing_normal_platforming_level() {

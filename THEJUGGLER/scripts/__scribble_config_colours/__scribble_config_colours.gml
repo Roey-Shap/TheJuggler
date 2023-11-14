@@ -39,6 +39,7 @@ function __scribble_config_colours()
         c_xanadu:     scribble_rgb_to_bgr(0x738678),
         c_amaranth:   scribble_rgb_to_bgr(0xe52b50),
 		c_lcd_shade: global.c_lcd_shade,
+		c_emph: scribble_rgb_to_bgr($FF1CFF),
     };
     
     return _colours;

@@ -39,12 +39,22 @@ function SymbolManager() constructor {
 		symbol.y = screen_down_right.y - sh;
 		
 		array_push(active_symbols, symbol);
+		update_symbols_of_relation();
 	}
 	
 	static pop_symbol = function(index=0) {
 		var symbol = active_symbols[index];
 		array_delete(active_symbols, index, 1);
+		update_symbols_of_relation();
 		return symbol;
+	}
+	
+	static update_symbols_of_relation = function() {
+		array_foreach(active_symbols, function(inst, index) {
+			with (inst) {
+				symbol_manager_index = index;
+			}
+		});
 	}
 	
 	static get_concat_symbols_string = function() {
@@ -87,10 +97,12 @@ function SymbolManager() constructor {
 			}
 			
 			if o_manager.get_level_data().killed_symbols_become_bullets {
-				o_manager.spawn_bullet_towards_player(removed_symbol);
+				var spawn_pos = bbox_center(removed_symbol).iadd(new Vector2(0, removed_symbol.sprite_height/2));
+				//o_manager.spawn_bullet_towards_player(spawn_pos);
+				var bombs = o_manager.drop_bombs(1);				
 			}
 
-			
+			removed_symbol.destroy_alt_anim_setup();
 			instance_destroy(removed_symbol);
 			return symbol_struct;
 		}
@@ -111,10 +123,10 @@ function SymbolManager() constructor {
 		
 	static clear_symbols = function() {
 		array_foreach(active_symbols, function(inst) {
-			inst.death_col_1 = merge_color(c_white, c_red, 0.2);
-			inst.death_col_2 = merge_color(c_white, c_red, 0.7);
+			inst.destroy_alt_anim_setup();
 			instance_destroy(inst);
 		});
+		
 		active_symbols = [];
 	}
 }

@@ -5,13 +5,16 @@
 //}
 
 
+
 draw_from_list(global.sprite_FX_list_over, true, true);
 //draw_from_list(global.TextFX_list_over, true, false);
 
 switch (state_game) {
 	case st_game_state.main_menu:
 		with (o_button_parent) {
-			draw_self();
+			if button_value <= 10 {
+				draw_self();
+			}
 		}
 	break;
 	
@@ -56,7 +59,9 @@ switch (state_game) {
 		}
 		
 		with (o_button_parent) {
-			draw();
+			if button_value <= 10 {
+				draw();
+			}
 		}
 		
 		with (o_player) {
@@ -69,9 +74,16 @@ switch (state_game) {
 		//surface_reset_target();
 		if surface_exists(in_screen_draw_surface) {			
 			var s = surface_set_target(in_screen_draw_surface);		
-			draw_from_list(global.sprite_FX_list_over, false, true);
 			//draw_from_list(global.TextFX_list_over, false, false);
 			draw_clear_alpha(c_black, 0);
+			
+			
+			
+			draw_from_list(global.sprite_FX_list_under, false, true);
+			draw_from_list(global.sprite_FX_list_under, false, false);
+			
+			draw_from_list(global.sprite_FX_list_over, false, true);
+			
 			var custom_draw_targets = [o_collision, o_character, o_billboard, o_bullet_parent];
 			for (var i = 0; i < array_length(custom_draw_targets); i++) {
 				with (custom_draw_targets[i]) {

@@ -4,11 +4,16 @@ vspd = 0;
 
 draw_scale = new Vector2(1, 1);
 
+draw_helper = function(_x, _y, angle, blend, alpha) {
+	draw_sprite_ext(spr_bullet_colorable_base, image_index, _x, _y, image_xscale * draw_scale.x, image_yscale * draw_scale.y, angle, c_white, alpha);
+	draw_sprite_ext(spr_bullet_colorable_top, image_index, _x, _y, image_xscale * draw_scale.x, image_yscale * draw_scale.y, angle, blend, alpha);
+}
+
 draw_custom = function(offset_pos, draw_shadow=false) {
 	if draw_shadow {
-		draw_sprite_ext(sprite_index, image_index, x + offset_pos.x + LCD_SHADE_OFFSET.x, y + offset_pos.y + LCD_SHADE_OFFSET.y, image_xscale * draw_scale.x, image_yscale * draw_scale.y, image_angle, global.c_lcd_shade, global.lcd_alpha_large);
+		draw_helper(x + offset_pos.x + LCD_SHADE_OFFSET.x, y + offset_pos.y + LCD_SHADE_OFFSET.y, image_angle, global.c_lcd_shade, global.lcd_alpha_large * image_alpha);
 	} else {
-		draw_sprite_ext(sprite_index, image_index, x + offset_pos.x, y + offset_pos.y, image_xscale * draw_scale.x, image_yscale * draw_scale.y, image_angle, image_blend, image_alpha);
+		draw_helper(x + offset_pos.x, y + offset_pos.y, image_angle, image_blend, image_alpha);
 	}
 }
 
