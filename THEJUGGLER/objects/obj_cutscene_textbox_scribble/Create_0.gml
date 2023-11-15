@@ -57,7 +57,19 @@ draw = function() {
 		set_speaker("None");
 		speaker = o_cutscene.speaker_current;
 	}
-
+	
+			
+	var xscale = speaker.textbox_direction.x;
+	var yscale = speaker.textbox_direction.y;
+	var spr = speaker.textbox_sprite;
+	
+	var sprite_w = (sprite_get_bbox_right(spr) - sprite_get_bbox_left(spr)) * xscale;
+	var sprite_h = (sprite_get_bbox_bottom(spr) - sprite_get_bbox_top(spr)) * yscale;
+	
+	text_dims_max = new Vector2(sprite_w, sprite_h);
+	if speaker.textbox_angle % 180 != 0 {
+		text_dims_max = new Vector2(sprite_h, sprite_w);
+	}
 	
 	textbox_element = scribble(textbox_conversation[textbox_conversation_index])
 	.starting_format(speaker.font, 1)
@@ -73,13 +85,7 @@ draw = function() {
 	textbox_pos.y *= CAM_H; 
 	
 	var textbox_bbox = textbox_element.get_bbox(textbox_pos.x, textbox_pos.y);
-		
-	var xscale = 3 * speaker.textbox_direction.x;
-	var yscale = 2 * speaker.textbox_direction.y;
-	var spr = speaker.textbox_sprite;
-	
-	var sprite_w = (sprite_get_bbox_right(spr) - sprite_get_bbox_left(spr)) * xscale;
-	var sprite_h = (sprite_get_bbox_bottom(spr) - sprite_get_bbox_top(spr)) * yscale;
+
 	
 	draw_sprite_ext(speaker.textbox_sprite, 0, 
 					textbox_pos.x, textbox_pos.y, 

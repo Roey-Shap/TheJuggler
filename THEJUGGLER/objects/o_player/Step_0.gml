@@ -16,8 +16,28 @@ if platforming_active {
 	if hinput != 0 {
 		//var _fast_falling_hspd_factor = fast_falling? fast_falling_hspd_factor : 1;
 		hspd = hinput * movespd;
+		
+		if grounded {
+			run_dust_timer.tick();
+			if run_dust_timer.is_done() {
+				play_pitch_range(snd_tap_1, 0.9, 1.05);
+				
+				var offset_x = irandom_range(-2, 2);
+				var offset_y = 0;
+				var spr = choose(spr_fx_dust_1, spr_fx_dust_2, spr_fx_dust_3);
+				var fx = new SpriteFX(x + offset_x, y + offset_y, spr, 1);
+				fx.image_angle = irandom(359);
+				fx.image_speed = random_range(1, 1.1);
+				var s = random_range(0.4, 0.65);
+				fx.image_xscale = s;
+				fx.image_yscale = s;
+				fx_setup_screen_layer(fx);
+				run_dust_timer.start();
+			}
+		}
 	} else {
 		hspd = lerp(hspd, 0, fric);
+		run_dust_timer.current_count = run_dust_timer.countdown_duration;
 	}
 	
 	if jinput {

@@ -1,6 +1,7 @@
 event_inherited();
 
-hp = 3;
+hp_max = 3;
+hp = hp_max;
 
 platforming_active = false;
 
@@ -36,6 +37,7 @@ key_down = ord("S");
 
 draw_scale = new Vector2(1, 1);
 sprite_scale_normalize_lerp_factor = 0.2;
+run_dust_timer = new Timer(get_frames(0.375));
 
 coyote_time_timer = new Timer(8);
 buffer_jump_timer = new Timer(8);
@@ -146,6 +148,8 @@ function perform_landing() {
 	var dust = new SpriteFX(x, y + 10, spr_fx_player_land_dust, 1);
 	fx_setup_screen_layer(dust);
 	if fast_falling {
+		play_pitch_range(snd_fast_fall, 0.9, 1.05);
+		
 		repeat(irandom_range(4, 6)) {
 			var offset_x = choose(-1, 1) * irandom_range(8, 20);
 			var offset_y = irandom_range(-10, 2);
@@ -156,9 +160,24 @@ function perform_landing() {
 			fx_setup_screen_layer(fx);
 		}
 	} else {
-		dust.alpha = 0.75;
-		dust.image_yscale = 0.5;
+		play_pitch_range(snd_tap_1, 0.9, 1.05);
+		
+		dust.alpha = 0.1;
+		dust.image_yscale = 0.25;
+		
+		repeat(irandom_range(2, 3)) {
+			var offset_x = choose(-1, 1) * irandom_range(8, 20);
+			var offset_y = irandom_range(-10, 2);
+			var spr = choose(spr_fx_dust_1, spr_fx_dust_2, spr_fx_dust_3);
+			var fx = new SpriteFX(x + offset_x, y + offset_y, spr, 1);
+			fx.image_angle = irandom(359);
+			fx.image_speed = random_range(0.8, 1);
+			fx.image_xscale = random_range(0.5, 0.8);
+			fx.image_yscale = random_range(0.5, 0.8);
+			fx_setup_screen_layer(fx);
+		}
 	}
+	
 }
 
 function initiate_fast_fall() {

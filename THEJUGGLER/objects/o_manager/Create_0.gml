@@ -189,7 +189,7 @@ face_button_sounds_shot_success = [snd_watch_beep_special_1];
 face_button_sounds_shot_special = [snd_watch_beep_special_2];
 
 consecutive_hit_sound_factor = 1;
-consecutive_hit_sound_factor_max = 10;
+consecutive_hit_sound_factor_max = 7;
 //consecutive_hit_timer = new Timer(0.85, false, function() {
 //	o_manager.consecutive_hit_sound_factor -= 1;
 //});
@@ -342,18 +342,31 @@ function get_time_between_symbols_curve(level_number) {
 }
 
 function handle_game_over() {
-	state_game = st_game_state.main_menu;
-	state_watch = eWatchState.time;
-	current_level = 0;
-	current_score = 0;
-	current_fire_counter_value = 0;
+	var level_type = get_level_data().level_type;
 	
-	symbol_manager.clear_symbols();
-	reset_buttons_for_shape();
+	if level_type == eLevelType.normal {	
+		state_game = st_game_state.main_menu;
+		state_watch = eWatchState.time;
+		current_level = 0;
+		current_score = 0;
+		current_fire_counter_value = 0;
 	
-	if !cs_try_again.been_played() {
-		cs_try_again.play();
+		symbol_manager.clear_symbols();
+		reset_buttons_for_shape();
+	
+		if !cs_try_again.been_played() {
+			cs_try_again.play();
+		}
+	} else if level_type == eLevelType.platforming {
+		
+	} else if level_type == eLevelType.sidescrolling {
+		with (o_player) {
+			x = last_checkpoint_pos.x;
+			y = last_checkpoint_pos.y;
+		}
 	}
+	
+	o_player.hp = o_player.hp_max;
 	
 	//start_next_level();
 }

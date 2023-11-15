@@ -39,6 +39,82 @@ if platforming_active {
 			}
 		break;
 		
+		case e_witch_state.swoop_prepare:
+			percent_done = action_timer.get_percent_done();
+			x = sample_curve(cv_witch_flying_away_pos, percent_done, stored_position.x, target_position.x);
+			y = target_position.y + sample_curve(cv_witch_flying_away_pos, percent_done) * 100;
+			if action_timer.is_done() and instance_exists(o_screen) {
+				var screen = instance_nearest(x, y, o_screen);
+				var h = screen.sprite_height;
+				var up_left = o_manager.virtual_camera_corner.multiply(-1);
+				var min_y = up_left.y;
+				var max_y = min_y + h;
+				y = irandom_range(min_y + h * 0.1, max_y - h * 0.1);
+				
+				store_position();
+				
+				state_current = e_witch_state.across_swoop_attack;
+				action_timer.set_and_start(get_frames(1));
+				turn_to(-target_side_for_flyby);
+				if target_side_for_flyby == 1 {
+					target_position = new Vector2(flyby_position_left.x, y);
+				} else {
+					target_position = new Vector2(flyby_position_right.x, y);
+				}
+				
+				var warning_fx = new SpriteFX(clamp(x, up_left.x, up_left.x + screen.sprite_width), y, spr_fx_swoop_warning, 1);
+				fx_setup_screen_layer(warning_fx);
+				warning_fx.image_xscale = -target_side_for_flyby;
+			}
+		break;
+		
+		case e_witch_state.across_swoop_attack:
+			percent_done = action_timer.get_percent_done();
+			x = lerp(stored_position.x, target_position.x, percent_done);
+			y = lerp(stored_position.y, target_position.y, percent_done);
+			
+			hitbox_draw = true;
+			
+			var player = collision_circle(x, y, 100, o_player, true, false);
+			if player != noone {
+				player.take_hit();
+			}
+			
+			effect_timer.tick();
+			if effect_timer.is_done() {
+				effect_timer.start();
+				var fx = new SpriteFX(x, y, spr_fx_swoop_movement, 1);
+				fx_setup_screen_layer(fx);
+				fx.image_xscale = draw_scale.x;
+				fx.image_yscale = draw_scale.y;
+				
+				fx = new SpriteFX(x + (-target_side_for_flyby * 30), y, spr_fx_swoop_movement, -1);
+				fx_setup_screen_layer(fx);
+				fx.image_xscale = draw_scale.x;
+				fx.image_yscale = draw_scale.y;
+				fx.image_alpha = 0.75;
+			}
+			
+			if hit_roll(0.03) {
+				var side = choose(-1, 1);
+				var offset_x = target_side_for_flyby * irandom_range(10, 15);
+				var offset_y = side * irandom_range(10, 20);
+				var spr = choose(spr_fx_dust_1, spr_fx_dust_2, spr_fx_dust_3, spr_fx_sparkle_1);
+				var fx = new SpriteFX(x + offset_x, y + offset_y, spr, 1);
+				fx.image_angle = irandom(359);
+				fx.image_speed = random_range(0.8, 1);
+				fx.hspd = target_side_for_flyby * random_range(0, 3);
+				fx.vspd = side * random_range(0.5, 4);
+				fx.image_blend = array_pick_random(concat_arrays([c_white], global.c_magic_colors));
+				fx_setup_screen_layer(fx);
+			}
+			
+			if action_timer.is_done() {
+				begin_return_to_neutral(2);
+				hitbox_draw = false;
+			}
+		break;
+		
 		case e_witch_state.flying_back_across:
 			percent_done = action_timer.get_percent_done();
 			x = lerp(stored_position.x, target_position.x, percent_done);
@@ -111,6 +187,7 @@ if platforming_active {
 			}
 			
 			if action_timer.is_done() {
+				hitbox_draw = false;
 				begin_return_to_neutral();
 			}
 		break;
@@ -129,12 +206,12 @@ if platforming_active {
 		
 		case e_witch_state.dropping_bombs_fly_up:
 			percent_done = action_timer.get_percent_done();
-			x = stored_position.x + sample_curve(cv_witch_flying_up_pos, percent_done, stored_position.x, target_position.x) * 100;
+			x = stored_position.x + sample_curve(cv_witch_flying_up_pos, percent_done) * 100;
 			y = stored_position.y - sample_curve(cv_witch_flying_up_pos, percent_done) * 500;
 			
 			if action_timer.is_done() {
 				drop_bombs();
-				begin_return_to_neutral(7);
+				begin_return_to_neutral(3);
 			}
 		break;
 	}

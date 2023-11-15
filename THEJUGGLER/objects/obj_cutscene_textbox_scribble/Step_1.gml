@@ -4,7 +4,7 @@ image_speed = endOfLine;
 
 image_alpha = 0;//(cur_portrait == -1 and global.debug);
 
-var proceed_dialogue = INPUT_ACC or INPUT_BACK or continue_text_auto; // or INPUT_TEXTBOX_SKIP;
+var proceed_dialogue = INPUT_ACC or INPUT_BACK or continue_text_auto or (DEBUG and mouse_check_button(mb_right));
 
 //if typist.get_state() >= 1 {
 //	var cs = instance_nearest(x, y, o_cutscene);

@@ -1,15 +1,15 @@
 function cutscenes_init() {
 	speaker_data = [
-		(new Speaker("Player", new Vector2(0.7, 0.8), fnt_player)),
+		(new Speaker("Player", new Vector2(0.7, 0.8), fnt_player))
+			.set_textbox_direction(new Vector2(3, 2)),
 		(new Speaker("Other", new Vector2(0.7, 0.3), fnt_other))
-			.set_textbox_direction(new Vector2(1, -1)),
+			.set_textbox_direction(new Vector2(3, -2)),
 		(new Speaker("None", new Vector2(0.5, 0.5), fnt_other))
-			.set_textbox_sprite(spr_textbox_neutral_nineslice),
+			.set_textbox_sprite(spr_textbox_neutral_nineslice)
+			.set_textbox_direction(new Vector2(3, 2)),
 		(new Speaker("Witch", new Vector2(0.5, 0.2), fnt_witch))
 			.set_textbox_angle(-90)
-			.set_update_function(function() {
-				print("hi :)"); 
-			}),
+			.set_textbox_direction(new Vector2(2, 3)),
 	];
 	
 	//cs_game_start = new CutsceneData([

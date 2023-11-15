@@ -12,6 +12,8 @@ enum e_witch_state {
 	flying_across_double,
 	dropping_bombs,
 		dropping_bombs_fly_up,
+	across_swoop_attack,
+		swoop_prepare,
 	turn_to_stone,
 }
 
@@ -35,6 +37,8 @@ var off = CAM_W * 0.2;
 flyby_position_right = new Vector2(default_position.x + off, default_position.y);
 flyby_position_left = new Vector2(default_position.x - off, default_position.y);
 
+effect_timer = new Timer(get_frames(0.1));
+
 //print(flyby_position_left);
 //print(flyby_position_right);
 
@@ -49,6 +53,24 @@ sound_shot_charge = snd_witch_shot_1_charge;
 sound_shot_release = snd_witch_shot_1_release;
 
 shot_color = global.c_magic_1;
+hitbox_draw = false;
+
+
+draw_custom_prev = draw_custom;
+draw_custom = function(offset_pos, draw_shadow=false) {
+	if hitbox_draw {
+		draw_set_color(global.c_hurt);
+		var prec = round_to(map(-1, 1, sin(current_time/100), 4, 32), 4);
+		draw_set_circle_precision(prec);
+		var rad = map(-1, 1, sin(current_time/200), 16, 48);
+		draw_circle(x + offset_pos.x, y + offset_pos.y, rad, false);
+		draw_set_color(c_white);
+		draw_circle(x + offset_pos.x, y + offset_pos.y, rad+1, true);
+		draw_set_color(c_white);
+	}
+	
+	draw_custom_prev(offset_pos, draw_shadow);
+}
 
 drop_bombs = function() {
 	var num_times = irandom_range(2, 3);
@@ -99,9 +121,10 @@ function begin_random_action() {
 				target_position = flyby_position_left;
 			}
 			
+			turn_to(target_side_for_flyby);
+			
 			state_current = e_witch_state.flying_to_side;
 			action_timer.set_and_start(get_frames(4));
-			turn_to(target_side_for_flyby);
 			
 			flyby_type_current = choose(e_witch_flying_across_type.at_player, e_witch_flying_across_type.radial);
 					//omitted:
@@ -124,6 +147,21 @@ function begin_random_action() {
 		case e_witch_state.dropping_bombs:
 			state_current = e_witch_state.dropping_bombs_fly_up;
 			action_timer.set_and_start(get_frames(5));
+		break;
+		
+		case e_witch_state.across_swoop_attack:
+			state_current = e_witch_state.swoop_prepare;
+			action_timer.set_and_start(get_frames(2));
+			target_side_for_flyby = choose(1, -1);
+			if target_side_for_flyby == 1 {
+				target_position = flyby_position_right;
+			} else {
+				target_position = flyby_position_left;
+			}
+			
+			turn_to(target_side_for_flyby);
+			
+			store_position();
 		break;
 	}
 }

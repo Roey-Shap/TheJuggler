@@ -88,7 +88,7 @@ function SpriteFX(_x, _y, _sprite_index, over_or_under) constructor {
 				
 				if draw_shadow {
 					draw_sprite_ext(sprite_index, image_index, x + offset.x + LCD_SHADE_OFFSET.x, y + offset.y + LCD_SHADE_OFFSET.y, image_xscale, image_yscale,
-									image_angle, global.c_lcd_shade, global.lcd_alpha);
+									image_angle, global.c_lcd_shade, global.lcd_alpha * image_alpha);
 				} else {
 				
 					//add_debug_text(image_index);
