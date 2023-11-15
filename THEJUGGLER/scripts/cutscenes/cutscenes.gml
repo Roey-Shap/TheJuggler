@@ -12,13 +12,20 @@ function cutscenes_init() {
 			}),
 	];
 	
-	cs_game_start = new CutsceneData([
-		[cutscene_custom_action, function() {
-			with (o_manager) {
-				state_game = st_game_state.playing;
-				start_next_level();
-			}
-		}],
+	//cs_game_start = new CutsceneData([
+	//	[cutscene_custom_action, function() {
+	//		with (o_manager) {
+	//			state_game = st_game_state.playing;
+	//			start_next_level();
+	//		}
+	//	}],
+	//], false);
+	
+	cs_start_game = new CutsceneData([
+		[cs_set_speaker, "Player"],
+		[cs_text, [
+			"There we go! [c_emph]Match the numbers[/c], he said...",
+		]]
 	], false);
 	
 	cs_get_watch_from_seller = new CutsceneData([
@@ -35,6 +42,7 @@ function cutscenes_init() {
 			"Not anything too modern, obviously. Wouldn't have come here if I were.",
 			"[speaker,Other]I see... A man of culture! Come in, come in! I've got just the thing!",
 		]],
+		[cs_wait, get_frames(0.75)],
 		[cs_text, [
 			"[speaker,None]Some time later...",
 		]],
@@ -43,39 +51,57 @@ function cutscenes_init() {
 			"[speaker,Other]Welcome to your new Tasionic! It has a variety of features!",
 			"Its face buttons allow you to calculate various things, and, of course, it lets you tell the time.",
 			"But I'll let you in on a little secret - it's got [c_emph]a game[/c] for those especially boring meetings.",
-			"I can see that sparkle in your eyes, don't try to hide it from me. I know there's still someone who wants to have fun under that businessman suit and tie.",
-			"Just press that side button there and you'll have a little something to keep your mind offa' spreadsheets.",
+			"You can't hide your amusement under that businessman suit and tie! Here...",
+			"Just press that [c_emph]button on the left[/c] there and you'll have a little something to keep your mind offa' spreadsheets.",
 			"... anyway. How you spend your meetings ain't none of my business.",
+			"[speaker,Player]How's it work? The game, I mean.",
+			"[speaker,Other]Oh, it's just a [c_emph]number matching game[/c]. But you'll figure it out.",
 			"Have a good day, sir.",
 		]],
 		[cs_fade, fade_type.indefinite, get_frames(1)],
 		[cs_wait, get_frames(1)],
+		[cs_set_speaker, "None"],
 		[cs_text, [
 			"[speaker,None](Later, at the meeting.)"			
 		]],
 		[cs_fade, fade_type.from_black, get_frames(0.5)],
+		[cs_set_speaker, "Player"],
 		[cs_text, [
 			"[speaker,Player][slant](Don't look at the clock. Don't. [delay,200]Look. [delay,200]At. [delay,200]The- ugh god DAMN.)",
 			"([slant]Six minutes???)",
 			"([slant]Do they [/slant]want[slant] these meetings to go on forever?)",
 			"([slant]!!\n I have the watch! Genius!)",
 			"([slant][wave]Heh heh.[/wave] Well, Andrew, it pays to be prepared.)",
-			"([slant]I meant, how would anyone who hadn't taken those survivalist classes known what to do?",
-			"(Let's see. How does this thing work?)",
-		]]
+			"([slant]I knew those survival classes would pay off! I shall survive this meeting!!",
+			"([slant]Let's see. How does this thing work again? Button on the left, he said...)",
+		]],
+		[cutscene_custom_action, function() {
+			with (o_manager) {
+				state_watch = eWatchState.time;
+			}
+		}],
 	], true);
 	
 	cs_numbers_fast_start = new CutsceneData([
+		[cs_set_speaker, "Player"],
 		[cs_text, [
-			"Alright, not too bad...",
+			"([slant]Alright, not too bad...)",
 		]]
 	], true);
 	
 	cs_numbers_getting_harder = new CutsceneData([
+		[cs_set_speaker, "Player"],
 		[cs_text, [
-			"Getting a little harder...",
+			"[slant](Getting a little harder...)",
 		]]
 	], false);
+	
+	cs_try_again = new CutsceneData([
+		[cs_set_speaker, "Player"],
+		[cs_text, [
+			"([slant]Again!)",
+		]]
+	], true);
 	
 	cs_player_becomes_juggler = new CutsceneData([
 		[cs_text, [
@@ -135,13 +161,19 @@ function cutscenes_init() {
 function CutsceneData(_scene, _freeze_game) constructor {
 	scene = _scene;
 	freeze_game = _freeze_game;
+	times_played = 0;
 	
 	static play = function(parent=noone) {
 		if scene == -1 {
 			return;
 		}
 		
+		times_played += 1;
 		create_cutscene(scene, parent, freeze_game);
+	}
+	
+	static been_played = function() {
+		return times_played > 0;
 	}
 }
 

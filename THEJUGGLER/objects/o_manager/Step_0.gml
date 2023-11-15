@@ -29,7 +29,10 @@ if watch_platforming_growth_perform_transition {
 switch (state_game) {
 	case st_game_state.main_menu:
 		if room == rm_game {
-			cs_game_start.play();
+			if !has_done_intro {
+				has_done_intro = true;
+				cs_get_watch_from_seller.play();
+			}
 		} else if mouse_check_button_pressed(key_accept) {
 			if room == rm_main_menu {
 				room = rm_game;
@@ -66,10 +69,13 @@ switch (state_game) {
 					var removed_symbol = symbol_manager.pop_symbol(0);
 					if get_level_data().killed_symbols_become_bullets {	// if your killed symbols become bullets, then neglected ones should just hit
 						var bombs = drop_bombs(irandom_range(3, 5));
-						//hit_player();
 					} else {
-						var spawn_pos = bbox_center(removed_symbol).iadd(new Vector2(0, removed_symbol.sprite_height/2));
-						var bombs = drop_bombs(2);
+						if get_level_data().level_type == eLevelType.normal {
+							hit_player();
+						} else {
+							var spawn_pos = bbox_center(removed_symbol).iadd(new Vector2(0, removed_symbol.sprite_height/2));
+							var bombs = drop_bombs(2);
+						}
 						//spawn_bullet_towards_player(spawn_pos);
 					}
 					
@@ -78,7 +84,7 @@ switch (state_game) {
 				}
 			}
 		
-			if num_enemies_defeated_this_wave >= current_wave_size or keyboard_check_pressed(ord("V")){
+			if num_enemies_defeated_this_wave >= current_wave_size or (DEVELOPER_MODE and keyboard_check_pressed(ord("V"))){
 				start_next_wave();
 			}
 		}

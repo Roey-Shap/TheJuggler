@@ -75,11 +75,11 @@ function level_data_init() {
 		//(new LevelData(eLevels.numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, number_symbols, eLevelType.sidescrolling)),
 		//
 		
-		(new LevelData(eLevels.numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, 4, number_symbols, eLevelType.normal))
-			.set_starting_cutscene(cs_get_watch_from_seller),
-		(new LevelData(eLevels.fast_numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_2, 4, number_symbols, eLevelType.normal))
-			.set_starting_cutscene(cs_numbers_fast_start)
-			.set_cutscenes([cs_numbers_getting_harder], [0.2]),		
+		(new LevelData(eLevels.numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, 3, number_symbols, eLevelType.normal))
+			.set_starting_cutscene(cs_start_game),
+		(new LevelData(eLevels.fast_numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_2, 5, number_symbols, eLevelType.normal))
+			.set_starting_cutscene(cs_numbers_fast_start),
+			//.set_cutscenes([cs_numbers_getting_harder], [0.2]),		
 		new LevelData(eLevels.shapes, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, 3, shape_symbols, eLevelType.normal),
 		new LevelData(eLevels.fast_numbers_and_shapes, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_3, 4, numbers_and_shapes_symbols, eLevelType.normal),
 		
@@ -137,10 +137,18 @@ function LevelData(_enum_tag, _enemies_per_wave_curve, _time_between_enemies_cur
 	}
 
 	static play_starting_cutscene = function() {
+		if cutscene_level_start.been_played() {
+			return;
+		}
+		
 		cutscene_level_start.play();
 	}
 	
 	static play_ending_cutscene = function() {
+		if cutscene_level_end.been_played() {
+			return;
+		}
+		
 		cutscene_level_end.play();
 	}
 		
@@ -169,7 +177,11 @@ function LevelData(_enum_tag, _enemies_per_wave_curve, _time_between_enemies_cur
 			return;
 		}
 		
-		create_cutscene(cutscenes_intermediate[cutscenes_intermediate_index]);
+		var cs = cutscenes_intermediate[cutscenes_intermediate_index];
+		if !cs.been_played() {
+			create_cutscene(cs);
+		}
+		
 		cutscenes_intermediate_index += 1;
 	}
 	

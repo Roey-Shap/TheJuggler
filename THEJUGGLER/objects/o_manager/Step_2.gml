@@ -32,7 +32,7 @@ fx_perform_step();
 	symbol_draw_scale = get_level_data().level_type == eLevelType.platforming? symbol_draw_scale_platforming : symbol_draw_scale_default;
 }
 	
-	
+draw_flicker.tick();
 fade_timer.tick();
 
 //if instance_exists(o_player) {

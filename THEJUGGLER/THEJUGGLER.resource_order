@@ -144,6 +144,7 @@
     {"name":"cutscene_execute_alt","order":2,"path":"scripts/cutscene_execute_alt/cutscene_execute_alt.yy",},
     {"name":"spr_wriststrap","order":4,"path":"sprites/spr_wriststrap/spr_wriststrap.yy",},
     {"name":"o_symbol","order":9,"path":"objects/o_symbol/o_symbol.yy",},
+    {"name":"snd_mistake","order":7,"path":"sounds/snd_mistake/snd_mistake.yy",},
     {"name":"o_bounce_column","order":8,"path":"objects/o_bounce_column/o_bounce_column.yy",},
     {"name":"spr_watch_base","order":2,"path":"sprites/spr_watch_base/spr_watch_base.yy",},
     {"name":"scribble_external_sound_remove","order":2,"path":"scripts/scribble_external_sound_remove/scribble_external_sound_remove.yy",},

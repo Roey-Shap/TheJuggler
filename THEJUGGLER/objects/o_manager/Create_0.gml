@@ -8,6 +8,14 @@ enum st_game_state {
 	LAST
 }
 
+enum eWatchState {
+	time,
+	game
+		// maybe add all of the modes, but whatever for now
+}
+
+state_watch = eWatchState.time;
+
 enum fade_type {
 	to_black,
 	from_black,
@@ -26,6 +34,7 @@ key_fullscreen = ord("F");
 
 
 // Progression Tracking Variables
+has_done_intro = false;
 current_level = 0;				// L levels
 current_number_of_waves = -1;	// each level has W waves
 
@@ -170,6 +179,9 @@ function shape_values_form_helper(_symbol_type) {
 	return get_arrangement_status(current_values_in_shape, arrangements);
 }
 
+draw_flicker = new Timer(get_frames(0.5));
+draw_flicker.start();
+draw_str = false;
 level_title_timer = new Timer(get_frames(2));
 
 face_button_sounds = [snd_watch_beep_1, snd_watch_beep_2, snd_watch_beep_3];
@@ -262,7 +274,7 @@ function start_next_wave() {
 		current_wave += 1;
 		num_enemies_created_this_wave = 0;
 		num_enemies_defeated_this_wave = 0;
-		var num_enemies_curve_value = sample_curve(get_num_enemies_per_wave_curve(current_level), wave_completion);
+		var num_enemies_curve_value = sample_curve(get_num_enemies_per_wave_curve(current_level), wave_completion) + 1;
 		var num_enemies_curve_scale = round(5 + (2.5 * current_level) * random_range(0.9, 1.1));
 		current_wave_size = round(num_enemies_curve_value * num_enemies_curve_scale);
 		
@@ -280,7 +292,12 @@ function start_next_wave() {
 function hit_player() {
 	var player = instance_nearest(0, 0, o_player);
 	if player != noone {
-		player.take_hit();
+		player.hp -= 1;
+		play_sound(snd_mistake);
+		if player.hp <= 0 {
+			handle_game_over();
+		}
+		//player.take_hit();
 	}
 }
 
@@ -326,6 +343,19 @@ function get_time_between_symbols_curve(level_number) {
 
 function handle_game_over() {
 	state_game = st_game_state.main_menu;
+	state_watch = eWatchState.time;
+	current_level = 0;
+	current_score = 0;
+	current_fire_counter_value = 0;
+	
+	symbol_manager.clear_symbols();
+	reset_buttons_for_shape();
+	
+	if !cs_try_again.been_played() {
+		cs_try_again.play();
+	}
+	
+	//start_next_level();
 }
 
 function handle_fire(button) {
@@ -437,28 +467,47 @@ function remove_value_from_shape(button) {
 	}
 }
 
-function receive_click_from_face_button(button) {
+function receive_click_from_face_button(button) {		
 	var value = button.button_value;
-	
+	var do_normal_sounds = true;
 	if value == 0 {
 		handle_fire(button);
+		do_normal_sounds = false;
 	} else if value == 10 {
 		reset_buttons_for_shape();
-		play_random_sound(face_button_sounds, 0.85, 1.1);
 	} else if value <= 9 {
-		play_random_sound(face_button_sounds, 0.85, 1.1);
-		if isIn(value, current_values_in_shape) {
-			button.image_blend = c_white;
-			remove_value_from_shape(button);
-		} else {
-			button.image_blend = c_lime;
-			add_value_to_shape(button);
-		}		
+		if !game_is_frozen() {
+			if isIn(value, current_values_in_shape) {
+				button.image_blend = c_white;
+				remove_value_from_shape(button);
+			} else {
+				button.image_blend = c_lime;
+				add_value_to_shape(button);
+			}		
 		
-		current_fire_counter_value = (current_fire_counter_value + 1) % 10;
+			current_fire_counter_value = (current_fire_counter_value + 1) % 10;
+		}
 		//if get_current_shape_value() == symbol_type.LAST {
 		//	reset_buttons_for_shape();
 		//}
+	} else if value == 15 {
+		if state_watch == eWatchState.time {
+			if game_is_frozen() {
+				//append_cutscene([
+				//	[cs_text, [
+				//		"[speaker,Other]Yes, it's that button. You've got it."
+				//	]]
+				//], noone, true)
+			} else {
+				state_watch = eWatchState.game;
+				state_game = st_game_state.playing;
+				start_next_level();
+			}
+		}
+	}
+	
+	if do_normal_sounds {
+		play_random_sound(face_button_sounds, 0.85, 1.1);
 	}
 }
 

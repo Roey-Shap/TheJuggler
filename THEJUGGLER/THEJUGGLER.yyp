@@ -208,6 +208,7 @@
     {"id":{"name":"__shd_scribble","path":"shaders/__shd_scribble/__shd_scribble.yy",},},
     {"id":{"name":"spr_wriststrap","path":"sprites/spr_wriststrap/spr_wriststrap.yy",},},
     {"id":{"name":"o_symbol","path":"objects/o_symbol/o_symbol.yy",},},
+    {"id":{"name":"snd_mistake","path":"sounds/snd_mistake/snd_mistake.yy",},},
     {"id":{"name":"o_bounce_column","path":"objects/o_bounce_column/o_bounce_column.yy",},},
     {"id":{"name":"spr_watch_base","path":"sprites/spr_watch_base/spr_watch_base.yy",},},
     {"id":{"name":"manager_functions","path":"scripts/manager_functions/manager_functions.yy",},},

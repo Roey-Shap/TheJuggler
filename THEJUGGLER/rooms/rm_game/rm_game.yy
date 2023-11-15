@@ -147,7 +147,6 @@
     {"name":"inst_6FA3B770","path":"rooms/rm_game/rm_game.yy",},
     {"name":"inst_288FF175","path":"rooms/rm_game/rm_game.yy",},
     {"name":"inst_73DA0CC2","path":"rooms/rm_game/rm_game.yy",},
-    {"name":"inst_550CC3","path":"rooms/rm_game/rm_game.yy",},
   ],
   "isDnd": false,
   "layers": [
@@ -340,9 +339,6 @@
         {"resourceType":"GMRInstance","resourceVersion":"1.0","name":"inst_73DA0CC2","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":15,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"objectId":{"name":"o_button_parent","path":"objects/o_button_parent/o_button_parent.yy",},"properties":[
             {"resourceType":"GMOverriddenProperty","resourceVersion":"1.0","name":"","objectId":{"name":"o_button_parent","path":"objects/o_button_parent/o_button_parent.yy",},"propertyId":{"name":"value","path":"objects/o_button_parent/o_button_parent.yy",},"value":"15",},
           ],"rotation":0.0,"scaleX":0.5488456,"scaleY":0.63061774,"x":505.0,"y":637.47925,},
-        {"resourceType":"GMRInstance","resourceVersion":"1.0","name":"inst_550CC3","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":15,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"objectId":{"name":"o_button_parent","path":"objects/o_button_parent/o_button_parent.yy",},"properties":[
-            {"resourceType":"GMOverriddenProperty","resourceVersion":"1.0","name":"","objectId":{"name":"o_button_parent","path":"objects/o_button_parent/o_button_parent.yy",},"propertyId":{"name":"value","path":"objects/o_button_parent/o_button_parent.yy",},"value":"16",},
-          ],"rotation":0.0,"scaleX":0.5488456,"scaleY":0.63061774,"x":505.0,"y":499.09692,},
       ],"layers":[],"properties":[],"userdefinedDepth":false,"visible":true,},
     {"resourceType":"GMRInstanceLayer","resourceVersion":"1.0","name":"WatchHand","depth":900,"effectEnabled":true,"effectType":null,"gridX":16,"gridY":16,"hierarchyFrozen":false,"inheritLayerDepth":false,"inheritLayerSettings":false,"inheritSubLayers":true,"inheritVisibility":true,"instances":[
         {"resourceType":"GMRInstance","resourceVersion":"1.0","name":"inst_3117622E","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"objectId":{"name":"o_watch_hand","path":"objects/o_watch_hand/o_watch_hand.yy",},"properties":[],"rotation":0.0,"scaleX":1.232241,"scaleY":1.2322412,"x":-224.0,"y":128.0,},
