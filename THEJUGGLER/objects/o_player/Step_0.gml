@@ -60,6 +60,7 @@ if platforming_active {
 		if fast_falling {
 			if round(current_time) % 2 == 0 {
 				var fx = new FadeFX(x, y, sprite_index, 1, image_index, get_frames(0.25));
+				fx.image_xscale = image_xscale * draw_scale.x;
 				fx_setup_screen_layer(fx);
 			}
 		} else {

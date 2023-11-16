@@ -36,7 +36,9 @@ textbox_margins = text_dims_max.multiply(0.1);
 //typist.character_delay_add(".", 70);
 
 scribble_anim_shake(1, 0.25);
-scribble_anim_wave(1.5, 0.4, 0.25);
+scribble_anim_wave(0.8, 0.1, 0.25);
+scribble_anim_wobble(10, 0.2);
+scribble_anim_cycle(0.2, 255, 255);
 
 function perform_yes_no_func() {
 	if yes_func != -1 {

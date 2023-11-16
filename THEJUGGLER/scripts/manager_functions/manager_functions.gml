@@ -31,6 +31,7 @@ function game_initialize() {
 	#macro LAYER_WATCH_DISPLAY "WatchFaceDisplay"
 	
 	#macro SND_PRIORITY_FX 5
+	#macro SND_PRIORITY_MUSIC 4
 
 	#macro INPUT_ACC global.mouse_click_left
 	#macro INPUT_BACK global.mouse_click_right
@@ -71,19 +72,20 @@ function level_data_init() {
 	level_data = [
 		new LevelData(eLevels.NULL, -1, -1, 0, -1, eLevelType.normal),
 		
-		new LevelData(eLevels.platforming_intro, -1, -1, 0, -1, eLevelType.sidescrolling),		
-		(new LevelData(eLevels.numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, 6, number_symbols, eLevelType.platforming))
-				.set_witch_modes([e_witch_state.flying_across, e_witch_state.dropping_bombs, e_witch_state.across_swoop_attack]),
+		//new LevelData(eLevels.platforming_intro, -1, -1, 0, -1, eLevelType.sidescrolling),		
+		//(new LevelData(eLevels.numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, 6, numbers_and_shapes_symbols, eLevelType.platforming))
+		//		.set_witch_modes([e_witch_state.flying_across, e_witch_state.dropping_bombs, e_witch_state.across_swoop_attack]),
 		
-		//(new LevelData(eLevels.numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, 3, number_symbols, eLevelType.normal))
-		//	.set_starting_cutscene(cs_start_game),
-		//(new LevelData(eLevels.fast_numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_2, 5, number_symbols, eLevelType.normal))
-		//	.set_starting_cutscene(cs_numbers_fast_start),
-		//	//.set_cutscenes([cs_numbers_getting_harder], [0.2]),		
-		//new LevelData(eLevels.shapes, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, 3, shape_symbols, eLevelType.normal),
-		//new LevelData(eLevels.fast_numbers_and_shapes, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_3, 4, numbers_and_shapes_symbols, eLevelType.normal),
+		(new LevelData(eLevels.numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, 3, number_symbols, eLevelType.normal))
+			.set_starting_cutscene(cs_start_game),
+		(new LevelData(eLevels.fast_numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_2, 5, number_symbols, eLevelType.normal))
+			.set_starting_cutscene(cs_numbers_fast_start),
+			//.set_cutscenes([cs_numbers_getting_harder], [0.2]),		
+		new LevelData(eLevels.shapes, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, 3, shape_symbols, eLevelType.normal),
+		new LevelData(eLevels.fast_numbers_and_shapes, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_3, 4, numbers_and_shapes_symbols, eLevelType.normal),
 		
-		new LevelData(eLevels.platforming_intro, -1, -1, 0, -1, eLevelType.sidescrolling),		
+		new LevelData(eLevels.platforming_intro, -1, -1, 0, -1, eLevelType.sidescrolling)
+		.set_starting_cutscene(cs_set_creepy_music),		
 		
 		//(new LevelData(eLevels.platforming_intro, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, 3, numbers_and_shapes_symbols, eLevelType.platforming))
 		//.set_killed_symbols_become_bullets(),
@@ -94,7 +96,8 @@ function level_data_init() {
 		.set_witch_modes([e_witch_state.flying_across, e_witch_state.dropping_bombs]),
 		
 		(new LevelData(eLevels.platforming_intro, cv_number_of_enemies_platforming_with_numbers_1, cv_base_time_between_symbol_per_wave_platforming_with_numbers_1, 3, numbers_and_shapes_symbols, eLevelType.platforming))
-		.set_starting_cutscene(cs_witch_explains_exploding_symbols)
+		.set_starting_cutscene(cs_witch_final_level_intro)
+		.set_charging_level()
 		.set_witch_modes([e_witch_state.flying_across, e_witch_state.dropping_bombs, e_witch_state.across_swoop_attack]),
 	];
 }
@@ -109,6 +112,7 @@ function LevelData(_enum_tag, _enemies_per_wave_curve, _time_between_enemies_cur
 	killed_symbols_become_bullets = false;
 	witch_modes = [];
 	witch_active = false;
+	charging_level = false;
 	
 	cutscene_level_start = new CutsceneData(-1, false);
 	cutscene_level_end = new CutsceneData(-1, false);
@@ -195,5 +199,10 @@ function LevelData(_enum_tag, _enemies_per_wave_curve, _time_between_enemies_cur
 		}
 		
 		return cutscenes_intermediate_timings[cutscenes_intermediate_index];
+	}
+		
+	static set_charging_level = function() {
+		charging_level = true;
+		return self;
 	}
 }

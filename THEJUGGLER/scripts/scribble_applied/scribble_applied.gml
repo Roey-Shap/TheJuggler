@@ -20,6 +20,14 @@ function scribble_init(){
 	scribble_add_macro("tm", function() {
 		return "[spr_tm]";
 	});
+	
+	scribble_add_macro("mystery", function() {
+		var hues = array_map(global.c_magic_colors, function(color, i) {
+			return color_get_hue(color);
+		});
+		
+		return sfmt("[wave][wobble][cycle,%,%,%,%]", hues[0], hues[1], hues[2], hues[3]);
+	});
 }
 
 function seven_digit(digit, scale=0.075) {

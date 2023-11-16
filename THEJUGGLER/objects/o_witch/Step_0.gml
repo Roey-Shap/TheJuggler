@@ -2,7 +2,10 @@
 platforming_active = o_manager.get_level_data().witch_active and !o_manager.game_is_frozen();
 
 if platforming_active {
-	action_timer.tick();
+	var seconds_elapsed = (current_time / 1000) - fight_start_time;
+	var timestep = sample_curve(cv_witch_difficulty, min(1, map(0, 60, seconds_elapsed, 0, 1)), 1, 1.5);
+	action_timer.tick(timestep);
+	
 	var percent_done = 0;
 	var pos, spd, dir, bullet;
 	switch (state_current) {
@@ -44,13 +47,28 @@ if platforming_active {
 			x = sample_curve(cv_witch_flying_away_pos, percent_done, stored_position.x, target_position.x);
 			y = target_position.y + sample_curve(cv_witch_flying_away_pos, percent_done) * 100;
 			if action_timer.is_done() and instance_exists(o_screen) {
+				state_current = e_witch_state.swoop_wait;
+				action_timer.set_and_start(get_frames(1.25));
+				
 				var screen = instance_nearest(x, y, o_screen);
 				var h = screen.sprite_height;
-				var up_left = o_manager.virtual_camera_corner.multiply(-1);
-				var min_y = up_left.y;
-				var max_y = min_y + h;
-				y = irandom_range(min_y + h * 0.1, max_y - h * 0.1);
+				var br = get_pos(inst_anchor_screen_bottom_right);
+				var up_left = br.sub(new Vector2(screen.sprite_width, h));
+				//var min_y = up_left.y;
+				//var max_y = min_y + h;
+				y = o_player.y + irandom_range(-h * 0.1, h * 0.1);
+				var warning_fx = new SpriteFX(clamp(x, up_left.x + 10, up_left.x + screen.sprite_width - 10), y, spr_fx_swoop_warning_2, 1);
+				fx_setup_screen_layer(warning_fx);
+				var s = 1.5;
+				warning_fx.image_xscale = -target_side_for_flyby * s;				
+				warning_fx.image_yscale = s;				
 				
+				play_sound(snd_whistle_warning);
+			}
+		break;
+		
+		case e_witch_state.swoop_wait:
+			if action_timer.is_done() {				
 				store_position();
 				
 				state_current = e_witch_state.across_swoop_attack;
@@ -60,11 +78,7 @@ if platforming_active {
 					target_position = new Vector2(flyby_position_left.x, y);
 				} else {
 					target_position = new Vector2(flyby_position_right.x, y);
-				}
-				
-				var warning_fx = new SpriteFX(clamp(x, up_left.x, up_left.x + screen.sprite_width), y, spr_fx_swoop_warning, 1);
-				fx_setup_screen_layer(warning_fx);
-				warning_fx.image_xscale = -target_side_for_flyby;
+				}	
 			}
 		break;
 		
@@ -75,12 +89,12 @@ if platforming_active {
 			
 			hitbox_draw = true;
 			
-			var player = collision_circle(x, y, 100, o_player, true, false);
+			var player = collision_circle(x, y, 36, o_player, true, false);
 			if player != noone {
 				player.take_hit();
 			}
 			
-			effect_timer.tick();
+			effect_timer.tick(timestep);
 			if effect_timer.is_done() {
 				effect_timer.start();
 				var fx = new SpriteFX(x, y, spr_fx_swoop_movement, 1);
@@ -120,7 +134,7 @@ if platforming_active {
 			x = lerp(stored_position.x, target_position.x, percent_done);
 			y = lerp(stored_position.y, target_position.y, percent_done);
 			
-			shot_timer.tick();
+			shot_timer.tick(timestep);
 			
 			if shot_timer.is_done() {
 				if shots_left > 0 {
@@ -193,15 +207,7 @@ if platforming_active {
 		break;
 		
 		case e_witch_state.return_to_neutral:
-			percent_done = action_timer.get_percent_done();
-			x = lerp(stored_position.x, default_position.x, percent_done);
-			y = lerp(stored_position.y, default_position.y, percent_done);
-			
-			if action_timer.is_done() {
-				return_to_waiting();
-			} else {
-				image_blend = merge_color(shot_color, c_white, action_timer.get_percent_done());
-			}
+			perform_return_to_neutral();
 		break;
 		
 		case e_witch_state.dropping_bombs_fly_up:
@@ -215,10 +221,11 @@ if platforming_active {
 			}
 		break;
 	}
-		
 }
 
-
+if defaulting_to_neutral {
+	perform_return_to_neutral();
+}
 
 x += hspd;
 y += vspd;

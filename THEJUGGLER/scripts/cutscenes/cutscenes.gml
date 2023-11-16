@@ -7,7 +7,7 @@ function cutscenes_init() {
 		(new Speaker("None", new Vector2(0.5, 0.5), fnt_other))
 			.set_textbox_sprite(spr_textbox_neutral_nineslice)
 			.set_textbox_direction(new Vector2(3, 2)),
-		(new Speaker("Witch", new Vector2(0.5, 0.2), fnt_witch))
+		(new Speaker("Witch", new Vector2(0.65, 0.2), fnt_witch))
 			.set_textbox_angle(-90)
 			.set_textbox_direction(new Vector2(2, 3)),
 	];
@@ -31,6 +31,10 @@ function cutscenes_init() {
 	cs_get_watch_from_seller = new CutsceneData([
 		[cs_fade, fade_type.indefinite, 1],
 		[cutscene_play_sound, snd_bell_ring, SND_PRIORITY_FX, false],
+		[cs_set_speaker, "None"],
+		[cs_text, [
+			"[mystery]Spooookkky.... This is the end for you....",
+		]],
 		[cs_set_speaker, "Other"],
 		[cs_text, [
 			"... oh, hello, yes! .... one second!",
@@ -105,16 +109,16 @@ function cutscenes_init() {
 	
 	cs_player_becomes_juggler = new CutsceneData([
 		[cs_text, [
-			"Aahhhh, yes.",
-			"You've been here a while, haven't you?",
-			"At the start, it was measly fascination. But now...",
-			"Heh heh. Now, you're MINE.",
-			"You thought you'd just get out of your meetings with no consequences? BAH!",
-			"Cool Watches[tm] aren't something to be taken lightly, FOOL.",
-			"Everybody knows... the spiffier the watch, the more likely it is to be cursed!!",
-			"And this watch...",
-			"Ha.. ha.. This watch has some SERIOUS SPIFF.",
-			"THERE'S NO ESCAPE!! FWEEEE HEHEHEHEHE!",
+			"[mystery]Aahhhh, yes.",
+			"[mystery]You've been here a while, haven't you?",
+			"[mystery]At the start, it was measly fascination. But now...",
+			"[mystery]Heh heh. Now, you're MINE.",
+			"[mystery]You thought you'd just get out of your meetings with no consequences? BAH!",
+			"[mystery]Cool Watches[tm] aren't something to be taken lightly, FOOL.",
+			"[mystery]Everybody knows... the spiffier the watch, the more likely it is to be cursed!!",
+			"[mystery]And this watch...",
+			"[mystery]Ha.. ha.. This watch has some SERIOUS SPIFF.",
+			"[mystery]THERE'S NO ESCAPE!! FWEEEE HEHEHEHEHE!",
 		]],
 		[cs_wait, get_frames(1)],
 		[cs_text, [
@@ -127,6 +131,16 @@ function cutscenes_init() {
 			"[speed,0.8]YOU ARE      [delay,1000]THE JUGGLER",
 		]]
 	], true);
+	
+	cs_set_creepy_music = new CutsceneData([
+		[cutscene_custom_action, function() {
+			with (o_manager) {
+				set_music_track(snd_music_spooky_1);
+				
+				background_music = audio_play_sound(snd_music_spooky_2, SND_PRIORITY_MUSIC, true, 0);
+			}
+		}],	
+	], false);
 	
 	cs_end_of_platforming_intro_level = new CutsceneData([
 		[cs_text, [
@@ -144,6 +158,12 @@ function cutscenes_init() {
 	], false);
 	
 	cs_witch_explains_exploding_symbols = new CutsceneData([
+		[cutscene_custom_action, function() {
+			with (o_witch) {
+				defaulting_to_neutral = true;
+			}
+		}],
+		[cs_wait, get_frames(1)],
 		[cs_set_speaker, "Witch"],
 		[cs_text, [
 			"Ho ho! You'll never break free, don't you see?",
@@ -151,10 +171,21 @@ function cutscenes_init() {
 			"These symbols are enchanted, and... I ran out of rhymes.",
 			"Anyway!! [delay,100]Let's see how you deal with these symbols!",
 		]],
+		[cutscene_play_sound, snd_witch_laugh_1, SND_PRIORITY_FX + 1, false],
+		[cs_wait, get_frames(1.5)],
 		[cs_create_fx_scaling_with, o_witch, spr_fx_witch_explosion, 1, new Vector2(1.05, 1.05), new Vector2(10, 10)],
 		[cs_text, [
-			"Be careful when you clear them! They're quite... explosive!! [wave]Kekeke!!"
+			"Be careful when you clear them! They're quite... [c_red]explosive[/c]!! [wave]Kekeke!!"
 		]]
+	], true);
+	
+	cs_witch_final_level_intro = new CutsceneData([
+		[cs_set_speaker, "Witch"],
+		[cs_text, [
+			"[shake]Ouuughhh!![/shake] Now you've done it!",
+			"You've passed the explosive spell and your soul is still writhing!",
+			"This won't do, this won't do.... [delay,200][shake] AMP IT ALL UP TO 11!!",
+		]],
 	], true);
 }
 

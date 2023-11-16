@@ -10,8 +10,8 @@ function Timer(_countdown_duration, _looping=false, _countdown_function=-1) cons
 	frames_per_second = game_get_speed(gamespeed_fps);
 	have_started = false;
 	
-	function tick() {
-		current_count -= (current_count > 0) * DELTATIME;
+	function tick(step_size=1) {
+		current_count -= step_size * (current_count > 0) * DELTATIME;
 		
 		if is_done() {
 			if countdown_function != -1 and !done_countdown_function {

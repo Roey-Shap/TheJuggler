@@ -113,6 +113,7 @@ function take_hit() {
 	}
 	
 	hp -= 1;
+	o_manager.start_shake(new Vector2(10, 10), get_frames(0.65));
 	invulnerability_timer.start();
 	if hp <= 0 {
 		o_manager.handle_game_over();
@@ -148,8 +149,7 @@ function perform_landing() {
 	var dust = new SpriteFX(x, y + 10, spr_fx_player_land_dust, 1);
 	fx_setup_screen_layer(dust);
 	if fast_falling {
-		play_pitch_range(snd_fast_fall, 0.9, 1.05);
-		
+		play_pitch_range(snd_tap_1, 0.8, 0.9);
 		repeat(irandom_range(4, 6)) {
 			var offset_x = choose(-1, 1) * irandom_range(8, 20);
 			var offset_y = irandom_range(-10, 2);
@@ -183,6 +183,9 @@ function perform_landing() {
 function initiate_fast_fall() {
 	fast_falling = true;
 	vspd = max(vspd, fast_fall_speed);
+	
+	play_pitch_range(snd_fast_fall, 0.9, 1.05);
+	
 	repeat(irandom_range(4, 6)) {
 		var side = choose(-1, 1);
 		var offset_x = side * irandom_range(15, 25);

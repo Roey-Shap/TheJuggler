@@ -40,6 +40,10 @@ function __scribble_config_colours()
         c_amaranth:   scribble_rgb_to_bgr(0xe52b50),
 		c_lcd_shade: global.c_lcd_shade,
 		c_emph: scribble_rgb_to_bgr($FF1CFF),
+		c_magic_1: scribble_rgb_to_bgr($FF32DD),
+		c_magic_2: scribble_rgb_to_bgr($B631FF),
+		c_magic_3: scribble_rgb_to_bgr($E50170),
+		c_magic_4: scribble_rgb_to_bgr($5600CC),
     };
     
     return _colours;

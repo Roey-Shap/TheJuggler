@@ -63,7 +63,26 @@ watch_growth_final_scale = 1.35;
 
 in_screen_draw_surface = -1;
 virtual_camera_corner = -1;
+camera_offset = new Vector2(0, 0);
+shake_intensity = new Vector2(0, 0);
+shake_timer = new Timer(0, false, function() {
+	with (o_manager) {
+		camera_offset = new Vector2(0, 0);
+	}
+});
 
+///@param {Struct.Vector2} intensity
+///@param Int frames
+function start_shake(intensity, frames) {
+	if !shake_timer.is_done() {
+		// add a factor of the new shake
+		shake_intensity = shake_intensity.mult_add(intensity, 0.5);
+	} else {		
+		shake_intensity = intensity.copy();
+	}
+	
+	shake_timer.set_and_start(max(shake_timer.current_count, frames));
+}
 
 global.lcd_shade_offset = new Vector2(6, 6);
 global.lcd_alpha = 0.2;
@@ -546,6 +565,26 @@ function manage_fade() {
 		draw_set_alpha(a);
 		draw_rectangle(0, 0, CAM_W, CAM_H, false);
 		draw_set_alpha(1);
+	}
+}
+
+
+active_music_track = -1;
+background_music = -1;
+function set_music_track(snd_index) {
+	var prev_track = active_music_track;
+	active_music_track = snd_index;
+	
+	if !audio_is_playing(active_music_track) {
+		audio_stop_sound(active_music_track);
+		if audio_is_playing(prev_track) {
+			audio_stop_sound(prev_track);
+		}
+		
+		//db_show(sfmt("PLAY % %", prev_track, snd_index));
+		if snd_index != -1 {
+			audio_play_sound(active_music_track, SND_PRIORITY_MUSIC, true);	
+		}
 	}
 }
 

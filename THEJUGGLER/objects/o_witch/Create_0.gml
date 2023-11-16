@@ -14,6 +14,7 @@ enum e_witch_state {
 		dropping_bombs_fly_up,
 	across_swoop_attack,
 		swoop_prepare,
+		swoop_wait,
 	turn_to_stone,
 }
 
@@ -39,6 +40,23 @@ flyby_position_left = new Vector2(default_position.x - off, default_position.y);
 
 effect_timer = new Timer(get_frames(0.1));
 
+x += CAM_W;	// start way off to the right
+
+defaulting_to_neutral = false;
+
+function perform_return_to_neutral() {
+	percent_done = action_timer.get_percent_done();
+	x = lerp(stored_position.x, default_position.x, percent_done);
+	y = lerp(stored_position.y, default_position.y, percent_done);
+			
+	if action_timer.is_done() {
+		defaulting_to_neutral = false;
+		return_to_waiting();
+	} else {
+		image_blend = merge_color(shot_color, c_white, action_timer.get_percent_done());
+	}
+}
+
 //print(flyby_position_left);
 //print(flyby_position_right);
 
@@ -55,14 +73,15 @@ sound_shot_release = snd_witch_shot_1_release;
 shot_color = global.c_magic_1;
 hitbox_draw = false;
 
+fight_start_time = current_time / 1000;
 
 draw_custom_prev = draw_custom;
 draw_custom = function(offset_pos, draw_shadow=false) {
 	if hitbox_draw {
 		draw_set_color(global.c_hurt);
-		var prec = round_to(map(-1, 1, sin(current_time/100), 4, 32), 4);
+		var prec = round_to(map(-1, 1, sin(current_time/30), 4, 32), 4);
 		draw_set_circle_precision(prec);
-		var rad = map(-1, 1, sin(current_time/200), 16, 48);
+		var rad = map(-1, 1, sin(current_time/20), 32, 48);
 		draw_circle(x + offset_pos.x, y + offset_pos.y, rad, false);
 		draw_set_color(c_white);
 		draw_circle(x + offset_pos.x, y + offset_pos.y, rad+1, true);
@@ -154,9 +173,9 @@ function begin_random_action() {
 			action_timer.set_and_start(get_frames(2));
 			target_side_for_flyby = choose(1, -1);
 			if target_side_for_flyby == 1 {
-				target_position = flyby_position_right;
+				target_position = flyby_position_right.add(new Vector2(100, 0));
 			} else {
-				target_position = flyby_position_left;
+				target_position = flyby_position_left.add(new Vector2(-100, 0));
 			}
 			
 			turn_to(target_side_for_flyby);

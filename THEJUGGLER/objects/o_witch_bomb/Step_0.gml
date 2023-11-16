@@ -21,8 +21,10 @@ if on_period(0.2) {
 if !warning_timer.is_done() and warning_timer.have_started and warnings_left > 0 {
 	if round(warning_timer.get_count_seconds() * 100) % 25 == 0 {
 		warnings_left -= 1;
-		play_pitch_range(snd_watch_beep_3, 0.25, 0.25);
-		play_pitch_range(snd_watch_beep_3, 0.4, 0.4);
+		var snd = play_pitch_range(snd_watch_beep_3, 0.25, 0.25);
+		var snd2 = play_pitch_range(snd_watch_beep_3, 0.4, 0.4);
+		audio_sound_gain(snd, 0.5, 0);
+		audio_sound_gain(snd, 0.5, 0);
 		var fx = new FadeFX(x, y_limit, spr_fx_bomb_warning, 1, 0, sprite_get_duration(spr_fx_bomb_warning));
 		fx_setup_screen_layer(fx);
 		//fx.alpha_factor = 0.8;

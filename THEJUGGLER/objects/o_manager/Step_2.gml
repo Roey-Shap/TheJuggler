@@ -28,10 +28,16 @@ fx_perform_step();
 	} else {
 		virtual_camera_corner = (get_pos(inst_anchor_screen_bottom_right).sub(new Vector2(w, h * 1))).multiply(-1);
 	}
+	
+	if !shake_timer.is_done() {
+		camera_offset = shake_intensity.multiply(choose(1, -1)).lerp_to(vector_zero(), shake_timer.get_percent_done());
+		virtual_camera_corner.iadd(camera_offset);
+	}
 
 	symbol_draw_scale = get_level_data().level_type == eLevelType.platforming? symbol_draw_scale_platforming : symbol_draw_scale_default;
 }
-	
+
+shake_timer.tick();
 draw_flicker.tick();
 fade_timer.tick();
 

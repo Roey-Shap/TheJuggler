@@ -63,3 +63,7 @@ function Vector2(_x, _y) constructor {
 		return new Vector2(x, y)
 	}
 }
+
+function vector_zero() {
+	return new Vector2(0, 0);
+}

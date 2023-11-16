@@ -5,3 +5,5 @@ var s = random_range(0.95, 1.05);
 fx.image_xscale = s;
 fx.image_yscale = s;
 fx.growth_scale.x = 1.005;
+
+o_manager.start_shake(new Vector2(irandom_range(2, 5), irandom_range(18, 20)), get_frames(0.8));
