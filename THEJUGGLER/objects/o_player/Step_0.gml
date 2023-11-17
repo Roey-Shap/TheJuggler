@@ -1,5 +1,5 @@
 
-platforming_active = o_manager.get_level_data().level_type != eLevelType.normal;
+platforming_active = o_manager.get_level_data().level_type != eLevelType.normal and !o_manager.game_is_frozen();
 
 if platforming_active {
 	var hinput = keyboard_check(key_right) - keyboard_check(key_left);
@@ -61,6 +61,8 @@ if platforming_active {
 			if round(current_time) % 2 == 0 {
 				var fx = new FadeFX(x, y, sprite_index, 1, image_index, get_frames(0.25));
 				fx.image_xscale = image_xscale * draw_scale.x;
+				fx.image_angle = image_angle;
+				fx.image_blend = image_blend;
 				fx_setup_screen_layer(fx);
 			}
 		} else {
@@ -100,11 +102,30 @@ if platforming_active {
 	buffer_jump_timer.tick();
 }
 
-var invuln_flash_frequency = round_to((map(0, invulnerability_timer.countdown_duration, invulnerability_timer.current_count, 3, 20)), 4);
 if !invulnerability_timer.is_done() {
-	if round(invulnerability_timer.current_count) % invuln_flash_frequency == 0 {
-		image_alpha = 0.2;
-	} else {
-		image_alpha = 1;
+	invulnerability_flash_timer.tick();
+	
+	if invulnerability_flash_timer.is_done() {
+		if image_alpha != 1 {
+			image_alpha = 1;
+			image_blend = c_white;
+		} else {
+			image_alpha = 0.8;
+			image_blend = c_red;
+		}
+		
+		invulnerability_flash_timer.start();
 	}
 }
+
+if special_sprite != -1 {
+	set_sprite(special_sprite);
+}
+//var invuln_flash_frequency = round_to((map(0, invulnerability_timer.countdown_duration, invulnerability_timer.current_count, 3, 20)), 4);
+//if !invulnerability_timer.is_done() {
+//	if round(invulnerability_timer.current_count) % invuln_flash_frequency == 0 {
+//		image_alpha = 0.2;
+//	} else {
+//		image_alpha = 1;
+//	}
+//}

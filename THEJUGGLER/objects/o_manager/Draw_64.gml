@@ -8,7 +8,7 @@ if instance_exists(o_screen) {
 
 	var screen_up_left = new Vector2(inst_screen.bbox_left, inst_screen.bbox_top);
 	var screen_down_right = screen_up_left.add(screen_dimensions);
-	var title_position = new Vector2(screen_up_left.x + screen_dimensions.x/2, screen_up_left.y);
+	title_position = new Vector2(screen_up_left.x + screen_dimensions.x/2, screen_up_left.y + 40);
 	var player_health_position = new Vector2(screen_up_left.x, screen_up_left.y + margin_size * 3);
 }
 
@@ -82,15 +82,24 @@ switch (state_game) {
 		fire_number_element.draw(offset_up_left.x, offset_up_left.y);
 
 		with (o_player) {
-			draw_set_color(global.c_lcd_shade);
-			draw_set_alpha(global.lcd_alpha);
-			draw_set_halign(fa_middle);
-			draw_set_valign(fa_top);
-			draw_text_scribble(title_position.x + LCD_SHADE_OFFSET.x, title_position.y + LCD_SHADE_OFFSET.y, seven_digit(hp));
-			draw_set_color(c_white);
-			draw_set_alpha(1);
-			var hp_element = scribble(seven_digit(hp));		//seven_digit(hp)
-			hp_element.align(fa_middle, fa_top).draw(title_position.x, title_position.y);
+			if !been_take_from_GUI {
+				var title_position = other.title_position;
+				if draw_hp_as_text {
+					draw_set_color(global.c_lcd_shade);
+					draw_set_alpha(global.lcd_alpha);
+					draw_set_halign(fa_middle);
+					draw_set_valign(fa_top);
+					draw_text_scribble(title_position.x + LCD_SHADE_OFFSET.x, title_position.y + LCD_SHADE_OFFSET.y, seven_digit(hp));
+					draw_set_color(c_white);
+					draw_set_alpha(1);
+					var hp_element = scribble(seven_digit(hp));		//seven_digit(hp)
+					hp_element.align(fa_middle, fa_top).draw(title_position.x, title_position.y);
+				} else {
+					draw_sprite_ext(sprite_index, image_index, title_position.x + LCD_SHADE_OFFSET.x, title_position.y + LCD_SHADE_OFFSET.y, image_xscale * draw_scale.x, image_yscale * draw_scale.y, image_angle, global.c_lcd_shade, global.lcd_alpha_large * image_alpha);
+					draw_sprite_ext(sprite_index, image_index, title_position.x, title_position.y, image_xscale * draw_scale.x, image_yscale * draw_scale.y, image_angle, image_blend, image_alpha);
+					o_manager.draw_circles(title_position.x, title_position.y - 40, 8, hp);
+				}
+			}
 			//draw_set_halign(fa_left);
 			//draw_set_valign(fa_top);
 			//draw_text(24, 24, sfmt("buffer: %, coyote time: %", buffer_jump_timer.current_count, coyote_time_timer.current_count));

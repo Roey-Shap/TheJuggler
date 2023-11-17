@@ -6,6 +6,20 @@ function scribble_init(){
 		set_speaker(param_array[0]);
 	});
 	
+	scribble_typists_add_event("shakehand", function(element, param_array, character_index) {
+		with (o_watch_hand) {
+			shake_intensity_factor = parse_number(param_array[0]);
+		}
+	});
+	
+	scribble_typists_add_event("shakehand_moment", function(element, param_array, character_index) {
+		o_watch_hand.start_shake(new Vector2(parse_number(param_array[0]), parse_number(param_array[1])), parse_number(param_array[2]));
+	});
+	
+	scribble_typists_add_event("set_juggler_emotion", function(element, param_array, character_index) {
+		set_juggler_emotion(param_array[0]);
+	});
+	
 	scribble_add_macro("num", function(value) {
 		var value_string = string(value);
 		var final_string = "";

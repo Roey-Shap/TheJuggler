@@ -1,9 +1,11 @@
 event_inherited();
 
+hp_second_wave = 5;
 hp_max = 3;
 hp = hp_max;
 
 platforming_active = false;
+special_sprite = -1;
 
 movespd = 3.65;
 hspd = 0;
@@ -22,11 +24,14 @@ fast_falling = false;
 fast_fall_speed = 10;
 fast_falling_hspd_factor = 0.4;
 
-invulnerability_timer = new Timer(get_frames(1.5), false, function() {
+invulnerability_timer = new Timer(get_frames(2.5), false, function() {
 	with (o_player) {
 		image_alpha = 1;
+		image_blend = c_white;
 	}
 });
+
+invulnerability_flash_timer = new Timer(get_frames(0.45));
 
 last_checkpoint_pos = get_pos(id);
 
@@ -38,6 +43,8 @@ key_down = ord("S");
 draw_scale = new Vector2(1, 1);
 sprite_scale_normalize_lerp_factor = 0.2;
 run_dust_timer = new Timer(get_frames(0.375));
+draw_hp_as_text = true;
+been_take_from_GUI = false;
 
 coyote_time_timer = new Timer(8);
 buffer_jump_timer = new Timer(8);
@@ -51,7 +58,14 @@ manage_collision = function() {
 	
 	var obj = o_collision;
 	
-	if place_meeting(x + hspd, y, obj) {
+	var hcol = instance_place(x + hspd, y, obj);
+	if hcol != noone {
+		var is_spiky = object_is_ancestor(hcol.object_index, o_spike_parent);
+		
+		if is_spiky {
+			take_hit();
+		}
+		
 		var hdir = sign(hspd);
 		while !place_meeting(x + hdir, y, obj) {
 			x += hdir;
@@ -64,6 +78,12 @@ manage_collision = function() {
 	var vcol = instance_place(x, y + vspd, obj)
 	if vcol != noone {
 		var is_bounce_pad = object_is_ancestor(vcol.object_index, o_bounce_pad_parent)
+		var is_spiky = object_is_ancestor(vcol.object_index, o_spike_parent);
+		
+		if is_spiky {
+			take_hit();
+		}
+		
 		
 		var vdir = sign(vspd);
 		while !place_meeting(x, y + vdir, obj) {
@@ -231,10 +251,35 @@ function manage_sprite() {
 		}
 	}
 	
+	if special_sprite != -1 {
+		set_sprite(special_sprite);
+	}
+	
 	if hspd != 0 {
 		draw_scale.x = sign(hspd);
 	}
 	
 	draw_scale.x = lerp(draw_scale.x, sign(draw_scale.x), sprite_scale_normalize_lerp_factor);
 	draw_scale.y = lerp(draw_scale.y, 1, sprite_scale_normalize_lerp_factor);
+}
+
+draw_custom_prev = draw_custom;
+
+draw_custom = function(offset_pos, draw_shadow=false) {
+	if !platforming_active {
+		return;
+	}
+	
+	draw_custom_prev(offset_pos, draw_shadow);
+	
+	if image_blend != c_white {
+		gpu_set_fog(true, image_blend, 0, 1);
+		if !draw_shadow {
+			draw_sprite_ext(sprite_index, image_index, x + offset_pos.x, y + offset_pos.y, image_xscale * draw_scale.x, image_yscale * draw_scale.y, image_angle, image_blend, image_alpha);
+		}
+		
+		gpu_set_fog(false, c_white, 0, 1);
+	}
+	
+	o_manager.draw_circles(x, y - 40, 8, hp);
 }

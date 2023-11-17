@@ -63,6 +63,7 @@ watch_growth_final_scale = 1.35;
 
 in_screen_draw_surface = -1;
 virtual_camera_corner = -1;
+title_position = new Vector2(0, 0);
 camera_offset = new Vector2(0, 0);
 shake_intensity = new Vector2(0, 0);
 shake_timer = new Timer(0, false, function() {
@@ -209,6 +210,8 @@ face_button_sounds_shot_special = [snd_watch_beep_special_2];
 
 consecutive_hit_sound_factor = 1;
 consecutive_hit_sound_factor_max = 7;
+
+
 //consecutive_hit_timer = new Timer(0.85, false, function() {
 //	o_manager.consecutive_hit_sound_factor -= 1;
 //});
@@ -254,12 +257,24 @@ function start_next_level() {
 			place_player_at_anchor(anchor, false);
 			layer_set_visible(layer_distort_id, true);
 			layer_set_visible(layer_wave_id, true);
+			
+			if last_save.level_struct.level_type == eLevelType.normal {
+				last_save = new SavePoint(current_level, current_score);
+			}
+			
+			o_player.been_take_from_GUI = true;
 		break;
 		
 		case eLevelType.platforming:
 			instance_deactivate_layer("SetCollision");
 			place_player_at_anchor(inst_anchor_screen_bottom_right, true);
 			instance_activate_object(inst_thin_plat);
+			
+			if last_save.level_struct.level_type != eLevelType.platforming {
+				last_save = new SavePoint(current_level, current_score);
+			}
+			
+			o_player.been_take_from_GUI = true;
 		break;
 		
 		case eLevelType.normal:
@@ -363,6 +378,7 @@ function get_time_between_symbols_curve(level_number) {
 function handle_game_over() {
 	var level_type = get_level_data().level_type;
 	
+	var do_failure_cs = false;
 	if level_type == eLevelType.normal {	
 		state_game = st_game_state.main_menu;
 		state_watch = eWatchState.time;
@@ -377,13 +393,30 @@ function handle_game_over() {
 			cs_try_again.play();
 		}
 	} else if level_type == eLevelType.platforming {
+		current_level = last_save.level_index;
+		current_score = last_save.score;
+		current_fire_counter_value = 0;
+	
+		symbol_manager.clear_symbols();
+		reset_buttons_for_shape();
 		
+		do_failure_cs = true;
 	} else if level_type == eLevelType.sidescrolling {
 		with (o_player) {
 			x = last_checkpoint_pos.x;
 			y = last_checkpoint_pos.y;
 		}
+		
+		do_failure_cs = true;
 	}
+	
+	//if do_failure_cs {
+	//	array_pick_random([
+	//		cs_platforming_failure_1,
+	//		//cs_platforming_failure_2,
+	//		//cs_platforming_failure_3,
+	//	]).play();
+	//}
 	
 	o_player.hp = o_player.hp_max;
 	
@@ -568,6 +601,17 @@ function manage_fade() {
 	}
 }
 
+function draw_circles(_x, _y, rad, number) {
+	var margin = round(rad/2);
+	var total_width = (number * rad * 2) + ((number - 1) * margin);
+	var min_x = _x - total_width/2;
+	for (var i = 0; i < number; i++) {
+		draw_set_color(c_green);
+		draw_circle(min_x + (i * (margin + rad*2)), _y, rad, false); 
+		draw_set_color(c_white);
+		draw_circle(min_x + (i * (margin + rad*2)), _y, rad, true); 
+	}
+}
 
 active_music_track = -1;
 background_music = -1;
@@ -587,6 +631,14 @@ function set_music_track(snd_index) {
 		}
 	}
 }
+
+function SavePoint(_level_index, _score) constructor {
+	level_index = _level_index;
+	score = _score;
+	level_struct = o_manager.level_data[level_index];
+}
+
+last_save = new SavePoint(current_level, current_score);
 
 global.deltatime = 1;
 global.debug = DEVELOPER_MODE;

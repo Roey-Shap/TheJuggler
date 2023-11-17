@@ -12,8 +12,9 @@ fx_perform_step();
 //		surface_free(in_screen_draw_surface);
 //	}
 //}
-	if state_game == st_game_state.playing {
-	if !surface_exists(in_screen_draw_surface) and watch_growth_transition_timer.is_done() and watch_platforming_growth_perform_transition {
+if state_game == st_game_state.playing {
+	var watch_growth_done = watch_growth_transition_timer.is_done() and watch_platforming_growth_perform_transition;
+	if !surface_exists(in_screen_draw_surface) and (watch_growth_done) {
 		var screen = instance_nearest(0, 0, o_screen);
 		in_screen_draw_surface = surface_create(screen.sprite_width, screen.sprite_height);
 	}

@@ -1,4 +1,7 @@
 
+///@param Real countdown duration
+///@param Bool looping
+///@param Function End Function
 function Timer(_countdown_duration, _looping=false, _countdown_function=-1) constructor {
 	current_count = 0;
 	countdown_duration = _countdown_duration;

@@ -224,6 +224,7 @@ if platforming_active {
 }
 
 if defaulting_to_neutral {
+	action_timer.tick();
 	perform_return_to_neutral();
 }
 

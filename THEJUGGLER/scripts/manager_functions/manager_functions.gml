@@ -81,8 +81,10 @@ function level_data_init() {
 		(new LevelData(eLevels.fast_numbers, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_2, 5, number_symbols, eLevelType.normal))
 			.set_starting_cutscene(cs_numbers_fast_start),
 			//.set_cutscenes([cs_numbers_getting_harder], [0.2]),		
-		new LevelData(eLevels.shapes, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, 3, shape_symbols, eLevelType.normal),
-		new LevelData(eLevels.fast_numbers_and_shapes, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_3, 4, numbers_and_shapes_symbols, eLevelType.normal),
+		(new LevelData(eLevels.shapes, cv_number_of_enemies_level_shapes_intro, cv_base_time_between_symbol_per_wave_level_shapes_intro, 3, shape_symbols, eLevelType.normal))
+		.set_starting_cutscene(cs_weirded_out_by_shapes),
+		(new LevelData(eLevels.fast_numbers_and_shapes, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_3, 4, numbers_and_shapes_symbols, eLevelType.normal))
+		.set_starting_cutscene(cs_butterfly_and_player),
 		
 		new LevelData(eLevels.platforming_intro, -1, -1, 0, -1, eLevelType.sidescrolling)
 		.set_starting_cutscene(cs_set_creepy_music),		
@@ -91,6 +93,10 @@ function level_data_init() {
 		//.set_killed_symbols_become_bullets(),
 		
 		(new LevelData(eLevels.platforming_intro, cv_number_of_enemies_platforming_with_numbers_1, cv_base_time_between_symbol_per_wave_platforming_with_numbers_1, 3, numbers_and_shapes_symbols, eLevelType.platforming))
+		.set_starting_cutscene(cs_witch_intro)
+		.set_witch_modes([e_witch_state.flying_across, e_witch_state.dropping_bombs]),
+		
+		(new LevelData(eLevels.platforming_intro, cv_number_of_enemies_platforming_with_numbers_1, cv_base_time_between_symbol_per_wave_platforming_with_numbers_2, 3, numbers_and_shapes_symbols, eLevelType.platforming))
 		.set_starting_cutscene(cs_witch_explains_exploding_symbols)
 		.set_killed_symbols_become_bullets()
 		.set_witch_modes([e_witch_state.flying_across, e_witch_state.dropping_bombs]),

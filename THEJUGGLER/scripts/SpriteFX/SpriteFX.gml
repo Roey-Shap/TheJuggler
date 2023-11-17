@@ -35,6 +35,7 @@ function SpriteFX(_x, _y, _sprite_index, over_or_under) constructor {
 	
 	// I like using frames per second in the sprite editor, so sprite_spd is in FPS
 	sprite_spd = sprite_get_speed(sprite_index);
+	sprite_duration = sprite_get_duration(sprite_index);
 	
 	image_xscale = 1;
 	image_yscale = 1;
@@ -44,7 +45,11 @@ function SpriteFX(_x, _y, _sprite_index, over_or_under) constructor {
 	
 	growth_scale = new Vector2(1, 1);
 	growth_limit = new Vector2(0, 0);
-	epsilon = 0.01;
+	epsilon = 0.005;
+	
+	alpha_multiplier = 1;
+	alpha_limit = 0;
+	alpha_fade_with_time = false;
 	
 	hspd = 0;
 	vspd = 0;
@@ -78,10 +83,10 @@ function SpriteFX(_x, _y, _sprite_index, over_or_under) constructor {
 			height = sprite_get_height(sprite_index);		// for actual dimensions multiply by x/yscale
 			
 			draw_func = function(offset=new Vector2(0, 0), draw_shadow=false) {
-				//if fog_col != -1 {
-				//	gpu_set_fog(true, fog_col, -1, 1);
-				//	draw_set_alpha(image_alpha);
-				//}
+				if fog_col != -1 {
+					gpu_set_fog(true, fog_col, -1, 1);
+					draw_set_alpha(image_alpha);
+				}
 				if !draw_on_surface {
 					offset = new Vector2(0, 0);
 				}
@@ -96,10 +101,10 @@ function SpriteFX(_x, _y, _sprite_index, over_or_under) constructor {
 									image_angle, image_blend, image_alpha);
 				}
 				
-				//if fog_col != -1 {
-				//	draw_set_alpha(1);
-				//	gpu_set_fog(false, c_white, -1, 1);
-				//}
+				if fog_col != -1 {
+					draw_set_alpha(1);
+					gpu_set_fog(false, c_white, -1, 1);
+				}
 			}			
 		break;
 	}
@@ -150,6 +155,16 @@ function SpriteFX(_x, _y, _sprite_index, over_or_under) constructor {
 		
 		if abs(image_xscale - growth_limit.x) <= epsilon or abs(image_yscale - growth_limit.y) <= epsilon {
 			end_of_loop = true;
+		}
+		
+		image_alpha *= alpha_multiplier;
+		
+		if abs(image_alpha - alpha_limit) <= epsilon {
+			end_of_loop = true;
+		}
+		
+		if alpha_fade_with_time {
+			image_alpha = clamp(1 - (image_index / (max_index + 1)), 0, 1);
 		}
 		
 		hspd *= fric;

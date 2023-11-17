@@ -2,6 +2,9 @@ function cutscenes_init() {
 	speaker_data = [
 		(new Speaker("Player", new Vector2(0.7, 0.8), fnt_player))
 			.set_textbox_direction(new Vector2(3, 2)),
+		(new Speaker("Thought", new Vector2(0.7, 0.8), fnt_player))
+			.set_textbox_sprite(spr_textbox_neutral_nineslice)
+			.set_textbox_direction(new Vector2(3, 2)),
 		(new Speaker("Other", new Vector2(0.7, 0.3), fnt_other))
 			.set_textbox_direction(new Vector2(3, -2)),
 		(new Speaker("None", new Vector2(0.5, 0.5), fnt_other))
@@ -31,10 +34,6 @@ function cutscenes_init() {
 	cs_get_watch_from_seller = new CutsceneData([
 		[cs_fade, fade_type.indefinite, 1],
 		[cutscene_play_sound, snd_bell_ring, SND_PRIORITY_FX, false],
-		[cs_set_speaker, "None"],
-		[cs_text, [
-			"[mystery]Spooookkky.... This is the end for you....",
-		]],
 		[cs_set_speaker, "Other"],
 		[cs_text, [
 			"... oh, hello, yes! .... one second!",
@@ -126,11 +125,101 @@ function cutscenes_init() {
 			"[speed,0.8]WHEREVER YOU GO, YOU LOOK ELSEWHERE.",
 			"[speed,0.8]AT DINNER, AT YOUR PHONE.\nIN CLASS, AT THE SKY.",
 			"[speed,0.8]AND IN YOUR MEETINGS... YOU DREAM.",
-			"[speed,0.8]THIS IS WHO YOU ARE. YOU MULTITASK. NEVER STAYING IN ONE PLACE.",
-			"[speed,0.8]YES. YOU KNEW IT ALL ALONG.",
+			"[speed,0.8]YOU MULTITASK. NEVER STAYING IN ONE PLACE. ALWAYS JUGGLING MANY THINGS.",
+			"[speed,0.8]YES. YOU KNEW IT ALL ALONG. THIS IS WHO YOU ARE.",
 			"[speed,0.8]YOU ARE      [delay,1000]THE JUGGLER",
-		]]
+		]],
+		[cutscene_custom_action, function() {
+			with (o_manager) {
+				audio_sound_gain(background_music, 0.2, 10 * 1000);
+			}
+		}],
 	], true);
+	
+	cs_weirded_out_by_shapes = new CutsceneData([
+		[cutscene_custom_action, function() {
+			with (o_manager) {
+				create_symbol();
+			}
+		}],
+		[cs_set_speaker, "Player"],
+		[cs_text, [
+			"[slant](Wait... huh?)"
+		]],
+		[cs_wait, get_frames(2)],
+		[cs_text, [
+			"[slant](Isn't this thing an LCD display?)",
+			"[slant](How can something with numerical digits render shapes...)",
+			"[slant](Did I get ripped off??? Ugh.)",
+			"[slant](... guess I'll finish this game.)"
+		]],
+	], true);
+	
+	cs_butterfly_and_player = new CutsceneData([
+		[cs_wait, get_frames(1)],
+		[cutscene_custom_action, function() {
+			var anchor = inst_anchor_butterfly;
+			instance_create_layer(anchor.x, anchor.y, LAYER_WATCH_DISPLAY, o_butterfly);
+		}],
+		[cs_wait, get_frames(3)],
+		[cs_set_speaker, "Thought"],
+		[cs_text, [
+			"[slant](!?)",
+			"[slant](No, no. I'm seeing things now. This thing can't display color.)",
+			"[slant](Either that or this is the most elaborate prank of all time...)",
+			"[slant](I've gotta go find that old man, this is way more important than this stupid meeting.)",
+		]],
+		//[cs_set_mouse_towards, inst_button_mode],
+		// do clicking things
+		[cs_wait, get_frames(0.5)],
+		[cs_text, [
+			"[slant][shakehand_moment,5,5,35](!?)",
+			"[slant](Weird... suddenly I can't turn it off.)",
+			"[slant][shakehand,0.75]([scale,2]!??![scale,1])",
+			"[slant](And I can't get up? I can't look up! I can't speak!)",
+			"[slant](HELP! SOMEBODY HELP!!)",
+		]],
+		[cs_wait, get_frames(0.5)],
+		[cutscene_custom_action, function() {
+			with (o_player) {
+				draw_hp_as_text = false;
+				hp_max = hp_second_wave;
+				hp = hp_max;
+				//been_take_from_GUI = true;
+			}
+			
+			with (o_manager) {
+				repeat(16) {
+					var offset_x = choose(-1, 1) * irandom_range(8, 20);
+					var offset_y = irandom_range(-10, 2);
+					var spr = choose(spr_fx_dust_1, spr_fx_dust_2, spr_fx_dust_3);
+					var fx = new SpriteFX(title_position.x + offset_x, title_position.y + offset_y, spr, 1);
+					fx.image_angle = irandom(359);
+					var dir = fx.image_angle;
+					var spd = random_range(0.25, 3.25);
+					fx.image_speed = random_range(0.8, 1);
+					fx.hspd = lengthdir_x(spd, dir);
+					fx.vspd = lengthdir_y(spd, dir);
+					fx.image_blend = array_pick_random(concat_arrays([c_white], global.c_magic_colors));
+				}
+			}
+		}],
+		[cs_text, [
+			"[slant][set_juggler_emotion,scared](Why do I suddenly feel so small...)",
+			"[slant][set_juggler_emotion,dismiss][shakehand,0.15](None of this makes sense... Maybe it's a dream. Guess I'll keep... going...)",
+			"[slant][set_juggler_emotion,scared](Oh, god... Please be a dream...)"
+		]],
+		[cutscene_custom_action, function() {
+			set_juggler_emotion("reset");
+		}]
+	], true);
+	
+	//cs_platforming_failure_1 = new CutsceneData([
+	//	[cs_text, [
+	//		"Well... that was weird. Guess I'll just-",
+	//		"Why can't I turn it off?",
+	//	]]
+	//], false);
 	
 	cs_set_creepy_music = new CutsceneData([
 		[cutscene_custom_action, function() {
@@ -142,9 +231,34 @@ function cutscenes_init() {
 		}],	
 	], false);
 	
+	cs_set_creepy_music_mid = new CutsceneData([
+				[cutscene_custom_action, function() {
+			with (o_manager) {
+				audio_sound_gain(background_music, 0.4, 10 * 1000);
+			}
+		}],
+	], false);
+	
+	cs_set_creepy_music_06 = new CutsceneData([
+		[cutscene_custom_action, function() {
+			with (o_manager) {
+				audio_sound_gain(background_music, 0.6, 6 * 1000);
+			}
+		}],
+	], false);
+	
+	cs_set_creepy_music_08 = new CutsceneData([
+		[cutscene_custom_action, function() {
+			with (o_manager) {
+				audio_sound_gain(background_music, 0.8, 5 * 1000);
+			}
+		}],
+	], false);
+	
 	cs_end_of_platforming_intro_level = new CutsceneData([
+		[cs_set_speaker, "Witch"],
 		[cs_text, [
-			"END OF LEVEL!!!",
+			"So you've made it... To the center of this curse!!",
 		]],
 		[cutscene_custom_action, function() {
 			o_manager.start_next_level();
@@ -157,7 +271,7 @@ function cutscenes_init() {
 		}]
 	], false);
 	
-	cs_witch_explains_exploding_symbols = new CutsceneData([
+	cs_witch_intro = new CutsceneData([
 		[cutscene_custom_action, function() {
 			with (o_witch) {
 				defaulting_to_neutral = true;
@@ -168,14 +282,36 @@ function cutscenes_init() {
 		[cs_text, [
 			"Ho ho! You'll never break free, don't you see?",
 			"This curse was placed by me, and another spell shall be:",
-			"These symbols are enchanted, and... I ran out of rhymes.",
+			"You're stuck here with me, and... I ran out of rhymes.",
 			"Anyway!! [delay,100]Let's see how you deal with these symbols!",
+		]],
+		[cutscene_play_sound, snd_witch_laugh_1, SND_PRIORITY_FX + 1, false],
+		[cs_wait, get_frames(1.5)],
+		//[cs_create_fx_scaling_with, o_witch, spr_fx_witch_explosion, 1, new Vector2(1.05, 1.05), new Vector2(10, 10)],
+		//[cs_text, [
+		//	"Be careful when you clear them! They're quite... [c_red]explosive[/c]!! [wave]Kekeke!!"
+		//]]
+	], true);
+	
+	cs_witch_explains_exploding_symbols = new CutsceneData([
+		[cutscene_custom_action, function() {
+			with (o_witch) {
+				defaulting_to_neutral = true;
+			}
+		}],
+		[cs_wait, get_frames(1)],
+		[cs_set_speaker, "Witch"],
+		[cs_text, [
+			"So you're resilient, eh!?",
+			"Your soul, stuck in this [speed,0.6]little Juggler form[speed,1]... it's explosive!",
+			"I LOVE IT!! How can I get you to show me more...",
+			"AH! I WILL RECIPROCATE!",
 		]],
 		[cutscene_play_sound, snd_witch_laugh_1, SND_PRIORITY_FX + 1, false],
 		[cs_wait, get_frames(1.5)],
 		[cs_create_fx_scaling_with, o_witch, spr_fx_witch_explosion, 1, new Vector2(1.05, 1.05), new Vector2(10, 10)],
 		[cs_text, [
-			"Be careful when you clear them! They're quite... [c_red]explosive[/c]!! [wave]Kekeke!!"
+			"Be careful when you clear THESE! They're quite [c_red]explosive[/c] themselves!! [wave]Kekeke!!"
 		]]
 	], true);
 	
@@ -184,7 +320,7 @@ function cutscenes_init() {
 		[cs_text, [
 			"[shake]Ouuughhh!![/shake] Now you've done it!",
 			"You've passed the explosive spell and your soul is still writhing!",
-			"This won't do, this won't do.... [delay,200][shake] AMP IT ALL UP TO 11!!",
+			"This won't do, this won't do.... [delay,200][shake] AMP IT ALL UP TO [c_emph][scale,2]11[scale,1][/c]!!",
 		]],
 	], true);
 }
@@ -242,4 +378,17 @@ function Speaker(_name, _textbox_position, _font) constructor {
 			update_function();
 		}
 	}
+}
+
+function set_juggler_emotion(name) {
+	var spr = spr_player_frozen;
+	var spr_map = {
+		"scared" : spr_player_scared,
+		"dismiss" : spr_player_dismissive,
+		"neutral" : spr_player_frozen,
+		"reset": -1,
+	}
+	
+	spr = variable_struct_get(spr_map, name);
+	o_player.special_sprite = spr;
 }
