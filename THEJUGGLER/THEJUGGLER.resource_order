@@ -129,6 +129,7 @@
     {"name":"spr_bounce_square","order":19,"path":"sprites/spr_bounce_square/spr_bounce_square.yy",},
     {"name":"o_witch","order":12,"path":"objects/o_witch/o_witch.yy",},
     {"name":"spr_symbol_two","order":6,"path":"sprites/spr_symbol_two/spr_symbol_two.yy",},
+    {"name":"cv_number_of_enemies_witch_1","order":14,"path":"animcurves/cv_number_of_enemies_witch_1/cv_number_of_enemies_witch_1.yy",},
     {"name":"spr_symbol_eight","order":12,"path":"sprites/spr_symbol_eight/spr_symbol_eight.yy",},
     {"name":"scribble_super_glyph_delete","order":4,"path":"scripts/scribble_super_glyph_delete/scribble_super_glyph_delete.yy",},
     {"name":"cv_base_time_between_symbol_per_wave_level_2","order":3,"path":"animcurves/cv_base_time_between_symbol_per_wave_level_2/cv_base_time_between_symbol_per_wave_level_2.yy",},

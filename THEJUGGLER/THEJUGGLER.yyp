@@ -190,6 +190,7 @@
     {"id":{"name":"spr_bounce_square","path":"sprites/spr_bounce_square/spr_bounce_square.yy",},},
     {"id":{"name":"o_witch","path":"objects/o_witch/o_witch.yy",},},
     {"id":{"name":"spr_symbol_two","path":"sprites/spr_symbol_two/spr_symbol_two.yy",},},
+    {"id":{"name":"cv_number_of_enemies_witch_1","path":"animcurves/cv_number_of_enemies_witch_1/cv_number_of_enemies_witch_1.yy",},},
     {"id":{"name":"spr_symbol_eight","path":"sprites/spr_symbol_eight/spr_symbol_eight.yy",},},
     {"id":{"name":"o_collision","path":"objects/o_collision/o_collision.yy",},},
     {"id":{"name":"scribble_super_glyph_delete","path":"scripts/scribble_super_glyph_delete/scribble_super_glyph_delete.yy",},},

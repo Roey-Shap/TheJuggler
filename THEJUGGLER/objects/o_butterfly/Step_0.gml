@@ -29,7 +29,7 @@ if hit_roll(0.6) {
 		fx.growth_scale = new Vector2(0.999, 0.999);
 	}
 	
-	if enabled {
+	if !enabled {
 		fx_setup_screen_layer(fx);
 	}
 
@@ -45,4 +45,9 @@ afterimage_timer.tick();
 // afterimages
 if afterimage_timer.is_done() {
 	make_afterimage();
+}
+
+if !made_sound and enabled {
+	made_sound = true;	
+	play_sound(snd_butterfly);
 }

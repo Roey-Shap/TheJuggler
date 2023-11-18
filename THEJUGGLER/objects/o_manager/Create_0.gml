@@ -642,6 +642,7 @@ function draw_circles(_x, _y, rad, number) {
 	var margin = round(rad/2);
 	var total_width = (number * rad * 2) + ((number - 1) * margin);
 	var min_x = _x - total_width/2;
+	var total_angle =
 	for (var i = 0; i < number; i++) {
 		draw_set_color(c_green);
 		draw_circle(min_x + (i * (margin + rad*2)), _y, rad, false); 
