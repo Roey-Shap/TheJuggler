@@ -24,6 +24,29 @@ fast_falling = false;
 fast_fall_speed = 10;
 fast_falling_hspd_factor = 0.4;
 
+
+shake_offset = vector_zero();
+shake_intensity = vector_zero();
+shake_timer = new Timer(1, false, function() {
+	with (o_watch_hand) {
+		shake_offset = vector_zero();
+	}
+});
+
+
+///@param {Struct.Vector2} intensity
+///@param Int frames
+function start_shake(intensity, frames) {
+	if !shake_timer.is_done() {
+		// add a factor of the new shake
+		shake_intensity = shake_intensity.mult_add(intensity, 0.5);
+	} else {		
+		shake_intensity = intensity.copy();
+	}
+	
+	shake_timer.set_and_start(max(shake_timer.current_count, frames));
+}
+
 invulnerability_timer = new Timer(get_frames(2.5), false, function() {
 	with (o_player) {
 		image_alpha = 1;
@@ -133,6 +156,7 @@ function take_hit() {
 	}
 	
 	hp -= 1;
+	start_shake(new Vector2(4, 4), get_frames(0.6));
 	o_manager.start_shake(new Vector2(10, 10), get_frames(0.65));
 	invulnerability_timer.start();
 	if hp <= 0 {
@@ -224,7 +248,11 @@ function initiate_fast_fall() {
 function manage_checkpoint_collisions() {
 	var cp = instance_place(x, y, o_checkpoint);
 	if cp != noone {
+		var p = last_checkpoint_pos;
 		last_checkpoint_pos = bbox_center(cp);
+		//if !last_checkpoint_pos.equals(p) {
+		//	print(last_checkpoint_pos);
+		//}
 	}
 }
 
@@ -270,16 +298,16 @@ draw_custom = function(offset_pos, draw_shadow=false) {
 		return;
 	}
 	
-	draw_custom_prev(offset_pos, draw_shadow);
+	draw_custom_prev(offset_pos.add(shake_offset), draw_shadow);
 	
 	if image_blend != c_white {
 		gpu_set_fog(true, image_blend, 0, 1);
 		if !draw_shadow {
-			draw_sprite_ext(sprite_index, image_index, x + offset_pos.x, y + offset_pos.y, image_xscale * draw_scale.x, image_yscale * draw_scale.y, image_angle, image_blend, image_alpha);
+			draw_sprite_ext(sprite_index, image_index, x + offset_pos.x + shake_offset.x, y + offset_pos.y + shake_offset.y, image_xscale * draw_scale.x, image_yscale * draw_scale.y, image_angle, image_blend, image_alpha);
 		}
 		
 		gpu_set_fog(false, c_white, 0, 1);
 	}
 	
-	o_manager.draw_circles(x, y - 40, 8, hp);
+	o_manager.draw_circles(x + offset_pos.x, y + offset_pos.y - 40, 8, hp);
 }

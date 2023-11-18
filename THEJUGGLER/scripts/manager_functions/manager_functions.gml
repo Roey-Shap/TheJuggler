@@ -84,7 +84,8 @@ function level_data_init() {
 		(new LevelData(eLevels.shapes, cv_number_of_enemies_level_shapes_intro, cv_base_time_between_symbol_per_wave_level_shapes_intro, 3, shape_symbols, eLevelType.normal))
 		.set_starting_cutscene(cs_weirded_out_by_shapes),
 		(new LevelData(eLevels.fast_numbers_and_shapes, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_3, 4, numbers_and_shapes_symbols, eLevelType.normal))
-		.set_starting_cutscene(cs_butterfly_and_player),
+		.set_starting_cutscene(cs_butterfly_and_player)
+		.set_force_level_save(),
 		
 		new LevelData(eLevels.platforming_intro, -1, -1, 0, -1, eLevelType.sidescrolling)
 		.set_starting_cutscene(cs_set_creepy_music),		
@@ -119,6 +120,7 @@ function LevelData(_enum_tag, _enemies_per_wave_curve, _time_between_enemies_cur
 	witch_modes = [];
 	witch_active = false;
 	charging_level = false;
+	force_level_save = false;
 	
 	cutscene_level_start = new CutsceneData(-1, false);
 	cutscene_level_end = new CutsceneData(-1, false);
@@ -209,6 +211,11 @@ function LevelData(_enum_tag, _enemies_per_wave_curve, _time_between_enemies_cur
 		
 	static set_charging_level = function() {
 		charging_level = true;
+		return self;
+	}
+	
+	static set_force_level_save = function() {
+		force_level_save = true;
 		return self;
 	}
 }

@@ -38,6 +38,10 @@ function Vector2(_x, _y) constructor {
 		return new Vector2(lerp(x, vec.x, t), lerp(y, vec.y, t));
 	}
 	
+	static equals = function(vec) {
+		return x == vec.x and y == vec.y;
+	}
+	
 	static add_constant = function(constant) {
 		return new Vector2(x + constant, y + constant)
 	}	

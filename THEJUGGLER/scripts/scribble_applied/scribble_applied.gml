@@ -40,7 +40,7 @@ function scribble_init(){
 			return color_get_hue(color);
 		});
 		
-		return sfmt("[wave][wobble][cycle,%,%,%,%]", hues[0], hues[1], hues[2], hues[3]);
+		return sfmt("[wave][wobble][fnt_witch][cycle,%,%,%,%]", hues[0], hues[1], hues[2], hues[3]);
 	});
 }
 

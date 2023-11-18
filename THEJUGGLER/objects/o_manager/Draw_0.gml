@@ -76,8 +76,7 @@ switch (state_game) {
 			var s = surface_set_target(in_screen_draw_surface);		
 			//draw_from_list(global.TextFX_list_over, false, false);
 			draw_clear_alpha(c_black, 0);
-			
-			
+		
 			
 			draw_from_list(global.sprite_FX_list_under, false, true);
 			draw_from_list(global.sprite_FX_list_under, false, false);

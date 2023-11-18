@@ -38,6 +38,8 @@ if state_game == st_game_state.playing {
 	symbol_draw_scale = get_level_data().level_type == eLevelType.platforming? symbol_draw_scale_platforming : symbol_draw_scale_default;
 }
 
+obscure_screen_alpha = lerp(obscure_screen_alpha, obscure_screen_alpha_target, 0.01);
+
 shake_timer.tick();
 draw_flicker.tick();
 fade_timer.tick();

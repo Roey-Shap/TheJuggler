@@ -68,7 +68,7 @@ switch (state_game) {
 		//var symbols_element = scribble(all_symbols);
 		//symbols_element.align(fa_right, fa_bottom).draw(screen_down_right.x, screen_down_right.y);
 
-		var fire_num_str = sfmt("%\n[scaleStack,0.8]%", seven_digit(current_fire_counter_value), seven_digit(current_score));
+		var fire_num_str = sfmt("%\n[scaleStack,0.75]%", seven_digit(current_fire_counter_value), seven_digit(current_score));
 		var fire_number_element = scribble(fire_num_str);
 		var offset_up_left = screen_up_left.add(margin_vec); //.add(new Vector2(screen_dimensions.x - margin_vec.x * 2, 0));
 		fire_number_element.align(fa_left, fa_top);
@@ -95,9 +95,9 @@ switch (state_game) {
 					var hp_element = scribble(seven_digit(hp));		//seven_digit(hp)
 					hp_element.align(fa_middle, fa_top).draw(title_position.x, title_position.y);
 				} else {
-					draw_sprite_ext(sprite_index, image_index, title_position.x + LCD_SHADE_OFFSET.x, title_position.y + LCD_SHADE_OFFSET.y, image_xscale * draw_scale.x, image_yscale * draw_scale.y, image_angle, global.c_lcd_shade, global.lcd_alpha_large * image_alpha);
-					draw_sprite_ext(sprite_index, image_index, title_position.x, title_position.y, image_xscale * draw_scale.x, image_yscale * draw_scale.y, image_angle, image_blend, image_alpha);
-					o_manager.draw_circles(title_position.x, title_position.y - 40, 8, hp);
+					draw_sprite_ext(sprite_index, image_index, title_position.x + LCD_SHADE_OFFSET.x + shake_offset.x, title_position.y + LCD_SHADE_OFFSET.y + shake_offset.y, image_xscale * draw_scale.x, image_yscale * draw_scale.y, image_angle, global.c_lcd_shade, global.lcd_alpha_large * image_alpha);
+					draw_sprite_ext(sprite_index, image_index, title_position.x + shake_offset.x, title_position.y + shake_offset.y, image_xscale * draw_scale.x, image_yscale * draw_scale.y, image_angle, image_blend, image_alpha);
+					o_manager.draw_circles(title_position.x, title_position.y - 32, 8, hp);
 				}
 			}
 			//draw_set_halign(fa_left);
@@ -125,6 +125,25 @@ if DEBUG and instance_exists(o_screen){
 //	var level_title_element = scribble(sfmt("[wave]LEVEL %", current_level));
 //	level_title_element.align(fa_center, fa_top).starting_format(default_font_name, 1).draw(title_position.x, title_position.y);
 //}
+
+if obscure_screen_alpha > 0 {
+	draw_set_alpha(obscure_screen_alpha);
+	draw_set_color(c_black);
+	var w = o_screen.bbox_right - o_screen.bbox_left;
+	var h = o_screen.bbox_bottom - o_screen.bbox_top;
+	var num_frames = sprite_get_number(spr_glitch_nineslice);
+	draw_sprite_part_ext(spr_glitch_nineslice, round(current_time / 100) % num_frames,
+							0, 0, w, h, 
+							o_screen.bbox_left, o_screen.bbox_top, 1, 1, c_white, obscure_screen_alpha);
+	//with (o_screen) {
+	//	var spr_prev = sprite_index;
+				
+	//	draw_rectangle(bbox_left, bbox_top, bbox_right, bbox_bottom, false);
+	//	draw_sprite_ext(spr_glitch_nineslice,  % spr_glitch_nineslice, bbox_left, bbox_top, image_xscale/3, image_yscale/3, image_angle, image_blend, other.obscure_screen_alpha);
+	//}
+			
+	draw_set_alpha(1);
+}
 
 manage_fade();
 

@@ -8,7 +8,7 @@ temp_offset_draw = vector_zero();
 temp_shake_intensity = new Vector2(0, 0);
 temp_shake_timer = new Timer(1, false, function() {
 	with (o_watch_hand) {
-		camera_offset = new Vector2(0, 0);
+		temp_offset_draw = new Vector2(0, 0);
 	}
 });
 

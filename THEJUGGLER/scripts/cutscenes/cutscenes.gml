@@ -28,7 +28,31 @@ function cutscenes_init() {
 		[cs_set_speaker, "Player"],
 		[cs_text, [
 			"There we go! [c_emph]Match the numbers[/c], he said...",
-		]]
+		]],
+		//[cutscene_custom_action, function() {
+		//	with (o_manager) {
+		//		obscure_screen_alpha_target = 1;
+		//	}
+		//}],
+		//[cs_text, [
+		//	"1",
+		//]],
+		//[cutscene_custom_action, function() {
+		//	with (o_manager) {
+		//		obscure_screen_alpha_target = 0.5;
+		//	}
+		//}],
+		//[cs_text, [
+		//	"2",
+		//]],
+		//[cutscene_custom_action, function() {
+		//	with (o_manager) {
+		//		obscure_screen_alpha_target = 0;
+		//	}
+		//}],
+		//[cs_text, [
+		//	"3",
+		//]],
 	], false);
 	
 	cs_get_watch_from_seller = new CutsceneData([
@@ -106,6 +130,13 @@ function cutscenes_init() {
 		]]
 	], true);
 	
+	cs_try_again_reluctant = new CutsceneData([
+		[cs_set_speaker, "Thought"],
+		[cs_text, [
+			"([slant]I... need to try again.)",
+		]]
+	], true);
+	
 	cs_player_becomes_juggler = new CutsceneData([
 		[cs_text, [
 			"[mystery]Aahhhh, yes.",
@@ -120,6 +151,12 @@ function cutscenes_init() {
 			"[mystery]THERE'S NO ESCAPE!! FWEEEE HEHEHEHEHE!",
 		]],
 		[cs_wait, get_frames(1)],
+		[cutscene_custom_action, function() {
+			with (o_manager) {
+				audio_sound_gain(background_music, 0.2, 10 * 1000);
+				obscure_screen_alpha_target = 0.5;
+			}
+		}],
 		[cs_text, [
 			"[speed,0.8]IN THAT MOMENT, YOU REALIZE.",
 			"[speed,0.8]WHEREVER YOU GO, YOU LOOK ELSEWHERE.",
@@ -127,11 +164,11 @@ function cutscenes_init() {
 			"[speed,0.8]AND IN YOUR MEETINGS... YOU DREAM.",
 			"[speed,0.8]YOU MULTITASK. NEVER STAYING IN ONE PLACE. ALWAYS JUGGLING MANY THINGS.",
 			"[speed,0.8]YES. YOU KNEW IT ALL ALONG. THIS IS WHO YOU ARE.",
-			"[speed,0.8]YOU ARE      [delay,1000]THE JUGGLER",
+			"[speed,0.8]YOU ARE      [delay,1000]THE JUGGLER[set_juggler_emotion,reset]",
 		]],
 		[cutscene_custom_action, function() {
 			with (o_manager) {
-				audio_sound_gain(background_music, 0.2, 10 * 1000);
+				obscure_screen_alpha_target = 0;
 			}
 		}],
 	], true);
@@ -156,7 +193,7 @@ function cutscenes_init() {
 	], true);
 	
 	cs_butterfly_and_player = new CutsceneData([
-		[cs_wait, get_frames(1)],
+		[cs_wait, get_frames(2)],
 		[cutscene_custom_action, function() {
 			var anchor = inst_anchor_butterfly;
 			instance_create_layer(anchor.x, anchor.y, LAYER_WATCH_DISPLAY, o_butterfly);
@@ -167,14 +204,22 @@ function cutscenes_init() {
 			"[slant](!?)",
 			"[slant](No, no. I'm seeing things now. This thing can't display color.)",
 			"[slant](Either that or this is the most elaborate prank of all time...)",
-			"[slant](I've gotta go find that old man, this is way more important than this stupid meeting.)",
+			"[slant](I've gotta go find that old man. This is way more important than this stupid meeting.)",
 		]],
 		//[cs_set_mouse_towards, inst_button_mode],
 		// do clicking things
 		[cs_wait, get_frames(0.5)],
+		[cs_wait, get_frames(0.05)],
 		[cs_text, [
 			"[slant][shakehand_moment,5,5,35](!?)",
-			"[slant](Weird... suddenly I can't turn it off.)",
+			"[slant](... why won't my hand move?)",
+		]],
+		[cutscene_custom_action, function() {
+			with (o_manager) {
+				set_music_track(snd_music_something_is_not_right);
+			}
+		}],	
+		[cs_text, [
 			"[slant][shakehand,0.75]([scale,2]!??![scale,1])",
 			"[slant](And I can't get up? I can't look up! I can't speak!)",
 			"[slant](HELP! SOMEBODY HELP!!)",
@@ -190,13 +235,14 @@ function cutscenes_init() {
 			
 			with (o_manager) {
 				repeat(16) {
-					var offset_x = choose(-1, 1) * irandom_range(8, 20);
+					var offset_x = choose(-1, 1) * irandom_range(4, 12);
 					var offset_y = irandom_range(-10, 2);
 					var spr = choose(spr_fx_dust_1, spr_fx_dust_2, spr_fx_dust_3);
 					var fx = new SpriteFX(title_position.x + offset_x, title_position.y + offset_y, spr, 1);
 					fx.image_angle = irandom(359);
 					var dir = fx.image_angle;
-					var spd = random_range(0.25, 3.25);
+					var spd = random_range(0.25, 2.5);
+					fx.alpha_fade_with_time = true;
 					fx.image_speed = random_range(0.8, 1);
 					fx.hspd = lengthdir_x(spd, dir);
 					fx.vspd = lengthdir_y(spd, dir);
@@ -206,11 +252,11 @@ function cutscenes_init() {
 		}],
 		[cs_text, [
 			"[slant][set_juggler_emotion,scared](Why do I suddenly feel so small...)",
-			"[slant][set_juggler_emotion,dismiss][shakehand,0.15](None of this makes sense... Maybe it's a dream. Guess I'll keep... going...)",
+			"[slant][set_juggler_emotion,dismiss][shakehand,0.15](It's a dream. It's a dream!)",
 			"[slant][set_juggler_emotion,scared](Oh, god... Please be a dream...)"
 		]],
 		[cutscene_custom_action, function() {
-			set_juggler_emotion("reset");
+			set_juggler_emotion("knees");
 		}]
 	], true);
 	
@@ -256,10 +302,21 @@ function cutscenes_init() {
 	], false);
 	
 	cs_end_of_platforming_intro_level = new CutsceneData([
+		[cutscene_custom_action, function() {
+			with (o_manager) {
+				obscure_screen_alpha_target = 0.25;
+			}
+		}],
 		[cs_set_speaker, "Witch"],
 		[cs_text, [
 			"So you've made it... To the center of this curse!!",
 		]],
+		[cutscene_custom_action, function() {
+			with (o_manager) {
+				obscure_screen_alpha_target = 0.5;
+			}
+		}],
+		[cs_wait, get_frames(0.25)],
 		[cutscene_custom_action, function() {
 			o_manager.start_next_level();
 			//if get_level_data().level_type == eLevelType.platforming {
@@ -268,7 +325,12 @@ function cutscenes_init() {
 			//	//player.y = o_screen.bbox_top + (o_screen.sprite_height * 0.1);
 			//	//create_player_platform();
 			//}
-		}]
+		}],
+		[cutscene_custom_action, function() {
+			with (o_manager) {
+				obscure_screen_alpha_target = 0;
+			}
+		}],
 	], false);
 	
 	cs_witch_intro = new CutsceneData([
@@ -386,6 +448,7 @@ function set_juggler_emotion(name) {
 		"scared" : spr_player_scared,
 		"dismiss" : spr_player_dismissive,
 		"neutral" : spr_player_frozen,
+		"knees" : spr_player_knees,
 		"reset": -1,
 	}
 	

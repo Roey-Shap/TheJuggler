@@ -121,6 +121,12 @@ if !invulnerability_timer.is_done() {
 if special_sprite != -1 {
 	set_sprite(special_sprite);
 }
+
+shake_timer.tick();
+
+if !shake_timer.is_done() {
+	shake_offset = shake_intensity.multiply(choose(1, -1)).lerp_to(vector_zero(), shake_timer.get_percent_done());
+}
 //var invuln_flash_frequency = round_to((map(0, invulnerability_timer.countdown_duration, invulnerability_timer.current_count, 3, 20)), 4);
 //if !invulnerability_timer.is_done() {
 //	if round(invulnerability_timer.current_count) % invuln_flash_frequency == 0 {

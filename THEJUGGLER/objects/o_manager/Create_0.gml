@@ -60,6 +60,8 @@ watch_growth_transition_timer = new Timer(get_frames(4), false, function() {
 });
 
 watch_growth_final_scale = 1.35;
+obscure_screen_alpha = 0;
+obscure_screen_alpha_target = 0;
 
 in_screen_draw_surface = -1;
 virtual_camera_corner = -1;
@@ -258,9 +260,10 @@ function start_next_level() {
 			layer_set_visible(layer_distort_id, true);
 			layer_set_visible(layer_wave_id, true);
 			
-			if last_save.level_struct.level_type == eLevelType.normal {
-				last_save = new SavePoint(current_level, current_score);
-			}
+			//if last_save.level_struct.level_type == eLevelType.normal {
+			//	last_save = new SavePoint(current_level, current_score);
+			//}
+			last_save = new SavePoint(current_level, current_score);
 			
 			o_player.been_take_from_GUI = true;
 		break;
@@ -270,9 +273,8 @@ function start_next_level() {
 			place_player_at_anchor(inst_anchor_screen_bottom_right, true);
 			instance_activate_object(inst_thin_plat);
 			
-			if last_save.level_struct.level_type != eLevelType.platforming {
-				last_save = new SavePoint(current_level, current_score);
-			}
+			// always save the current level
+			last_save = new SavePoint(current_level, current_score);
 			
 			o_player.been_take_from_GUI = true;
 		break;
@@ -280,6 +282,14 @@ function start_next_level() {
 		case eLevelType.normal:
 			instance_deactivate_layer("SetCollision");
 			place_player_at_anchor(inst_anchor_screen_bottom_right, true);
+			
+			if get_level_data().force_level_save {
+				last_save = new SavePoint(current_level, current_score);
+			} else {
+				last_save = new SavePoint(0, 0);
+			}
+			
+			o_player.been_take_from_GUI = false;
 		break;
 	}
 
@@ -327,6 +337,7 @@ function hit_player() {
 	var player = instance_nearest(0, 0, o_player);
 	if player != noone {
 		player.hp -= 1;
+		player.start_shake(new Vector2(6, 1), get_frames(0.6));
 		play_sound(snd_mistake);
 		if player.hp <= 0 {
 			handle_game_over();
@@ -379,22 +390,32 @@ function handle_game_over() {
 	var level_type = get_level_data().level_type;
 	
 	var do_failure_cs = false;
+	current_wave = 0;
 	if level_type == eLevelType.normal {	
 		state_game = st_game_state.main_menu;
 		state_watch = eWatchState.time;
-		current_level = 0;
-		current_score = 0;
+		
+		if !o_player.draw_hp_as_text {
+			load_level();
+			
+			if !cs_try_again_reluctant.been_played() {
+				cs_try_again_reluctant.play();
+			}
+		} else {
+			if !cs_try_again.been_played() {
+				cs_try_again.play();
+			}
+			
+			current_level = 0;
+			current_score = 0;
+		}
+		
 		current_fire_counter_value = 0;
 	
 		symbol_manager.clear_symbols();
 		reset_buttons_for_shape();
-	
-		if !cs_try_again.been_played() {
-			cs_try_again.play();
-		}
 	} else if level_type == eLevelType.platforming {
-		current_level = last_save.level_index;
-		current_score = last_save.score;
+		load_level();
 		current_fire_counter_value = 0;
 	
 		symbol_manager.clear_symbols();
@@ -421,6 +442,18 @@ function handle_game_over() {
 	o_player.hp = o_player.hp_max;
 	
 	//start_next_level();
+}
+
+function load_level() {
+	
+	//print(last_save);
+	//print(sfmt("level: %, score: %", current_level, current_score));
+	current_level = max(0, last_save.level_index-1);
+	current_score = last_save.save_score;
+	//if is_undefined(current_score) {
+	//	print(sfmt("level: %, score: %", current_level, current_score));
+	//	current_score = 0;
+	//}
 }
 
 function handle_fire(button) {
@@ -461,7 +494,11 @@ function handle_fire(button) {
 	current_score += num_enemies_defeated_with_this_fire;
 	if num_enemies_defeated_with_this_fire > 1 {
 		current_score += 1;		// bonus for multiple enemies at once!!
+	}
+	
+	if num_enemies_defeated_with_this_fire > 0 {
 		current_score += floor(map(0, 1, consecutive_hit_sound_factor/consecutive_hit_sound_factor_max, 0, 3));	// up to +3 for keeping your time low
+		//consecutive_hit_sound_factor -= 0.35;
 	}
 	
 	if num_enemies_defeated_with_this_fire > 0 {
@@ -634,8 +671,8 @@ function set_music_track(snd_index) {
 
 function SavePoint(_level_index, _score) constructor {
 	level_index = _level_index;
-	score = _score;
-	level_struct = o_manager.level_data[level_index];
+	save_score = _score;
+	level_struct = o_manager.level_data[_level_index];
 }
 
 last_save = new SavePoint(current_level, current_score);
