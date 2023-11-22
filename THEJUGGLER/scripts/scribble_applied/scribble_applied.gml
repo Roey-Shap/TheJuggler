@@ -45,5 +45,5 @@ function scribble_init(){
 }
 
 function seven_digit(digit, scale=0.075) {
-	return sfmt("[scale,%][num,%][scale,1]", scale, digit);
+	return sfmt("[scaleStack,%][num,%][scaleStack,%]", scale, digit, 1/scale);
 }

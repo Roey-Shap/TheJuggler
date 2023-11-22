@@ -8,8 +8,6 @@ symbol_manager_index = -1;
 death_col_1 = c_lime;
 death_col_2 = global.c_lcd_shade;
 
-
-
 function set_symbol(symbol) {
 	symbol_struct = symbol;
 	sprite_index = symbol.sprite;
@@ -19,6 +17,9 @@ function set_symbol(symbol) {
 		scale = o_manager.symbol_draw_scale;
 		image_xscale = scale;
 		image_yscale = scale;
+	} else if symbol_struct.type == symbol_type.charged {
+		is_stone = true;
+		image_speed = 1;
 	}
 }
 

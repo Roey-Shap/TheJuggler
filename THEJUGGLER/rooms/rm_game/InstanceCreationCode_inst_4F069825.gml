@@ -1,1 +1,1 @@
-set_text("Flat things bounce things that move down fast.");
+set_text("[scale,0.5][spr_symbol_column] [spr_symbol_row] [spr_symbol_square] [scale,1]\n<S>");

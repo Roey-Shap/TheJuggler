@@ -14,6 +14,7 @@ fric = 0.35;
 grav = 0.35;
 jump_force = 7.7;
 jump_force_bounce_pad = jump_force * 1.4;
+jump_force_break_symbol_freeze = jump_force * 0.75;
 
 grounded = false;
 grounded_last = false;
@@ -100,8 +101,10 @@ manage_collision = function() {
 	
 	var vcol = instance_place(x, y + vspd, obj)
 	if vcol != noone {
+		var is_symbol = object_is_ancestor_ext(vcol.object_index, o_symbol);
 		var is_bounce_pad = object_is_ancestor(vcol.object_index, o_bounce_pad_parent)
-		var is_spiky = object_is_ancestor(vcol.object_index, o_spike_parent);
+		var is_spiky = object_is_ancestor(vcol.object_index, o_spike_parent) or (is_symbol and isIn(vcol.symbol_struct.value, [symbol_type.triangle, symbol_type.diamond]));
+		var is_frozen = vcol.is_stone;
 		
 		if is_spiky {
 			take_hit();
@@ -113,15 +116,29 @@ manage_collision = function() {
 			y += vdir;
 		}
 		
-		if is_bounce_pad and fast_falling {
-			vspd = -jump_force_bounce_pad;
-		} else {		
-			vspd = 0;
+		if is_frozen {
+			if fast_falling {
+				vspd = -jump_force_break_symbol_freeze;
+				vcol.break_freeze();
+			} else {
+				vspd = 0;
+			}
+		} else {
+			if is_bounce_pad and fast_falling {
+				vspd = -jump_force_bounce_pad;
+			} else {		
+				vspd = 0;
+			}
 		}
 		//debug_spark(x, y, c_red);
 		player_jump = false;
 	}
 	
+	if place_meeting(x, y, o_killzone) {
+		hp = 1;
+		invulnerability_timer.current_count = 0;
+		take_hit();
+	}
 	//if o_manager.playing_normal_platforming_level() {
 	//	var screen = instance_nearest(0, 0, o_screen);
 	//	if x + hspd > screen.bbox_right {
@@ -148,6 +165,13 @@ manage_collision = function() {
 	//		}
 	//	}
 	//}
+	
+	var inside_symbol = instance_place(x, y, o_symbol);
+	if inside_symbol != noone {
+		var height = bbox_bottom - bbox_top;
+		//var offset_from_sprite_bottom = height - sprite_get_yoffset(mask_index);
+		y = inside_symbol.bbox_top - sprite_get_yoffset(mask_index) - 1;
+	}
 }
 
 function take_hit() {

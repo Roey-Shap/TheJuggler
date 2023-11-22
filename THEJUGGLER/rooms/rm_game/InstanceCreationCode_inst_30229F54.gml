@@ -1,0 +1,1 @@
+scene = o_manager.cs_deac;

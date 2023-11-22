@@ -1,0 +1,1 @@
+set_text("[scale,0.5][spr_symbol_frozen][scale,1]\n<S>");

@@ -3,6 +3,8 @@ enum symbol_type {
 	shape,
 	color,
 	
+	charged,
+	
 	zero,
 	one,
 	two,
@@ -68,6 +70,8 @@ function Symbol(_symbol_value) constructor {
 		type = symbol_type.shape;
 	} else if value >= symbol_type.white and value <= symbol_type.brown {
 		type = symbol_type.color;
+	} else if value == symbol_type.charged {
+		type = symbol_type.charged;
 	}
 	
 	static to_string = function() {
@@ -97,6 +101,8 @@ function get_symbol_sprite_from_value(_sprite_value) {
 		case symbol_type.diamond:	return spr_symbol_diamond;
 		case symbol_type.row:		return spr_symbol_row;
 		case symbol_type.column:	return spr_symbol_column;
+		
+		case symbol_type.charged:	return spr_symbol_charged;
 		
 		//case symbol_type.white:
 		//case symbol_type.red:

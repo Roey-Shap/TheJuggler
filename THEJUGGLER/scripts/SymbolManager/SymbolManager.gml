@@ -1,5 +1,6 @@
 function SymbolManager() constructor {
 	active_symbols = [];
+	queued_charge_symbols = 0;
 	
 	static get_num_symbols = function() {
 		return array_length(active_symbols);
@@ -7,6 +8,11 @@ function SymbolManager() constructor {
 	
 	static generate_symbol_from_level_data = function(level_data) {
 		var chosen_symbol_value = array_pick_random(level_data.allowed_symbols);
+		if o_manager.get_level_data().charging_level and queued_charge_symbols > 0 {
+			chosen_symbol_value = symbol_type.charged;
+			queued_charge_symbols -= 1;
+		}
+		
 		var symbol = generate_symbol(chosen_symbol_value);
 		return symbol;
 	}
@@ -49,6 +55,10 @@ function SymbolManager() constructor {
 		return symbol;
 	}
 	
+	static queue_charged_symbol = function() {
+		queued_charge_symbols += 1;
+	}
+	
 	static update_symbols_of_relation = function() {
 		array_foreach(active_symbols, function(inst, index) {
 			with (inst) {
@@ -82,13 +92,19 @@ function SymbolManager() constructor {
 		var removed_symbol = -1;
 		var num_symbs = get_num_symbols();
 		for (var i = 0; i < num_symbs; i++) {
-			if active_symbols[i].symbol_struct.literal_value == value {
+			var symbol = active_symbols[i];
+			if symbol.symbol_struct.literal_value == value and !symbol.is_stone {
 				value_index = i;
 				break;
 			}
 		}
 		
 		if value_index != -1 {
+			if !o_manager.used_event(events.killed_symbol) {
+				o_manager.use_event(events.killed_symbol);
+				o_manager.cs_see_score_rise.play();
+			}
+			
 			removed_symbol = pop_symbol(value_index);
 			var symbol_struct = removed_symbol.symbol_struct;
 			var symbol_width = removed_symbol.sprite_width;
@@ -96,10 +112,13 @@ function SymbolManager() constructor {
 				active_symbols[i].x += symbol_width;
 			}
 			
-			if o_manager.get_level_data().killed_symbols_become_bullets {
+			var level = o_manager.get_level_data();
+			if level.killed_symbols_become_bullets {
 				var spawn_pos = bbox_center(removed_symbol).iadd(new Vector2(0, removed_symbol.sprite_height/2));
 				//o_manager.spawn_bullet_towards_player(spawn_pos);
 				var bombs = o_manager.drop_bombs(1);				
+			} else if level.charging_level {
+				o_manager.add_charge();
 			}
 
 			removed_symbol.destroy_alt_anim_setup();
@@ -114,11 +133,14 @@ function SymbolManager() constructor {
 		var len = ds_list_size(list);
 		for (var i = 0; i < len; i++) {
 			var inst = list[| i];
-			if inst.symbol_struct.literal_value == value {
+			if inst.symbol_struct.literal_value == value and !inst.is_stone {
 				instance_destroy(inst);
+				return inst;
 				break;
 			}
 		}
+		
+		return noone;
 	}
 		
 	static clear_symbols = function() {

@@ -2,6 +2,8 @@ image_speed = 0;
 button_value = image_index;
 pressed = false;
 
+color_init = image_blend;
+
 store_init_watch_params();
 
 function set_pressed(press) {

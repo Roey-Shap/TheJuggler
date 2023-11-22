@@ -16,6 +16,7 @@ enum e_witch_state {
 		swoop_prepare,
 		swoop_wait,
 	turn_to_stone,
+		turn_to_stone_warning,
 }
 
 enum e_witch_flying_across_type {
@@ -32,6 +33,8 @@ action_timer.start();
 
 target_side_for_flyby = 1;
 flyby_type_current = e_witch_flying_across_type.LAST;
+
+thin_platform_y = -1;
 
 default_position = get_pos(id);
 var off = CAM_W * 0.2;
@@ -96,8 +99,7 @@ drop_bombs = function() {
 	var upper_left = o_manager.virtual_camera_corner.multiply(-1);
 	var screen_dims = new Vector2(o_screen.sprite_width, o_screen.sprite_height);
 	var lower_right = upper_left.add(screen_dims);
-	var thin_platform = instance_nearest(x, y, o_collision_thin);
-	var y_limit = thin_platform.y;
+	var y_limit = thin_platform_y;
 	repeat(num_times) {
 		var ran_x = irandom_range(upper_left.x + screen_dims.x * 0.1, lower_right.x - screen_dims.x * 0.1);
 		var ran_y = upper_left.y - irandom_range(CAM_H * 0.65, screen_dims.y * 1.25);
@@ -181,6 +183,10 @@ function begin_random_action() {
 			turn_to(target_side_for_flyby);
 			
 			store_position();
+		break;
+		
+		case e_witch_state.turn_to_stone:
+			print("STONE");
 		break;
 	}
 }

@@ -55,6 +55,21 @@ function cutscenes_init() {
 		//]],
 	], false);
 	
+	cs_deac = new CutsceneData([
+		[cutscene_custom_action, function() {
+			with (o_manager) {
+				obscure_screen_alpha_target = 0;
+			}
+		}], 
+	], false);
+	
+	cs_see_score_rise = new CutsceneData([
+		[cs_set_speaker, "Player"],
+		[cs_text, [
+			"Oh! Guess that's my score there on the left...",
+		]]
+	], false);
+	
 	cs_get_watch_from_seller = new CutsceneData([
 		[cs_fade, fade_type.indefinite, 1],
 		[cutscene_play_sound, snd_bell_ring, SND_PRIORITY_FX, false],
@@ -291,7 +306,13 @@ function cutscenes_init() {
 				audio_sound_gain(background_music, 0.6, 6 * 1000);
 			}
 		}],
-	], false);
+		[cs_text, [
+			"([slant][speaker,Thought]Maybe this isn't a dream. But still... I'm alive, aren't I?)",
+			"([slant][set_juggler_emotion,excited]Maybe this is actually a quest!! And there's some secret this watch holds...!)",
+			"([slant][set_juggler_emotion,dismiss]No... I'm definitely going to die, aren't I.)",
+			"([slant][set_juggler_emotion,reset]Might as well keep going.)",
+		]]
+	], true);
 	
 	cs_set_creepy_music_08 = new CutsceneData([
 		[cutscene_custom_action, function() {
@@ -299,6 +320,10 @@ function cutscenes_init() {
 				audio_sound_gain(background_music, 0.8, 5 * 1000);
 			}
 		}],
+		[cs_text, [
+			"([slant][speaker,Thought]... maybe I'm, like, a natural juggler now.)",
+			"([slant]Huh. Always wanted to juggle. Neat.)",
+		]]
 	], false);
 	
 	cs_end_of_platforming_intro_level = new CutsceneData([
@@ -344,8 +369,9 @@ function cutscenes_init() {
 		[cs_text, [
 			"Ho ho! You'll never break free, don't you see?",
 			"This curse was placed by me, and another spell shall be:",
-			"You're stuck here with me, and... I ran out of rhymes.",
-			"Anyway!! [delay,100]Let's see how you deal with these symbols!",
+			"You're stuck here with me, and-!",
+			"([speaker,Player][slant]Hey, so, uh, I know you're monologuing, but-",
+			"[speaker,Witch][scale,1.5]Ahem!!![/scale] Anyway!! [delay,100]Let's see how you deal with these symbols! [wave]Kekekeh!!",
 		]],
 		[cutscene_play_sound, snd_witch_laugh_1, SND_PRIORITY_FX + 1, false],
 		[cs_wait, get_frames(1.5)],
@@ -365,24 +391,45 @@ function cutscenes_init() {
 		[cs_set_speaker, "Witch"],
 		[cs_text, [
 			"So you're resilient, eh!?",
-			"Your soul, stuck in this [speed,0.6]little Juggler form[speed,1]... it's explosive!",
-			"I LOVE IT!! How can I get you to show me more...",
-			"AH! I WILL RECIPROCATE!",
+			"Your soul, stuck in this [speed,0.6]little Juggler form[speed,1]...",
+			"There was another, long ago, but I like you MUCH better.",
+			"Now... when you clear these symbols, they'll [c_red]expl-",
+			"([speaker,Player][slant]Hi!! Question. Um, I'm not the first one in here?)",
+			"([slant]I'm not, like, destined to defeat you?",
+			"[speaker,Witch]What? No, honey, get in line.",
+			"([speaker,Player][slant]Two nickels, huh.)",
+			"[speaker,Witch]*shrug*",
+			"Anyway, where was I... Oh, yes. Exploding symbols?",
+			"Let them detonate and [c_red]bombs fall[/c]. [c_green]Clear them[/c] and [c_green]less[/c] fall.?",
+			"Cool, huh?",
 		]],
 		[cutscene_play_sound, snd_witch_laugh_1, SND_PRIORITY_FX + 1, false],
 		[cs_wait, get_frames(1.5)],
 		[cs_create_fx_scaling_with, o_witch, spr_fx_witch_explosion, 1, new Vector2(1.05, 1.05), new Vector2(10, 10)],
+		[cutscene_custom_action, function() {
+			with (o_manager) {
+				obscure_screen_alpha_target = 0;
+				set_music_track(snd_music_witch_fight_epic);
+			}
+		}],
+	], true);
+	
+	cs_witch_3_intro = new CutsceneData([
+		[cs_set_speaker, "Witch"],
 		[cs_text, [
-			"Be careful when you clear THESE! They're quite [c_red]explosive[/c] themselves!! [wave]Kekeke!!"
-		]]
+			"[shake]Ouuughhh!![/shake] Now you've done it!",
+			"You've passed the explosive spell and your soul is still writhing!",
+			"My symbols are turning against me, I can feel it!",
+			"FINE! See if I care! Grant the Juggler strength.",
+			"Let's see if they can clear them quickly enough to survive!",
+		]],
 	], true);
 	
 	cs_witch_final_level_intro = new CutsceneData([
 		[cs_set_speaker, "Witch"],
 		[cs_text, [
-			"[shake]Ouuughhh!![/shake] Now you've done it!",
-			"You've passed the explosive spell and your soul is still writhing!",
 			"This won't do, this won't do.... [delay,200][shake] AMP IT ALL UP TO [c_emph][scale,2]11[scale,1][/c]!!",
+			"[mystery]Let's end this, here and now!",
 		]],
 	], true);
 }
@@ -449,6 +496,7 @@ function set_juggler_emotion(name) {
 		"dismiss" : spr_player_dismissive,
 		"neutral" : spr_player_frozen,
 		"knees" : spr_player_knees,
+		"excited" : spr_player_excited,
 		"reset": -1,
 	}
 	

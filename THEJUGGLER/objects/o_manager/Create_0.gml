@@ -32,6 +32,21 @@ key_accept = mb_left;
 key_back = mb_right;
 key_fullscreen = ord("F");
 
+enum events {
+	killed_symbol,
+	
+	LAST
+}
+
+function use_event(ev) {
+	event_progression[ev] = max(1, event_progression[ev] + 1);
+}
+
+function used_event(ev) {
+	return event_progression[ev] > 0;
+}
+
+event_progression = array_create(events.LAST, 0);
 
 // Progression Tracking Variables
 has_done_intro = false;
@@ -44,15 +59,18 @@ num_enemies_created_this_wave = 0;
 num_enemies_defeated_this_wave = 0;
 
 current_score = 0;
+score_previous = 0;
  
 num_symbols = 0;
-symbol_penalty_threshold = 7;
+symbol_penalty_threshold_default = 7;
+symbol_penalty_threshold = symbol_penalty_threshold_default;
 
 between_symbols_timer = new Timer(get_frames(2));
 between_symbols_timer.start();
 symbol_manager = new SymbolManager();
 
 current_fire_counter_value = 0;
+charge_level = 0;
 
 watch_platforming_growth_perform_transition = false;
 watch_growth_transition_timer = new Timer(get_frames(4), false, function() {
@@ -93,6 +111,8 @@ global.lcd_alpha_large = 0.4;
 symbol_draw_scale_default = 0.1;
 symbol_draw_scale_platforming = 0.08;
 symbol_draw_scale = symbol_draw_scale_default;
+
+score_scale = 1;
 
 // Firing and Symbol Tracking
 current_values_in_shape = [];
@@ -273,6 +293,12 @@ function start_next_level() {
 			place_player_at_anchor(inst_anchor_screen_bottom_right, true);
 			instance_activate_object(inst_thin_plat);
 			
+			if get_level_data().charging_level {
+				instance_deactivate_object(inst_thin_plat);			
+				symbol_penalty_threshold = 25;
+				between_symbols_timer.set_and_start(get_frames(0.1));
+			}
+			
 			// always save the current level
 			last_save = new SavePoint(current_level, current_score);
 			
@@ -289,6 +315,8 @@ function start_next_level() {
 				last_save = new SavePoint(0, 0);
 			}
 			
+			symbol_penalty_threshold = symbol_penalty_threshold_default;
+			
 			o_player.been_take_from_GUI = false;
 		break;
 	}
@@ -300,7 +328,12 @@ function start_next_level() {
 			watch_growth_transition_timer.start();
 		}
 	} else {
-		start_next_wave();
+		if get_level_data().charging_level {
+			symbol_manager.clear_symbols();
+			
+		} else {	
+			start_next_wave();
+		}
 	}
 	
 	level_title_timer.start();
@@ -319,7 +352,7 @@ function start_next_wave() {
 		num_enemies_created_this_wave = 0;
 		num_enemies_defeated_this_wave = 0;
 		var num_enemies_curve_value = sample_curve(get_num_enemies_per_wave_curve(current_level), wave_completion) + 1;
-		var num_enemies_curve_scale = round(5 + (2.5 * current_level) * random_range(0.9, 1.1));
+		var num_enemies_curve_scale = min(25, round(4 + (1.5 * current_level) * random_range(0.9, 1.1)));
 		current_wave_size = round(num_enemies_curve_value * num_enemies_curve_scale);
 		
 		var base_time_between_symbols_for_wave = sample_curve(get_time_between_symbols_curve(current_level), wave_completion);
@@ -357,6 +390,18 @@ function create_player_platform() {
 	col.image_xscale = xscale;
 }
 
+function add_charge() {
+	charge_level += 0.01 + (1/6);
+	if charge_level >= 1 {
+		charge_level = 0;
+		symbol_manager.queue_charged_symbol();
+	}
+}
+
+function handle_charged_breaking() {
+	// TODO - VFX hitting witch and depleting her health
+}
+
 ///@returns {Struct.LevelData}
 function get_level_data() {
 	return level_data[current_level];
@@ -391,6 +436,7 @@ function handle_game_over() {
 	
 	var do_failure_cs = false;
 	current_wave = 0;
+	charge_level = 0;
 	if level_type == eLevelType.normal {	
 		state_game = st_game_state.main_menu;
 		state_watch = eWatchState.time;
@@ -426,6 +472,8 @@ function handle_game_over() {
 		with (o_player) {
 			x = last_checkpoint_pos.x;
 			y = last_checkpoint_pos.y;
+			hspd = 0;
+			vspd = 0;
 		}
 		
 		do_failure_cs = true;
@@ -639,15 +687,26 @@ function manage_fade() {
 }
 
 function draw_circles(_x, _y, rad, number) {
+	if number == 0 {
+		return;
+	}
+	
 	var margin = round(rad/2);
 	var total_width = (number * rad * 2) + ((number - 1) * margin);
 	var min_x = _x - total_width/2;
-	var total_angle =
+	var total_angle = min(180, number * 20);
+	var cur_angle = 90 + (total_angle/2);
+	var distance_from_center = (margin + rad*4);
 	for (var i = 0; i < number; i++) {
 		draw_set_color(c_green);
-		draw_circle(min_x + (i * (margin + rad*2)), _y, rad, false); 
+		var bob_amount = map(-1, 1, sin(20*i + (current_time / 300)), -margin/2, margin);
+		var d = distance_from_center + bob_amount;
+		var cx = _x + lengthdir_x(d, cur_angle);
+		var cy = _y + lengthdir_y(d/3, cur_angle);
+		draw_circle(cx, cy, rad, false); 
 		draw_set_color(c_white);
-		draw_circle(min_x + (i * (margin + rad*2)), _y, rad, true); 
+		draw_circle(cx, cy, rad, true); 
+		cur_angle -= total_angle / number;
 	}
 }
 

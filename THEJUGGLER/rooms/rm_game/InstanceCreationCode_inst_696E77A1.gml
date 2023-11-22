@@ -1,1 +1,1 @@
-set_text("WASD to move and jump");
+set_text("<WASD>");

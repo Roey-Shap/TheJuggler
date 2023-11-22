@@ -54,10 +54,7 @@ switch (state_game) {
 			consecutive_hit_sound_factor = max(consecutive_hit_sound_factor, 1);
 		}
 		
-		if get_level_data().level_type != eLevelType.sidescrolling {
-			if watch_growth_transition_timer.is_done() {
-				between_symbols_timer.tick();
-			}
+		if get_level_data().level_type == eLevelType.normal {
 		
 			if between_symbols_timer.is_done() {
 				between_symbols_timer.start();
@@ -85,8 +82,47 @@ switch (state_game) {
 				}
 			}
 		
-			if num_enemies_defeated_this_wave >= current_wave_size or (DEVELOPER_MODE and keyboard_check_pressed(ord("V"))){
+			var devskip = DEVELOPER_MODE and keyboard_check_pressed(ord("V"));
+			if num_enemies_defeated_this_wave >= current_wave_size or devskip {
 				start_next_wave();
+			}
+		} else if get_level_data().charging_level {
+			if watch_growth_transition_timer.is_done() {
+				between_symbols_timer.tick();
+			}
+			
+			var no_symbol_off_screen = true;
+			var left_bound = -virtual_camera_corner.x;
+			for (var i = 0; i < get_num_symbols(); i++) {
+				var symbol = symbol_manager.active_symbols[i];
+				if symbol.bbox_left <= left_bound {
+					no_symbol_off_screen = false;
+					break;
+				}
+			}
+			
+			var can_add_symbol = between_symbols_timer.is_done() and no_symbol_off_screen and get_num_symbols() < symbol_penalty_threshold;
+			if can_add_symbol {
+				between_symbols_timer.start();
+			
+				create_symbol();
+				if get_num_symbols() >= symbol_penalty_threshold {
+					var removed_symbol = symbol_manager.pop_symbol(0);
+					//if get_level_data().killed_symbols_become_bullets {	// if your killed symbols become bullets, then neglected ones should just hit
+					//	var bombs = drop_bombs(irandom_range(3, 5));
+					//} else {
+					//	if get_level_data().level_type == eLevelType.normal {
+					//		hit_player();
+					//	} else {
+					//		var spawn_pos = bbox_center(removed_symbol).iadd(new Vector2(0, removed_symbol.sprite_height/2));
+					//		var bombs = drop_bombs(2);
+					//	}
+					//	//spawn_bullet_towards_player(spawn_pos);
+					//}
+					
+					removed_symbol.destroy_alt_anim_setup();
+					instance_destroy(removed_symbol);
+				}
 			}
 		}
 	break;

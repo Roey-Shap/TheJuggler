@@ -37,13 +37,24 @@ if state_game == st_game_state.playing {
 
 	symbol_draw_scale = get_level_data().level_type == eLevelType.platforming? symbol_draw_scale_platforming : symbol_draw_scale_default;
 }
-
+ 
 obscure_screen_alpha = lerp(obscure_screen_alpha, obscure_screen_alpha_target, 0.01);
+score_scale = lerp(score_scale, 0.8, 0.05);
+
+if current_score > score_previous {
+	var delta_score = current_score - score_previous;
+	score_scale *= map(1, 3, delta_score, 1.02, 1.04);
+}
+
+score_previous = current_score;
 
 shake_timer.tick();
 draw_flicker.tick();
 fade_timer.tick();
 
+if keyboard_check_pressed(ord("T")) {
+	place_player_at_anchor(inst_anchor_platforming_debug, false);
+}
 //if instance_exists(o_player) {
 //	if playing_normal_platforming_level() {
 //		virtual_camera_corner = new Vector2(0, 0);

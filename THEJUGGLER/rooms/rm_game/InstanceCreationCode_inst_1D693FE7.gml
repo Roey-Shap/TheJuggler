@@ -1,1 +1,0 @@
-set_text("Pointy things hurt.");

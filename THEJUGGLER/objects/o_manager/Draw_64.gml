@@ -20,14 +20,15 @@ switch (state_game) {
 				draw_str = !draw_str;
 			} 
 			
-			var mins = seven_digit(current_minute);
+			var time_scale = 0.1;
+			var mins = seven_digit(current_minute, time_scale);
 			if current_minute < 10 {
-				mins = seven_digit(0) + mins;
+				mins = seven_digit(0, time_scale) + mins;
 			}
 			
-			var hours = seven_digit(current_hour);
+			var hours = seven_digit(current_hour, time_scale);
 			if current_hour < 10 {
-				hours = seven_digit(0) + hours;
+				hours = seven_digit(0, time_scale) + hours;
 			}
 			
 			
@@ -68,7 +69,7 @@ switch (state_game) {
 		//var symbols_element = scribble(all_symbols);
 		//symbols_element.align(fa_right, fa_bottom).draw(screen_down_right.x, screen_down_right.y);
 
-		var fire_num_str = sfmt("%\n[scaleStack,0.75]%", seven_digit(current_fire_counter_value), seven_digit(current_score));
+		var fire_num_str = sfmt("%\n[scaleStack,%]%", seven_digit(current_fire_counter_value), score_scale, seven_digit(current_score));
 		var fire_number_element = scribble(fire_num_str);
 		var offset_up_left = screen_up_left.add(margin_vec); //.add(new Vector2(screen_dimensions.x - margin_vec.x * 2, 0));
 		fire_number_element.align(fa_left, fa_top);
@@ -88,12 +89,12 @@ switch (state_game) {
 					draw_set_color(global.c_lcd_shade);
 					draw_set_alpha(global.lcd_alpha);
 					draw_set_halign(fa_middle);
-					draw_set_valign(fa_top);
+					draw_set_valign(fa_center);
 					draw_text_scribble(title_position.x + LCD_SHADE_OFFSET.x, title_position.y + LCD_SHADE_OFFSET.y, seven_digit(hp));
 					draw_set_color(c_white);
 					draw_set_alpha(1);
 					var hp_element = scribble(seven_digit(hp));		//seven_digit(hp)
-					hp_element.align(fa_middle, fa_top).draw(title_position.x, title_position.y);
+					hp_element.align(draw_get_halign(), draw_get_valign()).draw(title_position.x, title_position.y);
 				} else {
 					draw_sprite_ext(sprite_index, image_index, title_position.x + LCD_SHADE_OFFSET.x + shake_offset.x, title_position.y + LCD_SHADE_OFFSET.y + shake_offset.y, image_xscale * draw_scale.x, image_yscale * draw_scale.y, image_angle, global.c_lcd_shade, global.lcd_alpha_large * image_alpha);
 					draw_sprite_ext(sprite_index, image_index, title_position.x + shake_offset.x, title_position.y + shake_offset.y, image_xscale * draw_scale.x, image_yscale * draw_scale.y, image_angle, image_blend, image_alpha);
@@ -116,7 +117,7 @@ if DEBUG and instance_exists(o_screen){
 	var stats_element = scribble(sfmt("Enemy: % / %\nWave: % / %\n Level: %", num_enemies_defeated_this_wave, current_wave_size, current_wave, current_number_of_waves, current_level));
 	stats_element.align(fa_center, fa_top).starting_format(default_font_name, 1).draw(screen_up_left.x, screen_up_left.y - screen_dimensions.y/2);
 	draw_set_halign(fa_left);
-	draw_text(24, 24, string(consecutive_hit_sound_factor));
+	draw_text(24, 24, string(charge_level));
 	draw_text(24, 48, string(between_symbols_timer.current_count));
 	draw_text(24, 72, sfmt("num cs: %", instance_number(o_cutscene)));
 }
@@ -126,7 +127,8 @@ if DEBUG and instance_exists(o_screen){
 //	level_title_element.align(fa_center, fa_top).starting_format(default_font_name, 1).draw(title_position.x, title_position.y);
 //}
 
-if obscure_screen_alpha > 0 {
+var debug_override = DEVELOPER_MODE and keyboard_check(vk_space);
+if obscure_screen_alpha > 0 and !debug_override {
 	draw_set_alpha(obscure_screen_alpha);
 	draw_set_color(c_black);
 	var w = o_screen.bbox_right - o_screen.bbox_left;
