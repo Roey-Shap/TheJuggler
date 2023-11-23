@@ -16,6 +16,14 @@ function Vector2(_x, _y) constructor {
 		return add(vec2.multiply(scalar));
 	}
 	
+	static add_x = function(_x) {
+		return new Vector2(x + _x, y);
+	}
+	
+	static add_y = function(_y) {
+		return new Vector2(x, y + _y);
+	}
+	
 	static iadd = function(vec2) {
 		x += vec2.x;
 		y += vec2.y;

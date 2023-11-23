@@ -54,8 +54,13 @@ switch (state_game) {
 			consecutive_hit_sound_factor = max(consecutive_hit_sound_factor, 1);
 		}
 		
-		if get_level_data().level_type == eLevelType.normal {
-		
+		var level_normal = get_level_data().level_type == eLevelType.normal;
+		var level_platforming = get_level_data().level_type == eLevelType.platforming;
+		if level_normal or (!get_level_data().charging_level and level_platforming) {
+			if watch_growth_transition_timer.is_done() {
+				between_symbols_timer.tick();
+			}
+			
 			if between_symbols_timer.is_done() {
 				between_symbols_timer.start();
 			
@@ -87,6 +92,11 @@ switch (state_game) {
 				start_next_wave();
 			}
 		} else if get_level_data().charging_level {
+			var player = instance_nearest(x, y, o_player);
+			if player.y >= -virtual_camera_corner.y + o_screen.sprite_height + player.sprite_height/2 {
+				player.y = -virtual_camera_corner.y - player.sprite_height/2;
+			}
+			
 			if watch_growth_transition_timer.is_done() {
 				between_symbols_timer.tick();
 			}

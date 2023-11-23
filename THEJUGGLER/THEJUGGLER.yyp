@@ -382,6 +382,7 @@
     {"id":{"name":"spr_symbol_triangle","path":"sprites/spr_symbol_triangle/spr_symbol_triangle.yy",},},
     {"id":{"name":"__scribble_class_font","path":"scripts/__scribble_class_font/__scribble_class_font.yy",},},
     {"id":{"name":"spr_symbol_three","path":"sprites/spr_symbol_three/spr_symbol_three.yy",},},
+    {"id":{"name":"cv_witch_hp_lost_lerp_rate","path":"animcurves/cv_witch_hp_lost_lerp_rate/cv_witch_hp_lost_lerp_rate.yy",},},
     {"id":{"name":"__scribble_class_typist","path":"scripts/__scribble_class_typist/__scribble_class_typist.yy",},},
     {"id":{"name":"spr_spike_diamond","path":"sprites/spr_spike_diamond/spr_spike_diamond.yy",},},
     {"id":{"name":"Randomness","path":"scripts/Randomness/Randomness.yy",},},

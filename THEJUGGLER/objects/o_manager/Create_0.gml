@@ -330,7 +330,11 @@ function start_next_level() {
 	} else {
 		if get_level_data().charging_level {
 			symbol_manager.clear_symbols();
-			
+			with (o_witch) {
+				draw_hp = true;
+				hp_shown = 0;
+			}
+
 		} else {	
 			start_next_wave();
 		}

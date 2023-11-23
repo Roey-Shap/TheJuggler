@@ -186,6 +186,7 @@
     {"name":"inst_3CB1F041","path":"rooms/rm_game/rm_game.yy",},
     {"name":"inst_1B342088","path":"rooms/rm_game/rm_game.yy",},
     {"name":"inst_6F0C5CE8","path":"rooms/rm_game/rm_game.yy",},
+    {"name":"inst_1425A970","path":"rooms/rm_game/rm_game.yy",},
   ],
   "isDnd": false,
   "layers": [
@@ -360,6 +361,7 @@
         {"resourceType":"GMRInstance","resourceVersion":"1.0","name":"inst_7C23ED2","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"objectId":{"name":"o_spike_diamond","path":"objects/o_spike_diamond/o_spike_diamond.yy",},"properties":[],"rotation":0.0,"scaleX":1.0,"scaleY":1.0,"x":7360.0,"y":128.0,},
         {"resourceType":"GMRInstance","resourceVersion":"1.0","name":"inst_3CB1F041","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"objectId":{"name":"o_collision","path":"objects/o_collision/o_collision.yy",},"properties":[],"rotation":0.0,"scaleX":5.562504,"scaleY":1.0,"x":6549.0,"y":236.0,},
         {"resourceType":"GMRInstance","resourceVersion":"1.0","name":"inst_1B342088","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"objectId":{"name":"o_collision","path":"objects/o_collision/o_collision.yy",},"properties":[],"rotation":0.0,"scaleX":5.354677,"scaleY":14.03125,"x":6852.0,"y":-230.29883,},
+        {"resourceType":"GMRInstance","resourceVersion":"1.0","name":"inst_1425A970","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"objectId":{"name":"o_checkpoint","path":"objects/o_checkpoint/o_checkpoint.yy",},"properties":[],"rotation":0.0,"scaleX":2.0,"scaleY":1.5,"x":6880.0,"y":224.0,},
       ],"layers":[],"properties":[],"userdefinedDepth":false,"visible":true,},
     {"resourceType":"GMRInstanceLayer","resourceVersion":"1.0","name":"WatchFaceDisplay","depth":700,"effectEnabled":true,"effectType":null,"gridX":16,"gridY":16,"hierarchyFrozen":false,"inheritLayerDepth":false,"inheritLayerSettings":false,"inheritSubLayers":true,"inheritVisibility":true,"instances":[
         {"resourceType":"GMRInstance","resourceVersion":"1.0","name":"inst_5753F3E5","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":9,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"objectId":{"name":"o_button_parent","path":"objects/o_button_parent/o_button_parent.yy",},"properties":[

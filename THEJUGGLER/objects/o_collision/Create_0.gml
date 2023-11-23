@@ -29,7 +29,18 @@ draw_custom = function(offset_pos=new Vector2(0, 0), draw_shadow=false) {
 		draw_sprite_ext(sprite_index, image_index, x + offset_pos.x, y + offset_pos.y, image_xscale * draw_scale.x, image_yscale * draw_scale.y, image_angle, image_blend, image_alpha);
 		
 		if is_stone {
-			var c = merge_color(global.c_magic_1, global.c_magic_2, map(-1, 1, sin(current_time/350), 0, 1));
+			var c;
+			var is_charged = symbol_struct != -1;
+			if is_charged {
+				is_charged = symbol_struct.type == symbol_type.charged;
+			}
+			
+			if is_charged {
+				c = merge_color(global.c_magic_1, global.c_magic_2, map(-1, 1, sin(current_time/350), 0, 1));
+			} else {
+				c = merge_color(c_white, c_aqua, map(-1, 1, sin(current_time/400), 0, 0.5));
+			}
+			
 			draw_sprite_ext(stone_overlay, 0, x + offset_pos.x, y + offset_pos.y, 1, 1, image_angle, c, image_alpha);
 		}
 	}

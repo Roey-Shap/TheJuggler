@@ -6,4 +6,6 @@ with (o_button_parent) {
 	}
 }
 
+gpu_set_tex_filter(true);
 draw_self();
+gpu_set_tex_filter(false);

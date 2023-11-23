@@ -223,6 +223,9 @@ if platforming_active {
 	}
 }
 
+hp_show_timer.tick();
+hp_shown = lerp(hp_shown, hp, sample_curve(cv_witch_hp_lost_lerp_rate, hp_show_timer.get_percent_done()));
+
 if defaulting_to_neutral {
 	action_timer.tick();
 	perform_return_to_neutral();

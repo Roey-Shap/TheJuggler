@@ -393,15 +393,16 @@ function cutscenes_init() {
 			"So you're resilient, eh!?",
 			"Your soul, stuck in this [speed,0.6]little Juggler form[speed,1]...",
 			"There was another, long ago, but I like you MUCH better.",
-			"Now... when you clear these symbols, they'll [c_red]expl-",
+			"Now in this NEXT level... when you clear symbols, they'll [c_red]expl-",
 			"([speaker,Player][slant]Hi!! Question. Um, I'm not the first one in here?)",
 			"([slant]I'm not, like, destined to defeat you?",
 			"[speaker,Witch]What? No, honey, get in line.",
 			"([speaker,Player][slant]Two nickels, huh.)",
 			"[speaker,Witch]*shrug*",
 			"Anyway, where was I... Oh, yes. Exploding symbols?",
-			"Let them detonate and [c_red]bombs fall[/c]. [c_green]Clear them[/c] and [c_green]less[/c] fall.?",
-			"Cool, huh?",
+			"Let them detonate and [c_red]bombs fall[/c]. [c_green]Clear them[/c] and [c_green]less[/c] fall. Capiche?",
+			"[speaker,Player]Clearing symbols makes bombs. Sure.",
+			"Whatever... you're going DOWN, lady!",
 		]],
 		[cutscene_play_sound, snd_witch_laugh_1, SND_PRIORITY_FX + 1, false],
 		[cs_wait, get_frames(1.5)],
@@ -410,6 +411,8 @@ function cutscenes_init() {
 			with (o_manager) {
 				obscure_screen_alpha_target = 0;
 				set_music_track(snd_music_witch_fight_epic);
+				audio_sound_gain(background_music, 0, 0.5 * 1000);
+
 			}
 		}],
 	], true);

@@ -3,6 +3,41 @@ event_inherited();
 hspd = 0;
 vspd = 0;
 
+hp_max = 10;
+hp = hp_max;
+hp_shown = hp;
+
+draw_hp = false;
+
+hp_show_timer = new Timer(get_frames(1));
+
+shake_offset = vector_zero();
+shake_intensity = vector_zero();
+shake_timer = new Timer(1, false, function() {
+	shake_offset = vector_zero();
+});
+
+
+///@param {Struct.Vector2} intensity
+///@param Int frames
+function start_shake(intensity, frames) {
+	if !shake_timer.is_done() {
+		// add a factor of the new shake
+		shake_intensity = shake_intensity.mult_add(intensity, 0.5);
+	} else {		
+		shake_intensity = intensity.copy();
+	}
+	
+	shake_timer.set_and_start(max(shake_timer.current_count, frames));
+}
+
+function take_hit() {
+	hp -= 1;
+	hp_show_timer.start();
+	var factor = map(hp_max, 0, hp, 1, 1.3);
+	start_shake((new Vector2(4, 4)).multiply(factor), get_frames(0.6 * factor));
+}
+
 enum e_witch_state {
 	none,
 	return_to_neutral,

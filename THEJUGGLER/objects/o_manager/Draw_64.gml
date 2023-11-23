@@ -45,9 +45,7 @@ switch (state_game) {
 		}
 	break;
 	
-	case st_game_state.playing:
-		//if get_level_data().is_scrol
-		
+	case st_game_state.playing:		
 		if surface_exists(in_screen_draw_surface) { // and get_level_data().level_type == eLevelType.sidescrolling
 			var screen = instance_nearest(0, 0, o_screen);
 			if screen != noone {
@@ -105,7 +103,34 @@ switch (state_game) {
 			//draw_set_valign(fa_top);
 			//draw_text(24, 24, sfmt("buffer: %, coyote time: %", buffer_jump_timer.current_count, coyote_time_timer.current_count));
 		}
-
+	
+	with (o_witch) {
+		if draw_hp {
+			var hp_bar_margin_x = screen_dimensions.x * 0.075;
+			var hp_bar_dims = new Vector2(screen_dimensions.x - hp_bar_margin_x*2, screen_dimensions.y * 0.06);
+			var hp_bar_corner_1 = screen_up_left.add(new Vector2(hp_bar_margin_x, -hp_bar_dims.y * 2));
+			var hp_bar_corner_2 = hp_bar_corner_1.add(hp_bar_dims);
+			draw_set_color(c_black);
+			draw_rect_vec(hp_bar_corner_1, hp_bar_corner_2, false);
+			
+			// draw lerping hp
+			draw_set_color(c_white);
+			draw_rect_vec(hp_bar_corner_1, hp_bar_corner_1.add(new Vector2(hp_bar_dims.x * hp_shown / hp_max, hp_bar_dims.y)), false);
+			
+			// draw actual hp
+			var hp_real_bottom_right = hp_bar_corner_1.add(new Vector2(hp_bar_dims.x * hp / hp_max, hp_bar_dims.y));
+			var base1 = global.c_magic_1;
+			var base2 = global.c_magic_2;
+			var t = map(-1, 1, sin(current_time/350), 0, 1);
+			var c1 = merge_color(base1, base2, t);
+			var c2 = merge_color(base1, base2, 1 - t);
+			draw_rectangle_color(hp_bar_corner_1.x, hp_bar_corner_1.y,
+								 hp_real_bottom_right.x, hp_real_bottom_right.y, 
+								 c1, c2, c2, c1,
+								 false);
+		}
+	}
+	
 	break;
 }
 

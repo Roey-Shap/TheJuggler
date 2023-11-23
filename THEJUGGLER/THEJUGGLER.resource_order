@@ -303,6 +303,7 @@
     {"name":"spr_symbol_triangle","order":4,"path":"sprites/spr_symbol_triangle/spr_symbol_triangle.yy",},
     {"name":"__scribble_class_font","order":2,"path":"scripts/__scribble_class_font/__scribble_class_font.yy",},
     {"name":"spr_symbol_three","order":7,"path":"sprites/spr_symbol_three/spr_symbol_three.yy",},
+    {"name":"cv_witch_hp_lost_lerp_rate","order":17,"path":"animcurves/cv_witch_hp_lost_lerp_rate/cv_witch_hp_lost_lerp_rate.yy",},
     {"name":"__scribble_class_typist","order":6,"path":"scripts/__scribble_class_typist/__scribble_class_typist.yy",},
     {"name":"spr_spike_diamond","order":25,"path":"sprites/spr_spike_diamond/spr_spike_diamond.yy",},
     {"name":"Randomness","order":3,"path":"scripts/Randomness/Randomness.yy",},

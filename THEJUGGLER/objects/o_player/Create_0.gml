@@ -29,9 +29,7 @@ fast_falling_hspd_factor = 0.4;
 shake_offset = vector_zero();
 shake_intensity = vector_zero();
 shake_timer = new Timer(1, false, function() {
-	with (o_watch_hand) {
-		shake_offset = vector_zero();
-	}
+	shake_offset = vector_zero();
 });
 
 
@@ -120,6 +118,9 @@ manage_collision = function() {
 			if fast_falling {
 				vspd = -jump_force_break_symbol_freeze;
 				vcol.break_freeze();
+				if vcol.symbol_struct.type == symbol_type.charged {
+					o_manager.symbol_manager.kill_first_symbol_of_value(symbol_type.charged);
+				}
 			} else {
 				vspd = 0;
 			}
