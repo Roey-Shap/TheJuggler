@@ -10,7 +10,7 @@ function cutscenes_init() {
 		(new Speaker("None", new Vector2(0.5, 0.5), fnt_other))
 			.set_textbox_sprite(spr_textbox_neutral_nineslice)
 			.set_textbox_direction(new Vector2(3, 2)),
-		(new Speaker("Witch", new Vector2(0.65, 0.2), fnt_witch))
+		(new Speaker("Witch", new Vector2(0.75, 0.2), fnt_witch))
 			.set_textbox_angle(-90)
 			.set_textbox_direction(new Vector2(2, 3)),
 	];
@@ -308,9 +308,10 @@ function cutscenes_init() {
 		}],
 		[cs_text, [
 			"([slant][speaker,Thought]Maybe this isn't a dream. But still... I'm alive, aren't I?)",
-			"([slant][set_juggler_emotion,excited]Maybe this is actually a quest!! And there's some secret this watch holds...!)",
 			"([slant][set_juggler_emotion,dismiss]No... I'm definitely going to die, aren't I.)",
-			"([slant][set_juggler_emotion,reset]Might as well keep going.)",
+			"([slant][set_juggler_emotion,excited]Maybe this is actually a quest!! And there's some secret this watch holds...!)",
+			"([slant][set_juggler_emotion,excited]Yeah! I'm the hero of this quest! I'm literally inside a video game, right?)",
+			"([slant][set_juggler_emotion,reset]Alright, let's get to the bottom of this!)",
 		]]
 	], true);
 	
@@ -369,8 +370,8 @@ function cutscenes_init() {
 		[cs_text, [
 			"Ho ho! You'll never break free, don't you see?",
 			"This curse was placed by me, and another spell shall be:",
-			"You're stuck here with me, and-!",
-			"([speaker,Player][slant]Hey, so, uh, I know you're monologuing, but-",
+			"You're stuck here with me, [mystery]The Witch[/mystery], and-!",
+			"([speaker,Player][slant]Hey, so, uh, I know you're monologuing, but can I ask a question?",
 			"[speaker,Witch][scale,1.5]Ahem!!![/scale] Anyway!! [delay,100]Let's see how you deal with these symbols! [wave]Kekekeh!!",
 		]],
 		[cutscene_play_sound, snd_witch_laugh_1, SND_PRIORITY_FX + 1, false],
@@ -401,8 +402,9 @@ function cutscenes_init() {
 			"[speaker,Witch]*shrug*",
 			"Anyway, where was I... Oh, yes. Exploding symbols?",
 			"Let them detonate and [c_red]bombs fall[/c]. [c_green]Clear them[/c] and [c_green]less[/c] fall. Capiche?",
-			"[speaker,Player]Clearing symbols makes bombs. Sure.",
+			"[speaker,Player]Clearing symbols means less bombs. Sure.",
 			"Whatever... you're going DOWN, lady!",
+			"[speaker,Witch]I'd like to see you try, Juggler man!",
 		]],
 		[cutscene_play_sound, snd_witch_laugh_1, SND_PRIORITY_FX + 1, false],
 		[cs_wait, get_frames(1.5)],
@@ -433,6 +435,42 @@ function cutscenes_init() {
 		[cs_text, [
 			"This won't do, this won't do.... [delay,200][shake] AMP IT ALL UP TO [c_emph][scale,2]11[scale,1][/c]!!",
 			"[mystery]Let's end this, here and now!",
+		]],
+		[cutscene_custom_action, function() {
+			with (o_player) {
+				hp_max = hp_second_wave;
+				hp = hp_max;
+			}
+		}],
+	], true);
+	
+	cs_witch_defeat = new CutsceneData([
+		[cs_wait, get_frames(2)],
+		[cutscene_custom_action, function() {
+			audio_stop_all();
+			with (o_witch) {
+				start_shaking();
+			}
+		}],
+		[cs_set_speaker, "Witch"],
+		[cs_text, [
+			"[shake]NO.... NO!!!!",
+			"[shake]I HAVE BEEN... DEFEATED!",
+			"[speaker,Player]Woot!!",
+			"[speaker,Witch][shake]AND - [delay,200] COUGH [delay,200]- YOU WILL NOW RETURN TO YOUR LIFE...",
+			"[speaker,Player].. yeah - oh, wait, aww.",
+			"[speaker,Witch][shake]At... least... this... half-baked... game... is over...",
+			"[speaker,Witch][shake]*bleh*",
+		]],
+		[cs_fade, fade_type.indefinite, 1],
+		[cs_set_speaker, "None"],
+		[cs_text, [
+			"And so, the game had been won.",
+			"The strange curse had been lifted. Or something.",
+			"And the developer can go back to doing other things.",
+			"Maybe he'll actually come back to polish this game like he wanted.",
+			"Who knows.",
+			"Now scram. Narrating's hard work.",
 		]],
 	], true);
 }

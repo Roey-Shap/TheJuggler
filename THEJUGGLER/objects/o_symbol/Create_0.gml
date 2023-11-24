@@ -8,6 +8,7 @@ symbol_manager_index = -1;
 death_col_1 = c_lime;
 death_col_2 = global.c_lcd_shade;
 
+///@param {Struct.Symbol} symbol
 function set_symbol(symbol) {
 	symbol_struct = symbol;
 	sprite_index = symbol.sprite;

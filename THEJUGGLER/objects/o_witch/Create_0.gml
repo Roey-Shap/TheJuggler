@@ -6,6 +6,7 @@ vspd = 0;
 hp_max = 10;
 hp = hp_max;
 hp_shown = hp;
+hp_shown_last = 0;
 
 draw_hp = false;
 
@@ -17,6 +18,7 @@ shake_timer = new Timer(1, false, function() {
 	shake_offset = vector_zero();
 });
 
+shake_infinite_timer = new Timer(2, true);
 
 ///@param {Struct.Vector2} intensity
 ///@param Int frames
@@ -32,10 +34,20 @@ function start_shake(intensity, frames) {
 }
 
 function take_hit() {
+	hp_shown_last = hp;
 	hp -= 1;
 	hp_show_timer.start();
 	var factor = map(hp_max, 0, hp, 1, 1.3);
 	start_shake((new Vector2(4, 4)).multiply(factor), get_frames(0.6 * factor));
+	
+	if hp <= 0 {
+		o_manager.cs_witch_defeat.play();
+	}
+}
+
+function start_shaking() {
+	shake_infinite_timer.start();
+	shake_offset = new Vector2(5, 5);
 }
 
 enum e_witch_state {
@@ -100,6 +112,7 @@ function perform_return_to_neutral() {
 
 target_position = get_pos(id);
 stored_position = get_pos(id);
+remaining_actions = [];
 
 performed_shot = false;
 performed_shot_sound = false;
@@ -126,7 +139,11 @@ draw_custom = function(offset_pos, draw_shadow=false) {
 		draw_set_color(c_white);
 	}
 	
-	draw_custom_prev(offset_pos, draw_shadow);
+	draw_custom_prev(offset_pos.add(shake_offset), draw_shadow);
+}
+
+function reset_for_new_level() {
+	remaining_actions = [];
 }
 
 drop_bombs = function() {
@@ -152,7 +169,8 @@ function begin_return_to_neutral(seconds=2) {
 
 function return_to_waiting() {
 	state_current = e_witch_state.none;
-	action_timer.set_and_start(get_frames(random_range(3, 6)));
+	var f = o_manager.get_level_data().witch_difficulty;
+	action_timer.set_and_start(get_frames(random_range(3.25, 5)) / f);
 }
 
 function store_position() {
@@ -164,8 +182,11 @@ function turn_to(side) {
 }
 
 function begin_random_action() {
-	var available_actions = o_manager.get_level_data().witch_modes;
-	var random_action = array_pick_random(available_actions);
+	if array_length(remaining_actions) == 0 {
+		remaining_actions = concat_arrays([], o_manager.get_level_data().witch_modes);
+	}
+	
+	var random_action = array_pick_random(remaining_actions, true);
 	
 	switch (random_action) {
 		case e_witch_state.flying_across:
@@ -203,6 +224,7 @@ function begin_random_action() {
 		case e_witch_state.dropping_bombs:
 			state_current = e_witch_state.dropping_bombs_fly_up;
 			action_timer.set_and_start(get_frames(5));
+			store_position();
 		break;
 		
 		case e_witch_state.across_swoop_attack:

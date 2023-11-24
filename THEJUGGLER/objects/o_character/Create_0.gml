@@ -3,7 +3,12 @@ draw_scale = new Vector2(1, 1);
 platforming_active = false;
 
 draw_custom = function(offset_pos, draw_shadow=false) {
-	if !platforming_active {
+	var d = false;
+	with (o_player) {
+		d = been_take_from_GUI;
+	}
+	
+	if !d {
 		return;
 	}
 	

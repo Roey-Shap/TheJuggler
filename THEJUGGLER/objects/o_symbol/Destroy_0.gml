@@ -16,3 +16,7 @@ repeat(irandom_range(4, 6)) {
 	fx.image_blend = merge_color(death_col_1, death_col_2, random_range(0.05, 0.4));
 	fx_setup_screen_layer(fx);
 }
+
+//if symbol_struct.type == symbol_type.charged {
+//	o_manager.handle_charged_breaking();
+//}

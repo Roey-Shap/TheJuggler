@@ -99,12 +99,12 @@ manage_collision = function() {
 	
 	var vcol = instance_place(x, y + vspd, obj)
 	if vcol != noone {
-		var is_symbol = object_is_ancestor_ext(vcol.object_index, o_symbol);
-		var is_bounce_pad = object_is_ancestor(vcol.object_index, o_bounce_pad_parent)
-		var is_spiky = object_is_ancestor(vcol.object_index, o_spike_parent) or (is_symbol and isIn(vcol.symbol_struct.value, [symbol_type.triangle, symbol_type.diamond]));
+		var is_symbol = vcol.symbol_struct != -1;
+		var is_bounce_pad = object_is_ancestor_ext(vcol.object_index, o_bounce_pad_parent) or (is_symbol and vcol.symbol_struct.type == symbol_type.shape and isIn(vcol.symbol_struct.value, [symbol_type.row, symbol_type.column, symbol_type.square]));
+		var is_spiky = false; //object_is_ancestor_ext(vcol.object_index, o_spike_parent) or (is_symbol and isIn(vcol.symbol_struct.value, [symbol_type.triangle, symbol_type.diamond]));
 		var is_frozen = vcol.is_stone;
 		
-		if is_spiky {
+		if is_spiky and !is_frozen {
 			take_hit();
 		}
 		
@@ -119,7 +119,7 @@ manage_collision = function() {
 				vspd = -jump_force_break_symbol_freeze;
 				vcol.break_freeze();
 				if vcol.symbol_struct.type == symbol_type.charged {
-					o_manager.symbol_manager.kill_first_symbol_of_value(symbol_type.charged);
+					o_manager.symbol_manager.kill_first_symbol_of_value(vcol, true);
 				}
 			} else {
 				vspd = 0;
@@ -127,6 +127,8 @@ manage_collision = function() {
 		} else {
 			if is_bounce_pad and fast_falling {
 				vspd = -jump_force_bounce_pad;
+				//vcol.draw_scale.x = 1.3;
+				//vcol.draw_scale.y = 0.5;
 			} else {		
 				vspd = 0;
 			}
@@ -165,7 +167,26 @@ manage_collision = function() {
 	//			vspd = 0;
 	//		}
 	//	}
-	//}
+	//}	
+	
+	var cols = ds_list_create();
+	var num_cols = collision_rectangle_list(bbox_left - 1, bbox_top - 1, bbox_right + 1, bbox_bottom + 1, o_collision, false, false, cols, false);
+	for (var i = 0; i < num_cols; i++) {
+		var inst = cols[| i];
+		var is_symbol = inst.symbol_struct != -1;
+		var is_spike = !inst.is_stone and object_is_ancestor_ext(inst.object_index, o_spike_parent);
+		if is_symbol {
+			is_spike = is_spike or isIn(inst.symbol_struct.value,[symbol_type.triangle, symbol_type.diamond]);
+		}
+		
+		if is_spike {
+			take_hit();
+			inst.start_hit_flash();
+			break;
+		}
+	}
+	
+	ds_list_destroy(cols);
 	
 	var inside_symbol = instance_place(x, y, o_symbol);
 	if inside_symbol != noone {
@@ -319,7 +340,10 @@ function manage_sprite() {
 draw_custom_prev = draw_custom;
 
 draw_custom = function(offset_pos, draw_shadow=false) {
-	if !platforming_active {
+	//if !platforming_active {
+	//	return;
+	//}
+	if !been_take_from_GUI {
 		return;
 	}
 	
@@ -334,5 +358,5 @@ draw_custom = function(offset_pos, draw_shadow=false) {
 		gpu_set_fog(false, c_white, 0, 1);
 	}
 	
-	o_manager.draw_circles(x + offset_pos.x, y + offset_pos.y - 40, 8, hp);
+	o_manager.draw_circles(x + offset_pos.x + 6, y + offset_pos.y - 40, 8, hp);
 }

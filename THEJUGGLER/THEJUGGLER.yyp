@@ -381,6 +381,7 @@
     {"id":{"name":"scribble_glyph_get","path":"scripts/scribble_glyph_get/scribble_glyph_get.yy",},},
     {"id":{"name":"spr_symbol_triangle","path":"sprites/spr_symbol_triangle/spr_symbol_triangle.yy",},},
     {"id":{"name":"__scribble_class_font","path":"scripts/__scribble_class_font/__scribble_class_font.yy",},},
+    {"id":{"name":"spr_title_art2","path":"sprites/spr_title_art2/spr_title_art2.yy",},},
     {"id":{"name":"spr_symbol_three","path":"sprites/spr_symbol_three/spr_symbol_three.yy",},},
     {"id":{"name":"cv_witch_hp_lost_lerp_rate","path":"animcurves/cv_witch_hp_lost_lerp_rate/cv_witch_hp_lost_lerp_rate.yy",},},
     {"id":{"name":"__scribble_class_typist","path":"scripts/__scribble_class_typist/__scribble_class_typist.yy",},},

@@ -34,11 +34,12 @@ switch (state_game) {
 				has_done_intro = true;
 				cs_get_watch_from_seller.play();
 			}
-		} else if mouse_check_button_pressed(key_accept) {
-			if room == rm_main_menu {
-				room = rm_game;
-			}
 		}
+		//else if mouse_check_button_pressed(key_accept) {
+		//	if room == rm_main_menu {
+		//		room = rm_game;
+		//	}
+		//}
 	break;
 	
 	case st_game_state.playing:
@@ -57,7 +58,7 @@ switch (state_game) {
 		var level_normal = get_level_data().level_type == eLevelType.normal;
 		var level_platforming = get_level_data().level_type == eLevelType.platforming;
 		if level_normal or (!get_level_data().charging_level and level_platforming) {
-			if watch_growth_transition_timer.is_done() {
+			if watch_growth_transition_timer.is_done() and between_symbols_error_timer.is_done() {
 				between_symbols_timer.tick();
 			}
 			
@@ -69,6 +70,7 @@ switch (state_game) {
 				//}
 				create_symbol();
 				if get_num_symbols() >= symbol_penalty_threshold {
+					between_symbols_error_timer.set_and_start(between_symbols_timer.countdown_duration);
 					var removed_symbol = symbol_manager.pop_symbol(0);
 					if get_level_data().killed_symbols_become_bullets {	// if your killed symbols become bullets, then neglected ones should just hit
 						var bombs = drop_bombs(irandom_range(3, 5));
@@ -137,3 +139,8 @@ switch (state_game) {
 		}
 	break;
 }
+
+
+between_symbols_error_timer.tick();
+
+

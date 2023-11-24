@@ -68,6 +68,35 @@ function level_data_init() {
 	var shape_symbols = array_fill_range(symbol_type.square, symbol_type.column);
 	var color_symbols = array_fill_range(symbol_type.white, symbol_type.brown);
 	var numbers_and_shapes_symbols = concat_arrays(number_symbols, shape_symbols);
+	var more_shapes = concat_arrays(numbers_and_shapes_symbols, shape_symbols);
+	var even_more_shapes = concat_arrays(more_shapes, shape_symbols);
+	var final_level_symbols = [
+		symbol_type.zero,
+		symbol_type.one,
+		symbol_type.two,
+		symbol_type.three,
+		symbol_type.four,
+		symbol_type.five,
+		symbol_type.six,
+		symbol_type.seven,
+		symbol_type.eight,
+		symbol_type.nine,
+		
+		symbol_type.column,
+		symbol_type.column,
+		symbol_type.column,
+		symbol_type.square,
+		symbol_type.square,
+		symbol_type.square,
+		symbol_type.row,
+		symbol_type.row,
+		symbol_type.row,
+		symbol_type.triangle,
+		symbol_type.triangle,
+		symbol_type.diamond,
+		symbol_type.diamond,
+	
+	];
 	
 	level_data = [
 		new LevelData(eLevels.NULL, -1, -1, 0, -1, eLevelType.normal),
@@ -115,7 +144,8 @@ function level_data_init() {
 		.set_force_level_save(),
 		
 		new LevelData(eLevels.platforming_intro, -1, -1, 0, -1, eLevelType.sidescrolling)
-		.set_starting_cutscene(cs_set_creepy_music),		
+		.set_starting_cutscene(cs_set_creepy_music)
+		.set_force_level_save(),		
 		
 		//(new LevelData(eLevels.platforming_intro, cv_number_of_enemies_level_1, cv_base_time_between_symbol_per_wave_level_1, 3, numbers_and_shapes_symbols, eLevelType.platforming))
 		//.set_killed_symbols_become_bullets(),
@@ -123,23 +153,31 @@ function level_data_init() {
 		// Witch 1 - introduce Witch
 		(new LevelData(eLevels.bullet_hell, cv_number_of_enemies_witch_1, cv_base_time_between_symbol_per_wave_platforming_with_numbers_1, 2, numbers_and_shapes_symbols, eLevelType.platforming))
 		.set_starting_cutscene(cs_witch_intro)
-		.set_witch_modes([e_witch_state.flying_across, e_witch_state.dropping_bombs]),
+		.set_witch_modes([e_witch_state.flying_across, e_witch_state.dropping_bombs])
+		.set_force_level_save(),
 		
 		// Witch 2
 		(new LevelData(eLevels.bullet_hell, cv_number_of_enemies_witch_2, cv_base_time_between_symbol_per_wave_platforming_with_numbers_2, 2, numbers_and_shapes_symbols, eLevelType.platforming))
 		.set_starting_cutscene(cs_witch_explains_exploding_symbols)
 		.set_killed_symbols_become_bullets()
-		.set_witch_modes([e_witch_state.flying_across, e_witch_state.dropping_bombs]),
+		.set_witch_modes([e_witch_state.flying_across, e_witch_state.dropping_bombs, e_witch_state.across_swoop_attack])
+		.set_force_level_save(),
 		
-		(new LevelData(eLevels.bullet_hell, cv_number_of_enemies_platforming_with_numbers_1, cv_base_time_between_symbol_per_wave_platforming_with_numbers_1, 2, numbers_and_shapes_symbols, eLevelType.platforming))
+		// Witch Charging 1
+		(new LevelData(eLevels.bullet_hell, cv_number_of_enemies_platforming_with_numbers_1, cv_base_time_between_symbol_per_wave_platforming_with_numbers_1, 2, more_shapes, eLevelType.platforming))
 		.set_starting_cutscene(cs_witch_3_intro)
 		.set_charging_level()
-		.set_witch_modes([e_witch_state.flying_across, e_witch_state.dropping_bombs, e_witch_state.across_swoop_attack, e_witch_state.turn_to_stone]),
+		.set_witch_modes([e_witch_state.flying_across, e_witch_state.dropping_bombs, e_witch_state.across_swoop_attack])
+		.set_witch_difficulty(2)
+		.set_force_level_save(),
 		
-		(new LevelData(eLevels.bullet_hell, cv_number_of_enemies_platforming_with_numbers_1, cv_base_time_between_symbol_per_wave_platforming_with_numbers_1, 2, numbers_and_shapes_symbols, eLevelType.platforming))
+		// Witch Charging Hard
+		(new LevelData(eLevels.bullet_hell, cv_number_of_enemies_platforming_with_numbers_1, cv_base_time_between_symbol_per_wave_platforming_with_numbers_1, 2, more_shapes, eLevelType.platforming))
 		.set_starting_cutscene(cs_witch_final_level_intro)
 		.set_charging_level()
-		.set_witch_modes([e_witch_state.flying_across, e_witch_state.dropping_bombs, e_witch_state.across_swoop_attack, e_witch_state.turn_to_stone]),
+		.set_witch_modes([e_witch_state.flying_across, e_witch_state.dropping_bombs, e_witch_state.across_swoop_attack])
+		.set_witch_difficulty(3)
+		.set_force_level_save(),
 	];
 }
 
@@ -152,6 +190,7 @@ function LevelData(_enum_tag, _enemies_per_wave_curve, _time_between_enemies_cur
 	level_type = _level_type;
 	killed_symbols_become_bullets = false;
 	witch_modes = [];
+	witch_difficulty = 1;
 	witch_active = false;
 	charging_level = false;
 	force_level_save = false;
@@ -183,6 +222,11 @@ function LevelData(_enum_tag, _enemies_per_wave_curve, _time_between_enemies_cur
 	static set_witch_modes = function(modes) {
 		witch_modes = modes;
 		witch_active = true;
+		return self;
+	}
+
+	static set_witch_difficulty = function(difficulty) {
+		witch_difficulty = difficulty;
 		return self;
 	}
 

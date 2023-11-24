@@ -6,6 +6,18 @@ stone_overlay = spr_symbol_frozen;
 
 symbol_struct = -1;
 
+hit_flash_timer = new Timer(get_frames(1.5));
+hit_flash_interval_timer = new Timer(get_frames(0.35));
+function start_hit_flash() {
+	hit_flash_timer.start();
+	
+	var fx = new FadeFX(x, y, sprite_index, 1, image_index, get_frames(0.5));
+	fx.fog_col = global.c_hurt;
+	fx.growth_scale = new Vector2(1.01, 1.01);
+	fx.growth_limit = new Vector2(1.2, 1.2);
+	fx_setup_screen_layer(fx);
+}
+
 draw_custom = function(offset_pos=new Vector2(0, 0), draw_shadow=false) {
 	//gpu_set_fog(true, global.c_lcd_shade, 0, 1);
 	//if fog_color != -1 {

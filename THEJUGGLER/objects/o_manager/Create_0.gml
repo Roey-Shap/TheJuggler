@@ -69,6 +69,8 @@ between_symbols_timer = new Timer(get_frames(2));
 between_symbols_timer.start();
 symbol_manager = new SymbolManager();
 
+between_symbols_error_timer = new Timer(1);
+
 current_fire_counter_value = 0;
 charge_level = 0;
 
@@ -333,11 +335,16 @@ function start_next_level() {
 			with (o_witch) {
 				draw_hp = true;
 				hp_shown = 0;
+				hp_shown_last = 0;
 			}
 
 		} else {	
 			start_next_wave();
 		}
+	}
+	
+	with (o_witch) {
+		reset_for_new_level();
 	}
 	
 	level_title_timer.start();
@@ -404,6 +411,9 @@ function add_charge() {
 
 function handle_charged_breaking() {
 	// TODO - VFX hitting witch and depleting her health
+	with (o_witch) {
+		take_hit();
+	}
 }
 
 ///@returns {Struct.LevelData}
@@ -472,6 +482,12 @@ function handle_game_over() {
 		reset_buttons_for_shape();
 		
 		do_failure_cs = true;
+		with (o_witch) {
+			x = default_position.x;
+			y = default_position.y;
+			reset_for_new_level();
+			begin_return_to_neutral();
+		}
 	} else if level_type == eLevelType.sidescrolling {
 		with (o_player) {
 			x = last_checkpoint_pos.x;
@@ -646,7 +662,9 @@ function receive_click_from_face_button(button) {
 		//}
 	} else if value == 15 {
 		if state_watch == eWatchState.time {
-			if game_is_frozen() {
+			if room == rm_main_menu {
+				room = rm_game;
+			} else if game_is_frozen() {
 				//append_cutscene([
 				//	[cs_text, [
 				//		"[speaker,Other]Yes, it's that button. You've got it."

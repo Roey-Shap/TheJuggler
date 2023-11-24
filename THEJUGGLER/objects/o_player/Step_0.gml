@@ -111,7 +111,7 @@ if !invulnerability_timer.is_done() {
 			image_blend = c_white;
 		} else {
 			image_alpha = 0.8;
-			image_blend = c_red;
+			image_blend = global.c_hurt;
 		}
 		
 		invulnerability_flash_timer.start();

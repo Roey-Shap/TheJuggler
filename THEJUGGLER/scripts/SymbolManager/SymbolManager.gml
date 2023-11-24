@@ -87,13 +87,18 @@ function SymbolManager() constructor {
 		});
 	}
 	
-	static kill_first_symbol_of_value = function(value) {
+	static kill_first_symbol_of_value = function(value, id_mode=false) {
 		var value_index = -1;
 		var removed_symbol = -1;
 		var num_symbs = get_num_symbols();
 		for (var i = 0; i < num_symbs; i++) {
 			var symbol = active_symbols[i];
-			if symbol.symbol_struct.literal_value == value and !symbol.is_stone {
+			if id_mode {
+				if symbol == value {
+					value_index = i;
+					break;
+				}
+			} else if symbol.symbol_struct.literal_value == value and !symbol.is_stone {
 				value_index = i;
 				break;
 			}

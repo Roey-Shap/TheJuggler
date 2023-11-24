@@ -42,6 +42,10 @@ function scribble_init(){
 		
 		return sfmt("[wave][wobble][fnt_witch][cycle,%,%,%,%]", hues[0], hues[1], hues[2], hues[3]);
 	});
+	
+	scribble_add_macro("/mystery", function() {
+		return "[/wave][/wobble][/cycle]";
+	});
 }
 
 function seven_digit(digit, scale=0.075) {
