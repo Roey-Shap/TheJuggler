@@ -25,7 +25,20 @@ if state_game == st_game_state.playing {
 	var playing_sidescrolling = o_manager.get_level_data().level_type == eLevelType.sidescrolling;
 	if playing_sidescrolling {
 		var offset_from_player = new Vector2(w/2, h*0.65); //?  : new Vector2(w/2, h/2);
-		virtual_camera_corner = (get_pos(instance_nearest(x, y, o_player)).sub(offset_from_player)).multiply(-1);
+		var target = (get_pos(instance_nearest(x, y, o_player)).sub(offset_from_player)).multiply(-1);
+		var bounding_radius = w * 0.35;
+		if virtual_camera_corner == -1 {
+				virtual_camera_corner = target;
+		}
+		
+		virtual_camera_corner.x = lerp(virtual_camera_corner.x, target.x, 0.3);	
+
+		//if abs(virtual_camera_corner.x - target.x) >= bounding_radius {
+		//}
+		
+		if o_player.grounded or abs(virtual_camera_corner.y - target.y) >= h * 0.4 {
+			virtual_camera_corner.y = lerp(virtual_camera_corner.y, target.y, 0.1);
+		}
 	} else {
 		virtual_camera_corner = (get_pos(inst_anchor_screen_bottom_right).sub(new Vector2(w, h * 1))).multiply(-1);
 	}

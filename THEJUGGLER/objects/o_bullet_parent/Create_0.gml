@@ -5,8 +5,27 @@ vspd = 0;
 draw_scale = new Vector2(1, 1);
 
 draw_helper = function(_x, _y, angle, blend, alpha) {
-	draw_sprite_ext(spr_bullet_colorable_base, image_index, _x, _y, image_xscale * draw_scale.x, image_yscale * draw_scale.y, angle, c_white, alpha);
-	draw_sprite_ext(spr_bullet_colorable_top, image_index, _x, _y, image_xscale * draw_scale.x, image_yscale * draw_scale.y, angle, blend, alpha);
+	var spr = spr_bullet_colorable_base;
+	var xscale = image_xscale * draw_scale.x;
+	var yscale = image_yscale * draw_scale.y;
+	var pc = new Vector2(_x, _y);
+	var s = 7.5 * abs(xscale);
+	var spd = (new Vector2(hspd, vspd)).multiply(s);
+	var rspd = (new Vector2(vspd, -hspd)).multiply(s * 0.65);
+	var stretchFactor = map(-1, 1, sin(spd.get_mag() * current_time/100), 1, 1.1);
+	//var dir = point_direction(0, 0, hspd, vspd);
+	//var len = point_distance(0, 0, hspd, vspd);
+	var p1 = pc.mult_add(spd, 1 * stretchFactor);
+	var p2 = pc.add(rspd);
+	var p3 = pc.mult_add(spd, -1.5 * stretchFactor);
+	var p4 = pc.sub(rspd);
+	draw_sprite_pos(spr, image_index, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, alpha);
+	gpu_set_fog(true, blend, 0, 1);
+	draw_sprite_pos(spr_bullet_colorable_top, image_index, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y, alpha);
+	gpu_set_fog(false, c_white, 0, 1);
+	//draw_sprite_ext_skew(spr_bullet_colorable_base, image_index, _x, _y, xscale, yscale, angle, alpha, );
+	//draw_sprite_ext(spr_bullet_colorable_base, image_index, _x, _y, , image_yscale * draw_scale.y, angle, c_white, alpha);
+	//draw_sprite_ext(spr_bullet_colorable_top, image_index, _x, _y, image_xscale * draw_scale.x, image_yscale * draw_scale.y, angle, blend, alpha);
 }
 
 draw_custom = function(offset_pos, draw_shadow=false) {

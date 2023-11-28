@@ -94,9 +94,9 @@ switch (state_game) {
 					var hp_element = scribble(seven_digit(hp));		//seven_digit(hp)
 					hp_element.align(draw_get_halign(), draw_get_valign()).draw(title_position.x, title_position.y);
 				} else {
-					draw_sprite_ext(sprite_index, image_index, title_position.x + LCD_SHADE_OFFSET.x + shake_offset.x, title_position.y + LCD_SHADE_OFFSET.y + shake_offset.y, image_xscale * draw_scale.x, image_yscale * draw_scale.y, image_angle, global.c_lcd_shade, global.lcd_alpha_large * image_alpha);
-					draw_sprite_ext(sprite_index, image_index, title_position.x + shake_offset.x, title_position.y + shake_offset.y, image_xscale * draw_scale.x, image_yscale * draw_scale.y, image_angle, image_blend, image_alpha);
-					o_manager.draw_circles(title_position.x, title_position.y - 32, 8, hp);
+					draw_sprite_ext(sprite_index, image_index, title_position.x + LCD_SHADE_OFFSET.x + shake_offset.x, title_position.y + LCD_SHADE_OFFSET.y + shake_offset.y + 32, image_xscale * draw_scale.x, image_yscale * draw_scale.y, image_angle, global.c_lcd_shade, global.lcd_alpha_large * image_alpha);
+					draw_sprite_ext(sprite_index, image_index, title_position.x + shake_offset.x, title_position.y + shake_offset.y + 32, image_xscale * draw_scale.x, image_yscale * draw_scale.y, image_angle, image_blend, image_alpha);
+					o_manager.draw_circles(title_position.x, title_position.y - 32 + 32, 8, hp);
 				}
 			}
 			//draw_set_halign(fa_left);

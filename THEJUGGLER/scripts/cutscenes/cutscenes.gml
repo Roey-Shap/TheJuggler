@@ -152,6 +152,25 @@ function cutscenes_init() {
 		]]
 	], true);
 	
+	cs_try_again_glitch = new CutsceneData([
+		[cutscene_custom_action, function() {
+			with (o_manager) {
+				obscure_screen_alpha_target = 1;
+			}
+		}],
+		[cs_wait, get_frames(1)],
+		[cs_set_speaker, "Thought"],
+		[cs_text, [
+			"([slant]I... can't give up!)",
+		]],
+		[cs_wait, get_frames(0.5)],
+		[cutscene_custom_action, function() {
+			with (o_manager) {
+				obscure_screen_alpha_target = 0;
+			}
+		}],
+	], true);
+	
 	cs_player_becomes_juggler = new CutsceneData([
 		[cs_text, [
 			"[mystery]Aahhhh, yes.",
@@ -193,6 +212,8 @@ function cutscenes_init() {
 			with (o_manager) {
 				create_symbol();
 			}
+			
+			use_event(events.start_playing_combo_noises);
 		}],
 		[cs_set_speaker, "Player"],
 		[cs_text, [
@@ -219,7 +240,7 @@ function cutscenes_init() {
 			"[slant](!?)",
 			"[slant](No, no. I'm seeing things now. This thing can't display color.)",
 			"[slant](Either that or this is the most elaborate prank of all time...)",
-			"[slant](I've gotta go find that old man. This is way more important than this stupid meeting.)",
+			"[slant](I've gotta go find that old shopkeep. This is way more important than this stupid meeting.)",
 		]],
 		//[cs_set_mouse_towards, inst_button_mode],
 		// do clicking things
@@ -272,7 +293,12 @@ function cutscenes_init() {
 		]],
 		[cutscene_custom_action, function() {
 			set_juggler_emotion("knees");
-		}]
+		}],
+		[cutscene_custom_action, function() {
+			with (o_manager) {
+				eyes_may_open = true;
+			}
+		}],
 	], true);
 	
 	//cs_platforming_failure_1 = new CutsceneData([
@@ -288,6 +314,10 @@ function cutscenes_init() {
 				set_music_track(snd_music_spooky_1);
 				
 				background_music = audio_play_sound(snd_music_spooky_2, SND_PRIORITY_MUSIC, true, 0);
+				if !watch_platforming_growth_perform_transition {
+					watch_platforming_growth_perform_transition = true;
+					watch_growth_transition_timer.start();
+				}
 			}
 		}],	
 	], false);
@@ -371,8 +401,10 @@ function cutscenes_init() {
 			"Ho ho! You'll never break free, don't you see?",
 			"This curse was placed by me, and another spell shall be:",
 			"You're stuck here with me, [mystery]The Witch[/mystery], and-!",
-			"([speaker,Player][slant]Hey, so, uh, I know you're monologuing, but can I ask a question?",
-			"[speaker,Witch][scale,1.5]Ahem!!![/scale] Anyway!! [delay,100]Let's see how you deal with these symbols! [wave]Kekekeh!!",
+			"([speaker,Player][slant]Hey, so, uh, I guess you're what's cursed this watch. But can I ask a question?)",
+			"[speaker,Witch][scale,1.5]Ahem!!![/scale][delay,100]I was [delay,250][scale,1.3]monologuing[/scale]. Rude.",
+			"([speaker,Player][slant]Where am I? What do you want from me?)",
+			"[speaker,Witch]That's for -heh- me to know! Let's see how you deal with these symbols! [wave]Kekekeh!!",
 		]],
 		[cutscene_play_sound, snd_witch_laugh_1, SND_PRIORITY_FX + 1, false],
 		[cs_wait, get_frames(1.5)],
@@ -392,18 +424,25 @@ function cutscenes_init() {
 		[cs_set_speaker, "Witch"],
 		[cs_text, [
 			"So you're resilient, eh!?",
-			"Your soul, stuck in this [speed,0.6]little Juggler form[speed,1]...",
+			"[speaker,Player][set_juggler_emotion,excited]Heh. Yeah.",
+			"[speaker,Witch]Your soul, stuck in this [speed,0.4]little Juggler form[speed,1]...",
 			"There was another, long ago, but I like you MUCH better.",
 			"Now in this NEXT level... when you clear symbols, they'll [c_red]expl-",
-			"([speaker,Player][slant]Hi!! Question. Um, I'm not the first one in here?)",
+			"[set_juggler_emotion,reset]([speaker,Player][slant]Hi!! Question. I'm not the first one in here?)",
 			"([slant]I'm not, like, destined to defeat you?",
-			"[speaker,Witch]What? No, honey, get in line.",
-			"([speaker,Player][slant]Two nickels, huh.)",
+			"[speaker,Witch]What? No, honey, get in line. I've been in, like, six watches already.",
+			"([speaker,Player][slant]Huh.)",
 			"[speaker,Witch]*shrug*",
-			"Anyway, where was I... Oh, yes. Exploding symbols?",
+			"([speaker,Player][slant]Well, this watch is MINE! Beat it!)",
+			"[speaker,Witch]Is that so? Where was I... Oh, yes. Exploding symbols?",
 			"Let them detonate and [c_red]bombs fall[/c]. [c_green]Clear them[/c] and [c_green]less[/c] fall. Capiche?",
 			"[speaker,Player]Clearing symbols means less bombs. Sure.",
-			"Whatever... you're going DOWN, lady!",
+		]],
+		[cutscene_custom_action, function() {
+			audio_stop_all();
+		}],
+		[cs_text, [
+			"Whatever it is... you're going DOWN, lady!",
 			"[speaker,Witch]I'd like to see you try, Juggler man!",
 		]],
 		[cutscene_play_sound, snd_witch_laugh_1, SND_PRIORITY_FX + 1, false],
@@ -424,9 +463,9 @@ function cutscenes_init() {
 		[cs_text, [
 			"[shake]Ouuughhh!![/shake] Now you've done it!",
 			"You've passed the explosive spell and your soul is still writhing!",
-			"My symbols are turning against me, I can feel it!",
-			"FINE! See if I care! Grant the Juggler strength.",
-			"Let's see if they can clear them quickly enough to survive!",
+			"My symbols! Why are you siding with [slant]him[/slant]?",
+			"FINE! See if I care! You can all grant the Juggler strength...",
+			"Let's see if they can clear you quickly enough to survive!",
 		]],
 	], true);
 	

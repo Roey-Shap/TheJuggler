@@ -64,6 +64,12 @@ switch (state_game) {
 			}
 		}
 		
+		with (o_eye_parent) {
+			if open {
+				draw_custom();
+			}
+		}
+		
 		with (o_player) {
 			//draw_custom(new Vector2(0, 0), true);
 			//if o_manager.get_level_data().level_type == eLevelType.platforming {

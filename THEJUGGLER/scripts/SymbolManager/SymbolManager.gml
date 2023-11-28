@@ -110,6 +110,14 @@ function SymbolManager() constructor {
 				o_manager.cs_see_score_rise.play();
 			}
 			
+			if o_manager.eyes_may_open {
+				if o_manager.eyes_current_index < array_length(o_manager.eyes) {
+					var eye = o_manager.eyes[o_manager.eyes_current_index];
+					eye.start_opening();
+					o_manager.eyes_current_index += 1;	
+				}
+			}
+			
 			removed_symbol = pop_symbol(value_index);
 			var symbol_struct = removed_symbol.symbol_struct;
 			var symbol_width = removed_symbol.sprite_width;

@@ -1,5 +1,6 @@
-function play_sound(sound) {
-	play_pitch_range(sound, 1, 1);
+function play_sound(sound, pitch=1) {
+	var s = play_pitch_range(sound, pitch, pitch);
+	return s;
 }
 
 function play_pitch_range(sound, min_pitch, max_pitch) {

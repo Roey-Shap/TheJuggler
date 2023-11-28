@@ -34,6 +34,7 @@ key_fullscreen = ord("F");
 
 enum events {
 	killed_symbol,
+	start_playing_combo_noises,
 	
 	LAST
 }
@@ -52,6 +53,7 @@ event_progression = array_create(events.LAST, 0);
 has_done_intro = false;
 current_level = 0;				// L levels
 current_number_of_waves = -1;	// each level has W waves
+reset_player_position = true;
 
 current_wave = 0;				// each wave has a number N of enemies
 current_wave_size = -1;
@@ -79,7 +81,7 @@ watch_growth_transition_timer = new Timer(get_frames(4), false, function() {
 	//create_cutscene(o_manager.cs_player_becomes_juggler);
 });
 
-watch_growth_final_scale = 1.35;
+watch_growth_final_scale = 1.375;
 obscure_screen_alpha = 0;
 obscure_screen_alpha_target = 0;
 
@@ -235,6 +237,9 @@ face_button_sounds_shot_special = [snd_watch_beep_special_2];
 consecutive_hit_sound_factor = 1;
 consecutive_hit_sound_factor_max = 7;
 
+eyes = [];
+eyes_current_index = 0;
+eyes_may_open = false;
 
 //consecutive_hit_timer = new Timer(0.85, false, function() {
 //	o_manager.consecutive_hit_sound_factor -= 1;
@@ -270,6 +275,7 @@ function start_next_level() {
 	
 	current_level += 1;
 	current_wave = 0;
+	num_enemies_defeated_this_wave = 0;
 	current_number_of_waves = get_level_data().number_of_waves;
 	
 	get_level_data().play_starting_cutscene();
@@ -292,13 +298,19 @@ function start_next_level() {
 		
 		case eLevelType.platforming:
 			instance_deactivate_layer("SetCollision");
-			place_player_at_anchor(inst_anchor_screen_bottom_right, true);
+			if reset_player_position {
+				reset_player_position = false;
+				place_player_at_anchor(inst_anchor_screen_bottom_right, true);
+			}
+			
 			instance_activate_object(inst_thin_plat);
 			
 			if get_level_data().charging_level {
 				instance_deactivate_object(inst_thin_plat);			
 				symbol_penalty_threshold = 25;
 				between_symbols_timer.set_and_start(get_frames(0.1));
+			} else {
+				symbol_penalty_threshold = symbol_penalty_threshold_default;
 			}
 			
 			// always save the current level
@@ -325,10 +337,10 @@ function start_next_level() {
 
 	
 	if isIn(get_level_data().level_type, [eLevelType.sidescrolling]) {
-		if !watch_platforming_growth_perform_transition {
-			watch_platforming_growth_perform_transition = true;
-			watch_growth_transition_timer.start();
-		}
+		//if !watch_platforming_growth_perform_transition {
+		//	watch_platforming_growth_perform_transition = true;
+		//	watch_growth_transition_timer.start();
+		//}
 	} else {
 		if get_level_data().charging_level {
 			symbol_manager.clear_symbols();
@@ -448,6 +460,8 @@ function get_time_between_symbols_curve(level_number) {
 function handle_game_over() {
 	var level_type = get_level_data().level_type;
 	
+	reset_player_position = true;
+	
 	var do_failure_cs = false;
 	current_wave = 0;
 	charge_level = 0;
@@ -477,7 +491,7 @@ function handle_game_over() {
 	} else if level_type == eLevelType.platforming {
 		load_level();
 		current_fire_counter_value = 0;
-	
+		o_player.hp_max = o_player.hp_second_wave;
 		symbol_manager.clear_symbols();
 		reset_buttons_for_shape();
 		
@@ -488,6 +502,8 @@ function handle_game_over() {
 			reset_for_new_level();
 			begin_return_to_neutral();
 		}
+		
+		cs_try_again_glitch.play();
 	} else if level_type == eLevelType.sidescrolling {
 		with (o_player) {
 			x = last_checkpoint_pos.x;
@@ -578,6 +594,11 @@ function handle_fire(button) {
 		fx_button.image_yscale = fx_button_scale;
 		fx_button.image_angle = irandom(359);
 		fx_button.image_blend = merge_color(c_white, c_red, min(1, map(0, 0.65, consecutive_factor, 0, 1)));
+		
+		var dev_override = DEVELOPER_MODE and keyboard_check(vk_space);
+		if used_event(events.start_playing_combo_noises) or dev_override {
+			play_sound(snd_combo_test, 0.8 * consecutive_hit_sound_factor);
+		}
 	}
 	
 	if num_enemies_defeated_with_this_fire == 0 {
@@ -713,6 +734,9 @@ function draw_circles(_x, _y, rad, number) {
 		return;
 	}
 	
+	var prec = round_to(map(-1, 1, sin(current_time/30), 4, 32), 4);
+	draw_set_circle_precision(prec);
+	
 	var margin = round(rad/2);
 	var total_width = (number * rad * 2) + ((number - 1) * margin);
 	var min_x = _x - total_width/2;
@@ -730,6 +754,8 @@ function draw_circles(_x, _y, rad, number) {
 		draw_circle(cx, cy, rad, true); 
 		cur_angle -= total_angle / number;
 	}
+	
+	draw_set_circle_precision(32);
 }
 
 active_music_track = -1;
@@ -761,3 +787,6 @@ last_save = new SavePoint(current_level, current_score);
 
 global.deltatime = 1;
 global.debug = DEVELOPER_MODE;
+
+global._draw_sprite_ext_skew_x = array_create(4);
+global._draw_sprite_ext_skew_y = array_create(4);

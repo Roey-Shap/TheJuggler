@@ -14,7 +14,7 @@ if watch_platforming_growth_perform_transition {
 		obscure_screen_alpha_target = 1;
 		var curve_amount = sample_curve(cv_watch_growth_rate, watch_growth_transition_timer.get_percent_done());
 		var final_scale = watch_growth_final_scale;
-		var objs = [o_screen, o_watch_screen_shade, o_watch_base, o_watch_wriststrap, o_button_parent];
+		var objs = [o_screen, o_watch_screen_shade, o_watch_base, o_watch_wriststrap, o_button_parent, o_eye_parent];
 		var num_objs = array_length(objs);
 		for (var i = 0; i < num_objs; i++) {
 			with (objs[i]) {

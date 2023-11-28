@@ -26,7 +26,7 @@
   "origin": 9,
   "parent": {
     "name": "Shapes",
-    "path": "folders/Sprites/NumberSymbols/Shapes.yy",
+    "path": "folders/Sprites/Symbols/Shapes.yy",
   },
   "preMultiplyAlpha": false,
   "sequence": {
@@ -59,7 +59,7 @@
     ],
     "visibleRange": null,
     "volume": 1.0,
-    "xorigin": 13,
+    "xorigin": 6,
     "yorigin": 0,
   },
   "swatchColours": null,

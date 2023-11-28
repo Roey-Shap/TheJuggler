@@ -1,0 +1,1 @@
+hold_sprite(sprite_index);

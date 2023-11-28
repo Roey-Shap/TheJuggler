@@ -26,7 +26,7 @@
   "origin": 0,
   "parent": {
     "name": "Shapes",
-    "path": "folders/Sprites/NumberSymbols/Shapes.yy",
+    "path": "folders/Sprites/Symbols/Shapes.yy",
   },
   "preMultiplyAlpha": false,
   "sequence": {

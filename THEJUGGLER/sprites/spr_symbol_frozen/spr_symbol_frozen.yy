@@ -30,7 +30,7 @@
   "origin": 9,
   "parent": {
     "name": "Shapes",
-    "path": "folders/Sprites/NumberSymbols/Shapes.yy",
+    "path": "folders/Sprites/Symbols/Shapes.yy",
   },
   "preMultiplyAlpha": false,
   "sequence": {
@@ -63,8 +63,8 @@
     ],
     "visibleRange": null,
     "volume": 1.0,
-    "xorigin": 39,
-    "yorigin": 0,
+    "xorigin": 30,
+    "yorigin": 8,
   },
   "swatchColours": null,
   "swfPrecision": 2.525,

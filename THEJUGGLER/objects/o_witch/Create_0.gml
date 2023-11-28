@@ -137,6 +137,7 @@ draw_custom = function(offset_pos, draw_shadow=false) {
 		draw_set_color(c_white);
 		draw_circle(x + offset_pos.x, y + offset_pos.y, rad+1, true);
 		draw_set_color(c_white);
+		draw_set_circle_precision(32);
 	}
 	
 	draw_custom_prev(offset_pos.add(shake_offset), draw_shadow);
@@ -179,6 +180,17 @@ function store_position() {
 
 function turn_to(side) {
 	draw_scale.x = abs(draw_scale.x) * side;
+}
+
+function manage_sprite() {
+	if isIn(state_current, [e_witch_state.across_swoop_attack, e_witch_state.flying_across, e_witch_state.flying_to_side]) 
+	{
+		set_sprite(spr_witch_idle);
+	}
+	else
+	{
+		set_sprite(spr_witch_flying);	
+	}
 }
 
 function begin_random_action() {

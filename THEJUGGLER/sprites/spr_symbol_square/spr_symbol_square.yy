@@ -23,10 +23,10 @@
     {"resourceType":"GMImageLayer","resourceVersion":"1.0","name":"9818812b-f987-4aee-9a0a-b617bf10a908","blendMode":0,"displayName":"default","isLocked":false,"opacity":100.0,"visible":true,},
   ],
   "nineSlice": null,
-  "origin": 0,
+  "origin": 9,
   "parent": {
     "name": "Shapes",
-    "path": "folders/Sprites/NumberSymbols/Shapes.yy",
+    "path": "folders/Sprites/Symbols/Shapes.yy",
   },
   "preMultiplyAlpha": false,
   "sequence": {
@@ -60,7 +60,7 @@
     "visibleRange": null,
     "volume": 1.0,
     "xorigin": 0,
-    "yorigin": 0,
+    "yorigin": -4,
   },
   "swatchColours": null,
   "swfPrecision": 2.525,
