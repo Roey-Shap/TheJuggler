@@ -36,8 +36,8 @@ if state_game == st_game_state.playing {
 		//if abs(virtual_camera_corner.x - target.x) >= bounding_radius {
 		//}
 		
-		if o_player.grounded or abs(virtual_camera_corner.y - target.y) >= h * 0.4 {
-			virtual_camera_corner.y = lerp(virtual_camera_corner.y, target.y, 0.1);
+		if o_player.grounded or (abs(virtual_camera_corner.y - target.y) >= h * 0.1) {
+			virtual_camera_corner.y = lerp(virtual_camera_corner.y, target.y, 0.08);
 		}
 	} else {
 		virtual_camera_corner = (get_pos(inst_anchor_screen_bottom_right).sub(new Vector2(w, h * 1))).multiply(-1);
@@ -49,6 +49,12 @@ if state_game == st_game_state.playing {
 	}
 
 	symbol_draw_scale = get_level_data().level_type == eLevelType.platforming? symbol_draw_scale_platforming : symbol_draw_scale_default;
+	
+	
+	
+	
+	
+	level_setup_happened = true;
 }
  
 obscure_screen_alpha = lerp(obscure_screen_alpha, obscure_screen_alpha_target, 0.01);

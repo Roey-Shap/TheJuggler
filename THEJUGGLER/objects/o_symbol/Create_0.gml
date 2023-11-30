@@ -18,6 +18,10 @@ function set_symbol(symbol) {
 		scale = o_manager.symbol_draw_scale;
 		image_xscale = scale;
 		image_yscale = scale;
+	} else if symbol_struct.type == symbol_type.shape {
+		if o_manager.get_level_data().level_type == eLevelType.normal and o_manager.level_setup_happened {
+			image_blend = global.c_lcd_dark;
+		}
 	} else if symbol_struct.type == symbol_type.charged {
 		is_stone = true;
 		image_speed = 1;

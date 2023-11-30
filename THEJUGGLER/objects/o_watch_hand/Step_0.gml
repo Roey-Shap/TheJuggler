@@ -17,6 +17,17 @@ _filter_colourise
 	fx_set_parameters(layer_fx_colorize, layer_colorize_params);
 }
 
+if layer_exists(layer_id_colorize_2) {
+	if green_tint_factor {
+		layer_colorize_params_2.g_Intensity = map(-1.3, 1.3, sin(current_time/200) + 0.3 * sin(current_time/60), 0.5, 1);
+	} else {
+		layer_colorize_params_2.g_Intensity = lerp(layer_colorize_params_2.g_Intensity, 0, 0.05);
+	}
+
+	// Apply updated parameters struct to the FX struct
+	fx_set_parameters(layer_fx_colorize_2, layer_colorize_params_2);
+}
+
 if layer_exists(layer_id_distort) {
 	layer_distort_params.g_DistortAmount = lerp(layer_distort_params.g_DistortAmount, 512 * shake_intensity_factor / 2, 0.01);
 	layer_distort_params.g_DistortScale = map(-1.3, 1.3, sin(current_time/200) + 0.3 * sin(current_time/60), 32 * shake_intensity_factor, 0.01);

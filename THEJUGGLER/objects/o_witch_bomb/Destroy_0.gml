@@ -23,4 +23,4 @@ repeat(irandom_range(3, 4)) {
 	fx_setup_screen_layer(fx);
 }
 
-o_manager.start_shake(new Vector2(irandom_range(2, 5), irandom_range(18, 20)), get_frames(0.8));
+o_manager.start_shake(new Vector2(irandom_range(2, 5), irandom_range(9, 13)), get_frames(0.8));

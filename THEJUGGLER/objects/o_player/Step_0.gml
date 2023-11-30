@@ -1,5 +1,5 @@
 
-platforming_active = o_manager.get_level_data().level_type != eLevelType.normal and !o_manager.game_is_frozen();
+platforming_active = o_manager.get_level_data().level_type != eLevelType.normal and !o_manager.game_is_completed;	//  and !o_manager.game_is_frozen()
 
 if platforming_active {
 	var hinput = keyboard_check(key_right) - keyboard_check(key_left);
@@ -72,8 +72,12 @@ if platforming_active {
 	}
 	
 	manage_cutscene_triggers();
-	manage_collision();
-	manage_bullets();
+	
+	if !bob_enabled {
+		manage_collision();
+		manage_bullets();
+	}
+	
 	grounded_check();
 	manage_sprite();
 	manage_checkpoint_collisions();
@@ -94,8 +98,22 @@ if platforming_active {
 		}
 	}
 	
-	x += hspd;
-	y += vspd;
+	vspd = min(vspd, vspd_max);
+	
+	if !bob_enabled {
+		x += hspd;
+		y += vspd;
+	} else {
+		hspd = 0;
+		vspd = 0;
+		
+		var bob_max = 32;
+		var bob_offset = new Vector2(0, map(-1, 1, sin(current_time/350), -bob_max, bob_max));
+		var target_pos = get_pos(inst_anchor_player_bobbing).add(bob_offset);
+		var t = 0.01;
+		x = lerp(x, target_pos.x, t);
+		y= lerp(y, target_pos.y, t);
+	}
 	
 	grounded_last = grounded;
 	invulnerability_timer.tick();

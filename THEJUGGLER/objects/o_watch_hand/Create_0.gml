@@ -30,9 +30,14 @@ function start_shake(intensity, frames) {
 angle_offset = 0;
 angle_offset_max = 0.5;
 
+green_tint_factor = 0;
+
 layer_id_colorize = layer_get_id("Colorize_Hand");
 layer_fx_colorize = layer_get_fx(layer_id_colorize);
 layer_colorize_params = fx_get_parameters(layer_fx_colorize);
+layer_id_colorize_2 = layer_get_id("Colorize_Hand_2");
+layer_fx_colorize_2 = layer_get_fx(layer_id_colorize_2);
+layer_colorize_params_2 = fx_get_parameters(layer_fx_colorize_2);
 
 layer_id_distort = layer_get_id("Distort_Hand");
 layer_fx_distort = layer_get_fx(layer_id_distort);

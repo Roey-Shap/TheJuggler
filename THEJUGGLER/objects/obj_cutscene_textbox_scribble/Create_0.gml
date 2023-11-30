@@ -73,10 +73,15 @@ draw = function() {
 		text_dims_max = new Vector2(sprite_h, sprite_w);
 	}
 	
+	if sprite_w == 0 or sprite_h == 0 {
+		text_dims_max = new Vector2(CAM_W * 0.5, CAM_H * 0.5);
+	}
+	
 	textbox_element = scribble(textbox_conversation[textbox_conversation_index])
 	.starting_format(speaker.font, 1)
 	.wrap(text_dims_max.x - textbox_margins.x * 2, text_dims_max.y - textbox_margins.y * 2)
 	.align(fa_center, fa_middle)
+	.blend(speaker.color, 1)
 
 	var textbox_pos = speaker.textbox_position.copy();
 

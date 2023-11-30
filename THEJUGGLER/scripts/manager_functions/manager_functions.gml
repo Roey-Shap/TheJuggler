@@ -11,6 +11,7 @@ function game_initialize() {
 		global.c_magic_3,
 		global.c_magic_4,
 	];
+	global.c_lcd_dark = scribble_rgb_to_bgr($264C26);
 	
 	scribble_init();
 	cutscenes_init();
@@ -172,7 +173,8 @@ function level_data_init() {
 		  .set_charging_level()
 		  .set_witch_modes([e_witch_state.flying_across, e_witch_state.dropping_bombs, e_witch_state.across_swoop_attack])
 		  .set_witch_difficulty(2)
-		  .set_force_level_save(),
+		  .set_force_level_save()
+		  .set_limit_spiky_in_first_wave(),
 		  
 /*9*/	  // Witch Charging Hard
 		  (new LevelData(eLevels.bullet_hell, cv_number_of_enemies_platforming_with_numbers_1, cv_base_time_between_symbol_per_wave_platforming_with_numbers_1, 2, more_shapes, eLevelType.platforming))
@@ -180,7 +182,8 @@ function level_data_init() {
 		  .set_charging_level()
 		  .set_witch_modes([e_witch_state.flying_across, e_witch_state.dropping_bombs, e_witch_state.across_swoop_attack])
 		  .set_witch_difficulty(3)
-		  .set_force_level_save(),
+		  .set_force_level_save()
+		  .set_limit_spiky_in_first_wave(),
 	];
 }
 
@@ -197,6 +200,7 @@ function LevelData(_enum_tag, _enemies_per_wave_curve, _time_between_enemies_cur
 	witch_active = false;
 	charging_level = false;
 	force_level_save = false;
+	limit_spiky_in_first_wave = false;
 	
 	cutscene_level_start = new CutsceneData(-1, false);
 	cutscene_level_end = new CutsceneData(-1, false);
@@ -297,6 +301,11 @@ function LevelData(_enum_tag, _enemies_per_wave_curve, _time_between_enemies_cur
 	
 	static set_force_level_save = function() {
 		force_level_save = true;
+		return self;
+	}
+		
+	static set_limit_spiky_in_first_wave = function() {
+		limit_spiky_in_first_wave = true;
 		return self;
 	}
 }

@@ -32,18 +32,20 @@ function cs_create_fx(pos, sprite, over_or_under) {
 	return fx;
 }
 
-function cs_create_fx_scaling(pos, sprite, over_or_under, growth_rates, stopping_scales) {
+function cs_create_fx_scaling(pos, sprite, over_or_under, growth_rates, stopping_scales, initial_scales=new Vector2(1, 1)) {
 	var fx = cs_create_fx(pos, sprite, over_or_under);
 	fx.hold_sprite_time = get_frames(60);	// hold for at most a minute
 	fx.growth_scale = growth_rates.copy()
 	fx.growth_limit = stopping_scales.copy();
+	fx.image_xscale = initial_scales.x;
+	fx.image_yscale = initial_scales.y;
 	return fx;
 }
 
 
-function cs_create_fx_scaling_with(inst, sprite, over_or_under, growth_rates, stopping_scales) {
+function cs_create_fx_scaling_with(inst, sprite, over_or_under, growth_rates, stopping_scales, initial_scales=new Vector2(1, 1)) {
 	var pos = get_pos(inst);
-	var fx = cs_create_fx_scaling(pos, sprite, over_or_under, growth_rates, stopping_scales);
+	var fx = cs_create_fx_scaling(pos, sprite, over_or_under, growth_rates, stopping_scales, initial_scales);
 }
 
 function cs_fade(fade_type, time) {

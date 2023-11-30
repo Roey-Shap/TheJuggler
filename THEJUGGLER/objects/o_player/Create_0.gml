@@ -16,6 +16,8 @@ jump_force = 7.7;
 jump_force_bounce_pad = jump_force * 1.4;
 jump_force_break_symbol_freeze = jump_force * 0.75;
 
+bob_enabled = false;
+
 grounded = false;
 grounded_last = false;
 player_jump = false;
@@ -25,6 +27,7 @@ fast_falling = false;
 fast_fall_speed = 10;
 fast_falling_hspd_factor = 0.4;
 
+vspd_max = fast_fall_speed * 1.5;
 
 shake_offset = vector_zero();
 shake_intensity = vector_zero();
@@ -46,7 +49,8 @@ function start_shake(intensity, frames) {
 	shake_timer.set_and_start(max(shake_timer.current_count, frames));
 }
 
-invulnerability_timer = new Timer(get_frames(2.5), false, function() {
+invuln_default_time = get_frames(2.5);
+invulnerability_timer = new Timer(invuln_default_time, false, function() {
 	with (o_player) {
 		image_alpha = 1;
 		image_blend = c_white;
@@ -103,8 +107,9 @@ manage_collision = function() {
 		var is_bounce_pad = object_is_ancestor_ext(vcol.object_index, o_bounce_pad_parent) or (is_symbol and vcol.symbol_struct.type == symbol_type.shape and isIn(vcol.symbol_struct.value, [symbol_type.row, symbol_type.column, symbol_type.square]));
 		var is_spiky = false; //object_is_ancestor_ext(vcol.object_index, o_spike_parent) or (is_symbol and isIn(vcol.symbol_struct.value, [symbol_type.triangle, symbol_type.diamond]));
 		var is_frozen = vcol.is_stone;
+		var inside_collision = place_meeting(x, y, vcol);
 		
-		if is_spiky and !is_frozen {
+		if is_spiky and !is_frozen and !inside_collision {
 			take_hit();
 		}
 		
@@ -118,9 +123,6 @@ manage_collision = function() {
 			if fast_falling {
 				vspd = -jump_force_break_symbol_freeze;
 				vcol.break_freeze();
-				if vcol.symbol_struct.type == symbol_type.charged {
-					o_manager.symbol_manager.kill_first_symbol_of_value(vcol, true);
-				}
 			} else {
 				vspd = 0;
 			}
@@ -204,10 +206,18 @@ function take_hit() {
 	hp -= 1;
 	start_shake(new Vector2(4, 4), get_frames(0.6));
 	o_manager.start_shake(new Vector2(10, 10), get_frames(0.65));
-	invulnerability_timer.start();
+	invulnerability_timer.set_and_start(invuln_default_time);
 	if hp <= 0 {
 		o_manager.handle_game_over();
 	}
+}
+
+function heal(amount) {
+	hp = min(hp + amount, hp_max);
+}
+
+function give_invuln(frames) {
+	invulnerability_timer.set_and_start(max(invulnerability_timer.current_count, frames));
 }
 
 function manage_bullets() {
@@ -329,6 +339,27 @@ function manage_sprite() {
 		set_sprite(special_sprite);
 	}
 	
+	if bob_enabled {
+		set_sprite(spr_player_fall);
+		
+		if hit_roll(0.07) {
+			var particle_noise = 2;
+			var ran_x = x + irandom_range(-particle_noise, particle_noise);
+			var ran_y = y + irandom_range(-particle_noise, particle_noise);
+			var ran_spr = choose(spr_fx_sparkle_1, spr_fx_dust_1, spr_fx_dust_3);
+			var fx = new SpriteFX(ran_x, ran_y, ran_spr, 1);
+			fx_setup_screen_layer(fx);
+			var s = random_range(0.75, 0.95);
+			fx.hspd = random_range(-0.3, 0.3);
+			fx.vspd = random_range(-0.3, 0.3);
+			fx.fric = 0.999;
+			fx.image_xscale = s;
+			fx.image_yscale = s;
+			fx.image_angle = irandom_range(-10, 10);
+			fx.image_blend = merge_color(c_white, c_lime, random(1));
+		}
+	}
+	
 	if hspd != 0 {
 		draw_scale.x = sign(hspd);
 	}
@@ -358,5 +389,5 @@ draw_custom = function(offset_pos, draw_shadow=false) {
 		gpu_set_fog(false, c_white, 0, 1);
 	}
 	
-	o_manager.draw_circles(x + offset_pos.x + 6, y + offset_pos.y - 40, 8, hp);
+	o_manager.draw_circles(x + offset_pos.x + 6, y + offset_pos.y - 60, 8, hp);
 }

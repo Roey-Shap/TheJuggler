@@ -29,14 +29,18 @@ draw_custom = function() {
 	
 	if image_index >= image_number-1.5 {
 		var dir_to_player = point_direction(x, y, on_screen_player_coords.x, on_screen_player_coords.y);
+		var trig = sin((current_time + x + y) / 200);
+		dir_to_player += 5 * map(-1, 1, trig, -1, 1);
 		var l = 15 * abs(image_xscale);
 		var n = max(2, 3 * abs(image_xscale));
-		var offx = lengthdir_x(l, dir_to_player) + irandom_range(-n, n);
-		var offy = lengthdir_y(l, dir_to_player) + irandom_range(-n, n);
+		var xbob = (l / 3) * map(-1, 1, trig, -1, 1);
+		var ybob = (l / 3) * map(-1, 1, trig, 1, -1);
+		var offx = lengthdir_x(l, dir_to_player) + irandom_range(-n, n) + xbob;
+		var offy = lengthdir_y(l, dir_to_player) + irandom_range(-n, n) + ybob;
 		var s = max(abs(image_xscale), abs(image_yscale));
 		draw_sprite_ext(sprite_eyeball, 0,
 					x + round(offx), y + round(offy), s, s, 
-					image_angle, image_blend, image_alpha);
+					dir_to_player + (xbob), image_blend, image_alpha);
 		
 	}
 }

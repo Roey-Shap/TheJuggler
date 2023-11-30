@@ -46,6 +46,14 @@ function scribble_init(){
 	scribble_add_macro("/mystery", function() {
 		return "[/wave][/wobble][/cycle]";
 	});
+	
+	scribble_add_macro("player_score", function() {
+		return string(o_manager.current_score);
+	});
+	
+	scribble_add_macro("play_time", function() {
+		return string(current_time/1000);
+	});
 }
 
 function seven_digit(digit, scale=0.075) {

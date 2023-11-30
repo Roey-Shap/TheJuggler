@@ -9,6 +9,7 @@ hp_shown = hp;
 hp_shown_last = 0;
 
 draw_hp = false;
+flailing_bob = false;
 
 hp_show_timer = new Timer(get_frames(1));
 
@@ -41,6 +42,7 @@ function take_hit() {
 	start_shake((new Vector2(4, 4)).multiply(factor), get_frames(0.6 * factor));
 	
 	if hp <= 0 {
+		o_manager.game_is_completed = true;
 		o_manager.cs_witch_defeat.play();
 	}
 }
@@ -145,6 +147,12 @@ draw_custom = function(offset_pos, draw_shadow=false) {
 
 function reset_for_new_level() {
 	remaining_actions = [];
+	hitbox_draw = false;
+	hp = hp_max;
+	shake_timer.current_count = 0;
+	shake_offset = vector_zero();
+	
+	flailing_bob = false;
 }
 
 drop_bombs = function() {

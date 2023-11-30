@@ -23,7 +23,7 @@ draw_custom = function(offset_pos=new Vector2(0, 0), draw_shadow=false) {
 	//if fog_color != -1 {
 	//	gpu_set_fog(true, fog_color, 0, 1);
 	//}
-	var stone_alpha_factor = 0.75;
+	var stone_alpha_factor = 0.6;
 	
 	if draw_shadow {
 		var off = object_is_ancestor_ext(object_index, o_symbol)? LCD_SHADE_OFFSET.multiply(o_manager.symbol_draw_scale) : LCD_SHADE_OFFSET;
@@ -70,6 +70,8 @@ function break_freeze() {
 	if symbol_struct != -1 {
 		if symbol_struct.type == symbol_type.charged {
 			o_manager.handle_charged_breaking();
+			o_manager.symbol_manager.kill_first_symbol_of_value(id, true);
+			o_player.heal(1);
 		}
 	}
 	

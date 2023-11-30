@@ -13,6 +13,9 @@ function cutscenes_init() {
 		(new Speaker("Witch", new Vector2(0.75, 0.2), fnt_witch))
 			.set_textbox_angle(-90)
 			.set_textbox_direction(new Vector2(2, 3)),
+		(new Speaker("whiteText", new Vector2(0.5, 0.5), fnt_player))
+			.set_textbox_direction(new Vector2(0, 0))
+			.set_textbox_color(c_white),
 	];
 	
 	//cs_game_start = new CutsceneData([
@@ -98,7 +101,8 @@ function cutscenes_init() {
 			"... anyway. How you spend your meetings ain't none of my business.",
 			"[speaker,Player]How's it work? The game, I mean.",
 			"[speaker,Other]Oh, it's just a [c_emph]number matching game[/c]. But you'll figure it out.",
-			"Have a good day, sir.",
+			"Isn't figuring out these old functionalities half the fun?",
+			"... anyhow, have a good day, sir.",
 		]],
 		[cs_fade, fade_type.indefinite, get_frames(1)],
 		[cs_wait, get_frames(1)],
@@ -109,12 +113,12 @@ function cutscenes_init() {
 		[cs_fade, fade_type.from_black, get_frames(0.5)],
 		[cs_set_speaker, "Player"],
 		[cs_text, [
-			"[speaker,Player][slant](Don't look at the clock. Don't. [delay,200]Look. [delay,200]At. [delay,200]The- ugh god DAMN.)",
-			"([slant]Six minutes???)",
+			"[speaker,Player][slant](Don't look at the clock. Don't. [delay,200]Look. [delay,200]At. [delay,200]The-[delay,400] ugh god DAMN.)",
+			"([slant]It's only been six minutes???)",
 			"([slant]Do they [/slant]want[slant] these meetings to go on forever?)",
-			"([slant]!!\n I have the watch! Genius!)",
-			"([slant][wave]Heh heh.[/wave] Well, Andrew, it pays to be prepared.)",
-			"([slant]I knew those survival classes would pay off! I shall survive this meeting!!",
+			"([slant]!! I have the watch! Genius!)",
+			"([slant][wave]Heh heh.[/wave] Well, Andrew Coopers, it pays to be prepared.)",
+			"([slant]I knew those survival classes would pay off! I shall survive this meeting!!)",
 			"([slant]Let's see. How does this thing work again? Button on the left, he said...)",
 		]],
 		[cutscene_custom_action, function() {
@@ -161,14 +165,9 @@ function cutscenes_init() {
 		[cs_wait, get_frames(1)],
 		[cs_set_speaker, "Thought"],
 		[cs_text, [
-			"([slant]I... can't give up!)",
+			"([slant]I... can't give up! I need to hit start again...!)",
 		]],
 		[cs_wait, get_frames(0.5)],
-		[cutscene_custom_action, function() {
-			with (o_manager) {
-				obscure_screen_alpha_target = 0;
-			}
-		}],
 	], true);
 	
 	cs_player_becomes_juggler = new CutsceneData([
@@ -210,7 +209,8 @@ function cutscenes_init() {
 	cs_weirded_out_by_shapes = new CutsceneData([
 		[cutscene_custom_action, function() {
 			with (o_manager) {
-				create_symbol();
+				create_symbol(symbol_type.row);
+				use_event(events.reached_shapes);
 			}
 			
 			use_event(events.start_playing_combo_noises);
@@ -224,7 +224,7 @@ function cutscenes_init() {
 			"[slant](Isn't this thing an LCD display?)",
 			"[slant](How can something with numerical digits render shapes...)",
 			"[slant](Did I get ripped off??? Ugh.)",
-			"[slant](... guess I'll finish this game.)"
+			"[slant](I guess I need to... make a line? Somehow?)",
 		]],
 	], true);
 	
@@ -365,11 +365,16 @@ function cutscenes_init() {
 		}],
 		[cs_set_speaker, "Witch"],
 		[cs_text, [
-			"So you've made it... To the center of this curse!!",
+			"[set_juggler_emotion,scared]So you've made it... To the center of this curse!!",
+			"[speaker,Thought]([slant]Who's there?!)",
 		]],
 		[cutscene_custom_action, function() {
 			with (o_manager) {
 				obscure_screen_alpha_target = 0.5;
+			}
+			
+			with (o_watch_hand) {
+				green_tint_factor = 1;
 			}
 		}],
 		[cs_wait, get_frames(0.25)],
@@ -387,7 +392,7 @@ function cutscenes_init() {
 				obscure_screen_alpha_target = 0;
 			}
 		}],
-	], false);
+	], true);
 	
 	cs_witch_intro = new CutsceneData([
 		[cutscene_custom_action, function() {
@@ -396,9 +401,14 @@ function cutscenes_init() {
 			}
 		}],
 		[cs_wait, get_frames(1)],
+		[cutscene_custom_action, function() {
+			with (o_manager) {
+				obscure_screen_alpha_target = 0;
+			}
+		}],
 		[cs_set_speaker, "Witch"],
 		[cs_text, [
-			"Ho ho! You'll never break free, don't you see?",
+			"[set_juggler_emotion,reset]Ho ho! You'll never break free, don't you see?",
 			"This curse was placed by me, and another spell shall be:",
 			"You're stuck here with me, [mystery]The Witch[/mystery], and-!",
 			"([speaker,Player][slant]Hey, so, uh, I guess you're what's cursed this watch. But can I ask a question?)",
@@ -447,7 +457,7 @@ function cutscenes_init() {
 		]],
 		[cutscene_play_sound, snd_witch_laugh_1, SND_PRIORITY_FX + 1, false],
 		[cs_wait, get_frames(1.5)],
-		[cs_create_fx_scaling_with, o_witch, spr_fx_witch_explosion, 1, new Vector2(1.05, 1.05), new Vector2(10, 10)],
+		[cs_create_fx_scaling_with, o_witch, spr_fx_witch_explosion, 1, new Vector2(1.05, 1.05), new Vector2(10, 10), new Vector2(0.5, 0.5)],
 		[cutscene_custom_action, function() {
 			with (o_manager) {
 				obscure_screen_alpha_target = 0;
@@ -459,6 +469,11 @@ function cutscenes_init() {
 	], true);
 	
 	cs_witch_3_intro = new CutsceneData([
+		[cutscene_custom_action, function() {
+			with (o_player) {
+				bob_enabled = true;
+			}
+		}], 
 		[cs_set_speaker, "Witch"],
 		[cs_text, [
 			"[shake]Ouuughhh!![/shake] Now you've done it!",
@@ -467,6 +482,12 @@ function cutscenes_init() {
 			"FINE! See if I care! You can all grant the Juggler strength...",
 			"Let's see if they can clear you quickly enough to survive!",
 		]],
+		[cutscene_custom_action, function() {
+			with (o_player) {
+				bob_enabled = false;
+				vspd = -jump_force;
+			}
+		}], 
 	], true);
 	
 	cs_witch_final_level_intro = new CutsceneData([
@@ -489,6 +510,11 @@ function cutscenes_init() {
 			audio_stop_all();
 			with (o_witch) {
 				start_shaking();
+				flailing_bob = true;
+			}
+			
+			with (o_player) {
+				bob_enabled = true;
 			}
 		}],
 		[cs_set_speaker, "Witch"],
@@ -510,6 +536,8 @@ function cutscenes_init() {
 			"Maybe he'll actually come back to polish this game like he wanted.",
 			"Who knows.",
 			"Now scram. Narrating's hard work.",
+			"[speaker,whiteText][Thanks for playing!\nYour score was [player_score] and your completion time was [play_time].\n\nDid you notice that clearing symbols more quickly gives you a score combo? Try maxing out your score and speedrunning the game!",
+			"[speed,2]All programming, art, and design by RoeyShap. Sounds from Freesound.org.\nGlitch music is my mashup of [c_yellow]DELTARUNE[/c]'s 'Cliffs' and [c_yellow]FEZ[/c]'s 'Glitch'.\nTense music is my edit of [c_yellow]UNDERTALE[/c]'s 'In My Way'.\nFinal Witch fight music is [c_yellow]A_A_RonHD[/c]'s 'Club Penguin Thin Ice Remix'.",
 		]],
 	], true);
 }
@@ -537,6 +565,7 @@ function Speaker(_name, _textbox_position, _font) constructor {
 	name = _name;
 	textbox_position = _textbox_position;
 	font = font_get_name(_font);
+	text_color = c_black;
 	textbox_sprite = spr_textbox_nineslice;
 	update_function = -1;
 	textbox_direction = new Vector2(1, 1);
@@ -559,6 +588,11 @@ function Speaker(_name, _textbox_position, _font) constructor {
 	
 	static set_textbox_sprite = function(spr) {
 		textbox_sprite = spr;
+		return self;
+	}
+	
+	static set_textbox_color = function(col) {
+		text_color = col;
 		return self;
 	}
 	

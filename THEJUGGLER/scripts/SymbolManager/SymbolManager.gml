@@ -6,8 +6,19 @@ function SymbolManager() constructor {
 		return array_length(active_symbols);
 	}
 	
-	static generate_symbol_from_level_data = function(level_data) {
-		var chosen_symbol_value = array_pick_random(level_data.allowed_symbols);
+	static generate_symbol_from_level_data = function(level_data, _symbol_type=symbol_type.LAST) {
+		var chosen_symbol_value;
+		if _symbol_type == symbol_type.LAST {
+			var _allowed_symbols = level_data.allowed_symbols;
+			if o_manager.get_level_data().limit_spiky_in_first_wave and o_manager.num_enemies_created_this_wave <= o_manager.symbol_penalty_threshold {
+				_allowed_symbols = set_minus(_allowed_symbols, [symbol_type.triangle, symbol_type.diamond]);
+			}
+			
+			chosen_symbol_value = array_pick_random(_allowed_symbols);
+		} else {
+			chosen_symbol_value = _symbol_type;
+		}
+		
 		if o_manager.get_level_data().charging_level and queued_charge_symbols > 0 {
 			chosen_symbol_value = symbol_type.charged;
 			queued_charge_symbols -= 1;
@@ -94,7 +105,7 @@ function SymbolManager() constructor {
 		for (var i = 0; i < num_symbs; i++) {
 			var symbol = active_symbols[i];
 			if id_mode {
-				if symbol == value {
+				if symbol.id == value {
 					value_index = i;
 					break;
 				}

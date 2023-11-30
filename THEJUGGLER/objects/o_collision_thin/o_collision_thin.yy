@@ -8,8 +8,8 @@
   "managed": true,
   "overriddenProperties": [],
   "parent": {
-    "name": "Objects",
-    "path": "folders/Objects.yy",
+    "name": "CaveLevel",
+    "path": "folders/Objects/CaveLevel.yy",
   },
   "parentObjectId": {
     "name": "o_collision",

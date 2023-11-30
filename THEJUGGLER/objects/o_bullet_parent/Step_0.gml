@@ -17,10 +17,10 @@ if hit_roll(0.08) {
 	var ran_x = x + irandom_range(-particle_noise, particle_noise);
 	var ran_y = y + irandom_range(-particle_noise, particle_noise);
 	var ran_spr = choose(spr_fx_sparkle_1, spr_fx_dust_1, spr_fx_dust_3);
-	var fx = new SpriteFX(ran_x, ran_y, ran_spr, -1);
+	var fx = new SpriteFX(ran_x, ran_y, ran_spr, 1);
 	fx_setup_screen_layer(fx);
-	var s = irandom_range(0.75, 0.95);
-	fx.hspd = random_range(-0.3, 0.3);	// current going opposite to target_side_for_flyby
+	var s = random_range(0.75, 0.95);
+	fx.hspd = random_range(-0.3, 0.3);
 	fx.vspd = random_range(-0.3, 0.3);
 	fx.image_xscale = s;
 	fx.image_yscale = s;

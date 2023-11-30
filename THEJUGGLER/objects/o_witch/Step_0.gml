@@ -1,5 +1,5 @@
 
-platforming_active = o_manager.get_level_data().witch_active and !o_manager.game_is_frozen();
+platforming_active = o_manager.get_level_data().witch_active and !o_manager.game_is_frozen() and !o_manager.game_is_completed;
 
 if platforming_active {
 	var seconds_elapsed = (current_time / 1000) - fight_start_time;
@@ -253,6 +253,16 @@ if defaulting_to_neutral {
 	perform_return_to_neutral();
 }
 
-x += hspd;
-y += vspd;
 
+if !flailing_bob {
+	x += hspd;
+	y += vspd;
+} else {
+	var bob_max = new Vector2(200, 150);
+	var bob_offset = new Vector2(map(-1, 1, 0.5 * cos(current_time/150) + 0.5 * (current_time/350), -bob_max.x, bob_max.x), 
+								 map(-1, 1, sin(current_time/350), -bob_max.y, bob_max.y));
+	var target_pos = get_pos(inst_anchor_player_bobbing).add(bob_offset);
+	var t = 0.01;
+	x = lerp(x, target_pos.x, t);
+	y= lerp(y, target_pos.y, t);
+}

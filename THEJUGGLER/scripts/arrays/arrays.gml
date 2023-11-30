@@ -29,6 +29,18 @@ function findStructWithValue(variable_name, value, array) {
 	return -1;
 }
 
+function set_minus(target_array, array_to_remove) {
+	var arr = [];
+	var target_length = array_length(target_array);
+	for (var i = 0; i < target_length; i++) {
+		if !isIn(target_array[i], array_to_remove) {
+			array_push(arr, target_array[i]);
+		}
+	}
+	
+	return arr;
+}
+
 function array_is_subset(subarray, array) {
 	return array_equals_unordered(array_intersection(subarray, array), subarray);
 	//var subarray_size = array_length(subarray);

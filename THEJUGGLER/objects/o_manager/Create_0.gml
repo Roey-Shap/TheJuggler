@@ -35,6 +35,7 @@ key_fullscreen = ord("F");
 enum events {
 	killed_symbol,
 	start_playing_combo_noises,
+	reached_shapes,
 	
 	LAST
 }
@@ -54,6 +55,8 @@ has_done_intro = false;
 current_level = 0;				// L levels
 current_number_of_waves = -1;	// each level has W waves
 reset_player_position = true;
+game_is_completed = false;
+level_setup_happened = false;
 
 current_wave = 0;				// each wave has a number N of enemies
 current_wave_size = -1;
@@ -97,7 +100,7 @@ shake_timer = new Timer(0, false, function() {
 });
 
 ///@param {Struct.Vector2} intensity
-///@param Int frames
+///@param {int} frames
 function start_shake(intensity, frames) {
 	if !shake_timer.is_done() {
 		// add a factor of the new shake
@@ -245,9 +248,9 @@ eyes_may_open = false;
 //	o_manager.consecutive_hit_sound_factor -= 1;
 //});
 
-function create_symbol() {
+function create_symbol(_symbol_type=symbol_type.LAST) {
 	num_enemies_created_this_wave += 1;
-	var symbol = symbol_manager.generate_symbol_from_level_data(level_data[current_level]);
+	var symbol = symbol_manager.generate_symbol_from_level_data(level_data[current_level], _symbol_type);
 	//var random_symbol_value = irandom_range(0, 9);
 	//var symbol = new Symbol(random_symbol_value, symbol_type.number);
 	symbol_manager.add_symbol(symbol);
@@ -503,6 +506,9 @@ function handle_game_over() {
 			begin_return_to_neutral();
 		}
 		
+		state_game = st_game_state.main_menu;
+		state_watch = eWatchState.time;
+		
 		cs_try_again_glitch.play();
 	} else if level_type == eLevelType.sidescrolling {
 		with (o_player) {
@@ -595,10 +601,10 @@ function handle_fire(button) {
 		fx_button.image_angle = irandom(359);
 		fx_button.image_blend = merge_color(c_white, c_red, min(1, map(0, 0.65, consecutive_factor, 0, 1)));
 		
-		var dev_override = DEVELOPER_MODE and keyboard_check(vk_space);
-		if used_event(events.start_playing_combo_noises) or dev_override {
-			play_sound(snd_combo_test, 0.8 * consecutive_hit_sound_factor);
-		}
+		//var dev_override = DEVELOPER_MODE and keyboard_check(vk_space);
+		//if used_event(events.start_playing_combo_noises) or dev_override {
+		//	play_sound(snd_combo_test, 0.8 * consecutive_hit_sound_factor);
+		//}
 	}
 	
 	if num_enemies_defeated_with_this_fire == 0 {
@@ -668,11 +674,14 @@ function receive_click_from_face_button(button) {
 		reset_buttons_for_shape();
 	} else if value <= 9 {
 		if !game_is_frozen() {
-			if isIn(value, current_values_in_shape) {
+			if isIn(value, current_values_in_shape) {	// toggle button off
 				button.image_blend = c_white;
 				remove_value_from_shape(button);
 			} else {
-				button.image_blend = c_lime;
+				if used_event(events.reached_shapes) {
+					button.image_blend = c_lime;		// toggle button on
+				}
+				
 				add_value_to_shape(button);
 			}		
 		
@@ -694,6 +703,7 @@ function receive_click_from_face_button(button) {
 			} else {
 				state_watch = eWatchState.game;
 				state_game = st_game_state.playing;
+				obscure_screen_alpha_target = 0;
 				start_next_level();
 			}
 		}
